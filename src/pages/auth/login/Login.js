@@ -2,13 +2,16 @@
 import { FaArrowRight } from 'react-icons/fa';
 import Input from "../../../components/input/Input"
 import Button from "../../../components/button/Button"
+import { Link } from 'react-router-dom';
 import "./Login.scss"
+
 const Login = () => {
 
     return (
         <div className="auth-inner">
 
-            <div role="alert">
+            <div className="alerts alert-error" role="alert">
+                sfas
             </div>
 
             <form className="auth-form" >
@@ -25,7 +28,7 @@ const Login = () => {
                     <Input
                         id="password"
                         name="password"
-                        type="password" 
+                        type="password"
 
                         labelText="Password"
                         placeholder="Enter Password"
@@ -43,11 +46,13 @@ const Login = () => {
                 <Button
                     label='SIGN IN'
                     className="auth-button button"
-                  
+
                 />
-                <span className="forgot-password">
-                    Forgot password? <FaArrowRight className="arrow-right" />
-                </span>
+                <Link to={'/forgot-password'}>
+                    <span className="forgot-password">
+                        Forgot password? <FaArrowRight className="arrow-right" />
+                    </span>
+                </Link>
             </form>
         </div>
     );
