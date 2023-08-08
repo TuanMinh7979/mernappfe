@@ -1,7 +1,5 @@
 import axios from "../../axios";
-
 class AuthService {
-
     async signUp(body) {
         const response = await axios.post('/signup', body);
         return response
@@ -15,7 +13,7 @@ class AuthService {
         return response
     }
     async resetPassword({ token, body }) {
-        const response = await axios.post(`/reset-password/${token}`, { body });
+        const response = await axios.post(`/reset-password/${token}`, { ...body });
         return response
     }
 }
