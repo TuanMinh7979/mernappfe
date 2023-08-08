@@ -2,7 +2,7 @@
 import { FaArrowRight } from 'react-icons/fa';
 import Input from "@components/input/Input"
 import Button from "@components/button/Button"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import "./Login.scss"
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -17,6 +17,8 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [alertType, setAlertType] = useState('')
     const [user, setUser] = useState('')
+    const navigate= useNavigate()
+
 
     const loginUser = async (event) => {
         setLoading(true);
@@ -29,6 +31,7 @@ const Login = () => {
             // * set logged in local storage
             // * set usename in local storage
             // * dispatch user to redux
+            setLoading(false)
             setUser(rs.data.user)
             setHasError(false);
             setAlertType('alert-success')
@@ -44,8 +47,8 @@ const Login = () => {
     useEffect(() => {
         if (loading && !user) return;
         if (user) {
-            console.log('navigate to streampage')
-            setLoading(false)
+           navigate('/app/social/streams')
+            
         }
     }, [loading, user])
     return (

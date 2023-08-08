@@ -4,10 +4,8 @@ import './Register.scss';
 import { useEffect, useState } from 'react';
 import { Utils } from '@services/utils/utils.service';
 import { authService } from '@services/api/auth/auth.service';
-
+import { useNavigate } from 'react-router-dom';
 const Register = () => {
-
-
     const [username, setUserName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -15,14 +13,12 @@ const Register = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [alertType, setAlertType] = useState('')
     const [hasError, setHasError] = useState(false)
-
-
     const [user, setUser] = useState();
+    const navigate= useNavigate()
     const registerUser = async (event) => {
         setLoading(true)
         event.preventDefault();
         try {
-
             const avatarColor = Utils.avatarColor()
             const avatarImage = Utils.generateAvatar(username.charAt(0).toUpperCase(), avatarColor)
             const rs = await authService.signUp({
@@ -37,6 +33,7 @@ const Register = () => {
             // * set logged in local storage
             // * set usename in local storage
             // * dispatch user to redux
+            setLoading(false)
             setUser(rs.data.user)
             setHasError(false);
             setAlertType('alert-success')
@@ -52,7 +49,7 @@ const Register = () => {
     useEffect(() => {
         if (loading && !user) return;
         if (user) {
-            console.log('navigate to streampage')
+            navigate('/app/social/streams')
             setLoading(false)
         }
     }, [loading, user])
@@ -65,7 +62,6 @@ const Register = () => {
                     </div>
                 }
             </div>
-
             <form className="auth-form" onSubmit={registerUser}>
                 <div className="form-input-container">
                     <Input
