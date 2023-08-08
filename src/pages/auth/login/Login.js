@@ -7,6 +7,9 @@ import "./Login.scss"
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { authService } from '@services/api/auth/auth.service';
+import { Utils } from '@services/utils/utils.service';
+import useSessionStorage from '@hooks/useSessionStorage';
+import { useDispatch } from 'react-redux';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -19,6 +22,10 @@ const Login = () => {
     const [user, setUser] = useState('')
     const navigate= useNavigate()
 
+    const dispatch= useDispatch();
+
+    const [pageReload]= useSessionStorage('pageReload', 'set')
+
 
     const loginUser = async (event) => {
         setLoading(true);
@@ -27,6 +34,7 @@ const Login = () => {
             const rs = await authService.signIn({
                 username, password
             })
+           
             setKeepLoggedIn(keepLoggedIn)
             // * set logged in local storage
             // * set usename in local storage
@@ -35,6 +43,7 @@ const Login = () => {
             setUser(rs.data.user)
             setHasError(false);
             setAlertType('alert-success')
+            Utils.dispatchUser(rs, pageReload, dispatch,setUser)
         } catch (error) {
             setLoading(false);
             setHasError(true);

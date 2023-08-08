@@ -1,7 +1,7 @@
 
+import { addUser,clearUser } from '@redux/reducers/user/user.reducer';
 import { avatarColors } from './static.data';
 import { floor, random } from 'lodash';
-
 
 export class Utils {
   static avatarColor() {
@@ -27,6 +27,21 @@ export class Utils {
 
     return canvas.toDataURL('image/png');
   }
+
+
+  static dispatchUser = (result, pageReload, dispatch, setUser) => {
+    pageReload(true);
+    dispatch(addUser({ token: result.data.token, profile: result.data.user }))
+    setUser(result.data.user)
+
+  }
+  static clearStore = ({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin }) => {
+    dispatch(clearUser())
+    deleteStorageUsername()
+    deleteSessionPageReload()
+    setLoggedin(false)
+  }
+
 
 
 }

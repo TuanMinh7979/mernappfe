@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { Utils } from '@services/utils/utils.service';
 import { authService } from '@services/api/auth/auth.service';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import useSessionStorage from '@hooks/useSessionStorage';
 const Register = () => {
     const [username, setUserName] = useState('')
     const [email, setEmail] = useState('')
@@ -15,6 +17,10 @@ const Register = () => {
     const [hasError, setHasError] = useState(false)
     const [user, setUser] = useState();
     const navigate= useNavigate()
+
+    const dispatch= useDispatch();
+    const [pageReload]= useSessionStorage('pageReload', 'set')
+
     const registerUser = async (event) => {
         setLoading(true)
         event.preventDefault();
@@ -37,6 +43,8 @@ const Register = () => {
             setUser(rs.data.user)
             setHasError(false);
             setAlertType('alert-success')
+            Utils.dispatchUser(rs, pageReload, dispatch,setUser)
+
         } catch (error) {
             setLoading(false);
             setHasError(true);
