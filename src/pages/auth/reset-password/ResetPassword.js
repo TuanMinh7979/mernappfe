@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import Input from '../../../components/input/Input';
-import Button from '../../../components/button/Button';
+import Input from '@components/input/Input';
+import Button from '@components/button/Button';
 import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import "./ResetPassword.scss"
