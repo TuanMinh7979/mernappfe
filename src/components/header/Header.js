@@ -16,17 +16,29 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { sumBy } from "lodash";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
+import Dropdown from "@components/dropdown/Dropdown";
+
+import useLocalStorage from "@hooks/useLocalStorage";
+import useSessionStorage from "@hooks/useSessionStorage";
+import { userService } from "@services/api/user/user.service";
+import { useNavigate } from "react-router-dom";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
+  const notificationRef = useRef(null);
+  const settingsRef = useRef(null);
   const [isMesssageActive, setIsMessageActive] = useDetectOutsideClick(
     messageRef, false
   )
+  const [isNotificationActive, setIsNotificationActive] = useDetectOutsideClick(notificationRef, false);
+  const [isSettingActive, setIsSettingActive] = useDetectOutsideClick(settingsRef, false);
+
   const [messageCount, setMessageCount] = useState(0);
   const [messageNotifications, setMessageNotifications] = useState([]);
   // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
+  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
   const [notificationCount, setNotificationCount] = useState(0);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -36,6 +48,9 @@ const Header = () => {
       ? "#e9710f"
       : ""
     }`;
+    const [deleteStorageUsername] = useLocalStorage('username', 'delete');
+  const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
+  const navigate = useNavigate()
 
   // useEffect(() => {
   //   const env = Utils.appEnvironment();
@@ -49,7 +64,13 @@ const Header = () => {
   //   setMessageCount(count);
   //   setMessageNotifications(chatList);
   // }, [chatList, profile]);
+  const onMarkAsRead = async (notification) => {
 
+  };
+
+  const onDeleteNotification = async (messageId) => {
+
+  };
   useEffect(() => {
     NotificationUtils.socketIONotification(
       profile,
@@ -91,18 +112,29 @@ const Header = () => {
     //   Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
     // }
   };
+
+  const onLogout = async () => {
+    try {
+      setLoggedIn(false);
+      Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn });
+      await userService.logoutUser();
+      navigate('/');
+    } catch (error) {
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
+  };
   return (
     <>
       <div className="header-nav-wrapper" data-testid="header-wrapper">
         <div ref={messageRef}>
           {isMesssageActive &&
-          <div ref={messageRef}>
-            <MessageSidebar
-              profile={profile}
-              messageCount={messageCount}
-              messageNotifications={[]}
-              openChatPage={openChatPage}
-            />
+            <div ref={messageRef}>
+              <MessageSidebar
+                profile={profile}
+                messageCount={messageCount}
+                messageNotifications={[]}
+                openChatPage={openChatPage}
+              />
             </div>
           }
         </div>
@@ -132,8 +164,10 @@ const Header = () => {
             <li
               data-testid="notification-list-item"
               className="header-nav-item active-item"
-              onClick={()=>{
+              onClick={() => {
                 setIsMessageActive(false)
+                setIsNotificationActive(true)
+                setIsSettingActive(false)
               }}
             >
               <span className="header-list-name">
@@ -143,7 +177,23 @@ const Header = () => {
                   className="bg-danger-dots dots"
                   data-testid="notification-dots"
                 >
-                  noti
+                  {
+                    isNotificationActive &&
+                    <ul className="dropdown-ui" ref={notificationRef}>
+                      <li className="dropdown-li">
+                        <Dropdown
+                          height={300}
+                          style={{ right: '250px', top: '20px' }}
+                          data={notifications}
+                          notificationCount={notificationCount}
+                          title="Notifications"
+                          onMarkAsRead={onMarkAsRead}
+                          onDeleteNotification={onDeleteNotification}
+                        ></Dropdown>
+                      </li>
+                    </ul>
+
+                  }
                 </span>
               </span>
               &nbsp;
@@ -152,8 +202,10 @@ const Header = () => {
               data-testid="message-list-item"
               className="header-nav-item active-item"
 
-              onClick={()=>{
+              onClick={() => {
                 setIsMessageActive(true)
+                setIsNotificationActive(false)
+                setIsSettingActive(false)
               }}
             >
               <span className="header-list-name">
@@ -166,21 +218,46 @@ const Header = () => {
               </span>
               &nbsp;
             </li>
-            <li data-testid="settings-list-item" className="header-nav-item">
+            <li data-testid="settings-list-item" className="header-nav-item"
+              onClick={() => {
+                setIsMessageActive(false)
+                setIsNotificationActive(false)
+                setIsSettingActive(true)
+              }}
+
+            >
               <span className="header-list-name profile-image">
                 <Avatar
-                  name="Danny"
-                  bgColor="red"
+                  name={profile.username}
+                  bgColor={profile.avatarColor}
                   textColor="#ffffff"
                   size={40}
                   avatarSrc=""
                 ></Avatar>
               </span>
               <span className="header-list-name profile-name">
-                Username
-                <FaCaretUp className="header-list-icon caret" />
-              </span>
+                {profile.username}
+                {isSettingActive ?
+                  <FaCaretDown className="header-list-icon caret" /> :
+                  <FaCaretUp className="header-list-icon caret" />}
 
+              </span>
+              {
+                isSettingActive && 
+                <ul className="dropdown-ul" ref={settingsRef}>
+                  <li className="dropdown-li">
+                    <Dropdown
+                      height={300}
+                      style={{ right: '150px', top: '40px' }}
+                      data={[]}
+                      notificationCount={0}
+                      title="Settings"
+                      onLogout={onLogout}
+                      onNavigate={() => { }}
+                    ></Dropdown>
+                  </li>
+                </ul>
+              }
               <ul className="dropdown-ul">
                 <li className="dropdown-li"></li>
               </ul>
