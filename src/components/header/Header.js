@@ -15,10 +15,14 @@ import { NotificationUtils } from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { sumBy } from "lodash";
+import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
+  const [isMesssageActive, setIsMessageActive] = useDetectOutsideClick(
+    messageRef, false
+  )
   const [messageCount, setMessageCount] = useState(0);
   const [messageNotifications, setMessageNotifications] = useState([]);
   // const { chatList } = useSelector((state) => state.chat);
@@ -26,13 +30,12 @@ const Header = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const dispatch = useDispatch();
   const location = useLocation();
-  const backgroundColor = `${
-    environment === "DEV" || environment === "LOCAL"
-      ? "#50b5ff"
-      : environment === "STG"
+  const backgroundColor = `${environment === "DEV" || environment === "LOCAL"
+    ? "#50b5ff"
+    : environment === "STG"
       ? "#e9710f"
       : ""
-  }`;
+    }`;
 
   // useEffect(() => {
   //   const env = Utils.appEnvironment();
@@ -92,12 +95,16 @@ const Header = () => {
     <>
       <div className="header-nav-wrapper" data-testid="header-wrapper">
         <div ref={messageRef}>
-          <MessageSidebar
-            profile={profile}
-            messageCount={messageCount}
-            messageNotifications={messageNotifications}
-            openChatPage={openChatPage}
-          />
+          {isMesssageActive &&
+          <div ref={messageRef}>
+            <MessageSidebar
+              profile={profile}
+              messageCount={messageCount}
+              messageNotifications={[]}
+              openChatPage={openChatPage}
+            />
+            </div>
+          }
         </div>
 
         <div className="header-navbar">
@@ -125,6 +132,9 @@ const Header = () => {
             <li
               data-testid="notification-list-item"
               className="header-nav-item active-item"
+              onClick={()=>{
+                setIsMessageActive(false)
+              }}
             >
               <span className="header-list-name">
                 <FaRegBell className="header-list-icon" />
@@ -141,6 +151,10 @@ const Header = () => {
             <li
               data-testid="message-list-item"
               className="header-nav-item active-item"
+
+              onClick={()=>{
+                setIsMessageActive(true)
+              }}
             >
               <span className="header-list-name">
                 <FaRegEnvelope className="header-list-icon" />
