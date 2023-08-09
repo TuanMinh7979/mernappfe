@@ -42,6 +42,15 @@ export class Utils {
     setLoggedin(false)
   }
 
+  static appEnvironment=()=>{
+    const env = process.env.REACT_APP_ENVIROMENT
+    if(env=='development'){
+      return 'DEV'
+    }else if(env=='production'){
+      return 'PRO'
+    }
+  }
+
 
 
 }

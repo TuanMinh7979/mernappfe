@@ -3,10 +3,17 @@ import logo from '@assets/images/logo.svg';
 import { FaCaretDown, FaCaretUp, FaRegBell, FaRegEnvelope } from 'react-icons/fa';
 
 import '@components/header/Header.scss';
-
-
+import Avatar from '@components/avatar/Avatar';
+import { Utils } from '@services/utils/utils.service';
 
 const Header = () => {
+    const [environment, setEnvironment] = useState('')
+    const backgroundColor = `${environment === 'DEV' || environment === 'LOCAL' ? '#50b5ff' : environment === 'STG' ? '#e9710f' : ''}`;
+    useEffect(() => {
+        const env = Utils.appEnvironment();
+        setEnvironment(env);
+
+    }, []);
 
     return (
         <>
@@ -17,9 +24,15 @@ const Header = () => {
                         <img src={logo} className="img-fluid" alt="" />
                         <div className="app-name">
                             Chatty
-                            <span className="environment">
-                                DEV
-                            </span>
+                            {environment &&
+                                <span className="environment"
+                                    style={{ backgroundColor: `${backgroundColor}` }}
+
+                                >
+                                    {environment}
+                                </span>
+                            }
+
                         </div>
                     </div>
                     <div className="header-menu-toggle">
@@ -36,13 +49,13 @@ const Header = () => {
                         >
                             <span className="header-list-name">
                                 <FaRegBell className="header-list-icon" />
-                           
-                                    <span className="bg-danger-dots dots" data-testid="notification-dots">
-                                        noti
-                                    </span>
-                              
+
+                                <span className="bg-danger-dots dots" data-testid="notification-dots">
+                                    noti
+                                </span>
+
                             </span>
-                        
+
                             &nbsp;
                         </li>
                         <li
@@ -63,7 +76,14 @@ const Header = () => {
 
                         >
                             <span className="header-list-name profile-image">
-                                avatar
+                                <Avatar name="Danny"
+                                    bgColor="red"
+                                    textColor="#ffffff"
+                                    size={40}
+                                    avatarSrc=""
+                                >
+
+                                </Avatar>
                             </span>
                             <span className="header-list-name profile-name">
                                 Username
