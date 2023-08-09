@@ -22,6 +22,8 @@ import useLocalStorage from "@hooks/useLocalStorage";
 import useSessionStorage from "@hooks/useSessionStorage";
 import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
+import useEffectOnce from "@hooks/useEffectOnce";
+import { ProfileUtils } from "@services/utils/profile-utils.service";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -48,7 +50,7 @@ const Header = () => {
       ? "#e9710f"
       : ""
     }`;
-    const [deleteStorageUsername] = useLocalStorage('username', 'delete');
+  const [deleteStorageUsername] = useLocalStorage('username', 'delete');
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const navigate = useNavigate()
 
@@ -71,6 +73,11 @@ const Header = () => {
   const onDeleteNotification = async (messageId) => {
 
   };
+
+  const [settings, setSettings] = useState('')
+  useEffectOnce(() => {
+    Utils.mapSettingsDropdownItems(setSettings);
+  });
   useEffect(() => {
     NotificationUtils.socketIONotification(
       profile,
@@ -140,7 +147,10 @@ const Header = () => {
         </div>
 
         <div className="header-navbar">
-          <div className="header-image" data-testid="header-image">
+          <div className="header-image" data-testid="header-image"
+          
+          onClick={()=>navigate('/app/social/streams')}
+          >
             <img src={logo} className="img-fluid" alt="" />
             <div className="app-name">
               Chatty
@@ -243,17 +253,19 @@ const Header = () => {
 
               </span>
               {
-                isSettingActive && 
+                isSettingActive &&
                 <ul className="dropdown-ul" ref={settingsRef}>
                   <li className="dropdown-li">
                     <Dropdown
                       height={300}
                       style={{ right: '150px', top: '40px' }}
-                      data={[]}
+                      data={settings}
                       notificationCount={0}
                       title="Settings"
                       onLogout={onLogout}
-                      onNavigate={() => { }}
+                      onNavigate={() => {
+                        ProfileUtils.navigateToProfile(profile, navigate)
+                      }}
                     ></Dropdown>
                   </li>
                 </ul>
