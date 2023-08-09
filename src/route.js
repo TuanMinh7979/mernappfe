@@ -2,6 +2,13 @@ import { useRoutes } from 'react-router-dom';
 import { AuthTabs, ForgotPassword, ResetPassword } from './pages/auth';
 import Streams from '@pages/social/streams/Streams';
 import Social from '@pages/social/Socical';
+import Follower from '@pages/social/follower/Follower';
+import Following from '@pages/social/following/Following';
+import Photos from '@pages/social/photos/Photos';
+import Profile from '@pages/social/profile/Profile';
+import Chat from '@pages/social/chat/Chat';
+import People from '@pages/social/people/People';
+import Notifications from '@pages/social/notifications/Notifications';
 const AppRouter = () => {
     const elements = useRoutes([
         {
@@ -16,7 +23,7 @@ const AppRouter = () => {
             path: '/reset-password',
             element: <ResetPassword />
         },
- 
+
         {
             path: "/app/social",
             element: <Social />,
@@ -24,7 +31,36 @@ const AppRouter = () => {
                 {
                     path: "streams",
                     element: <Streams></Streams>
-                }
+                },
+                {
+                    path: "chat/messages",
+                    element: <Chat></Chat>
+                },
+                {
+                    path: "people",
+                    element: <People></People>
+                },
+                {
+                    path: "followers",
+                    element: <Follower></Follower>
+                },
+                {
+                    path: "following",
+                    element: <Following></Following>
+                },
+                {
+                    path: "photos",
+                    element: <Photos></Photos>
+                },
+                {
+                    path: "notifications",
+                    element: <Notifications></Notifications>
+                },
+                {
+                    path: "profile/:username",
+                    element: <Profile></Profile>
+                },
+
             ]
 
         }

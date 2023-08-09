@@ -2,7 +2,11 @@ import { sideBarItems, fontAwesomeIcons } from "@services/utils/static.data";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation} from "react-router-dom";
 import "./Sidebar.scss";
+import { useSelector } from "react-redux";
+import { createSearchParams } from "react-router-dom";
 const Sidebar = () => {
+  const { profile } = useSelector((state) => state.user);
+
   const [sidebar, setSideBar] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,9 +18,9 @@ const Sidebar = () => {
     return location.pathname.includes(name.toLowerCase());
   };
   const navigateToPage = (name, url) => {
-    // if (name === 'Profile') {
-    //   url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id, uId: profile?.uId })}`;
-    // }
+    if (name === 'Profile') {
+      url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id, uId: profile?.uId })}`;
+    }
 
     // if (name === 'Streams') {
     //   dispatch(getPosts());

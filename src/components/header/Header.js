@@ -21,7 +21,7 @@ const Header = () => {
   const messageRef = useRef(null);
   const [messageCount, setMessageCount] = useState(0);
   const [messageNotifications, setMessageNotifications] = useState([]);
-  const { chatList } = useSelector((state) => state.chat);
+  // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const dispatch = useDispatch();
@@ -34,18 +34,18 @@ const Header = () => {
       : ""
   }`;
 
-  useEffect(() => {
-    const env = Utils.appEnvironment();
-    setEnvironment(env);
-    const count = sumBy(chatList, (notification) => {
-      return !notification.isRead &&
-        notification.receiverUsername === profile?.username
-        ? 1
-        : 0;
-    });
-    setMessageCount(count);
-    setMessageNotifications(chatList);
-  }, [chatList, profile]);
+  // useEffect(() => {
+  //   const env = Utils.appEnvironment();
+  //   setEnvironment(env);
+  //   const count = sumBy(chatList, (notification) => {
+  //     return !notification.isRead &&
+  //       notification.receiverUsername === profile?.username
+  //       ? 1
+  //       : 0;
+  //   });
+  //   setMessageCount(count);
+  //   setMessageNotifications(chatList);
+  // }, [chatList, profile]);
 
   useEffect(() => {
     NotificationUtils.socketIONotification(
