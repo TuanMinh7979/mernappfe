@@ -2,7 +2,7 @@
 import { FaArrowRight } from 'react-icons/fa';
 import Input from "@components/input/Input"
 import Button from "@components/button/Button"
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./Login.scss"
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -10,6 +10,7 @@ import { authService } from '@services/api/auth/auth.service';
 import { Utils } from '@services/utils/utils.service';
 import useSessionStorage from '@hooks/useSessionStorage';
 import { useDispatch } from 'react-redux';
+import useLocalStorage from '@hooks/useLocalStorage';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -20,11 +21,11 @@ const Login = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [alertType, setAlertType] = useState('')
     const [user, setUser] = useState('')
-    const navigate= useNavigate()
+    const navigate = useNavigate()
+    const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+    const dispatch = useDispatch();
 
-    const dispatch= useDispatch();
-
-    const [pageReload]= useSessionStorage('pageReload', 'set')
+    const [pageReload] = useSessionStorage('pageReload', 'set')
 
 
     const loginUser = async (event) => {
@@ -34,8 +35,9 @@ const Login = () => {
             const rs = await authService.signIn({
                 username, password
             })
-           
-            setKeepLoggedIn(keepLoggedIn)
+
+            // set to localStorage
+            setLoggedIn(keepLoggedIn);
             // * set logged in local storage
             // * set usename in local storage
             // * dispatch user to redux
@@ -43,7 +45,7 @@ const Login = () => {
             setUser(rs.data.user)
             setHasError(false);
             setAlertType('alert-success')
-            Utils.dispatchUser(rs, pageReload, dispatch,setUser)
+            Utils.dispatchUser(rs, pageReload, dispatch, setUser)
         } catch (error) {
             setLoading(false);
             setHasError(true);
@@ -56,8 +58,8 @@ const Login = () => {
     useEffect(() => {
         if (loading && !user) return;
         if (user) {
-           navigate('/app/social/streams')
-            
+            navigate('/app/social/streams')
+
         }
     }, [loading, user])
     return (

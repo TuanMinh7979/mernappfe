@@ -3,9 +3,23 @@ import React from 'react'
 import './AuthTabs.scss'
 import { useState } from 'react'
 import backgroundImage from "../../../assets/images/background.jpg"
-import {Login, Register} from "../index"
+import { Login, Register } from "../index"
+import { useNavigate } from 'react-router-dom'
+import useLocalStorage from '@hooks/useLocalStorage'
+import { useEffect } from 'react'
+import { Utils } from '@services/utils/utils.service'
 const AuthTabs = () => {
     const [type, setType] = useState('SignIn')
+    const keepLoggedIn = useLocalStorage('keepLoggedIn', 'get');
+    const [environment, setEnvironment] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+        const env = Utils.appEnvironment();
+        setEnvironment(env);
+        console.log("KEEEEEEEEEPLOGIN", keepLoggedIn);
+        if (keepLoggedIn) navigate('/app/social/streams');
+    }, [keepLoggedIn, navigate]);
+
     return (
         <div className="container-wrapper" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <div className="environment">DEV</div>

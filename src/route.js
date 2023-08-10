@@ -9,6 +9,7 @@ import Profile from '@pages/social/profile/Profile';
 import Chat from '@pages/social/chat/Chat';
 import People from '@pages/social/people/People';
 import Notifications from '@pages/social/notifications/Notifications';
+import ProtectedRoute from '@pages/ProtectedRoute';
 const AppRouter = () => {
     const elements = useRoutes([
         {
@@ -26,7 +27,10 @@ const AppRouter = () => {
 
         {
             path: "/app/social",
-            element: <Social />,
+            element:
+                <ProtectedRoute>
+                    <Social />
+                </ProtectedRoute>,
             children: [
                 {
                     path: "streams",

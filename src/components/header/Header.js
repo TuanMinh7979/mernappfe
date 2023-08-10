@@ -125,7 +125,7 @@ const Header = () => {
     try {
       setLoggedIn(false);
       Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
-      // await userService.logoutUser();
+      await userService.logoutUser();
        navigate('/');
     } catch (error) {
       console.log(error);
