@@ -18,30 +18,7 @@ const App = () => {
       backgroundColor: "green"
 
     },
-    {
-      id: 2,
-      description: "This is a error message",
-      type: 'error',
-      icon: errorIcon,
-      backgroundColor: "red"
-
-    },
-    {
-      id: 3,
-      description: "This is a info message",
-      type: 'info',
-      icon: infoIcon,
-      backgroundColor: "blue"
-
-    },
-    {
-      id: 4,
-      description: "This is a warn message",
-      type: 'warning',
-      icon: warningIcon,
-      backgroundColor: "orange"
-
-    },
+   
 
   ]
   useEffect(() => {
