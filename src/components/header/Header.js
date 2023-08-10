@@ -40,7 +40,7 @@ const Header = () => {
   const [messageNotifications, setMessageNotifications] = useState([]);
   // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
-  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+  
   const [notificationCount, setNotificationCount] = useState(0);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -51,6 +51,7 @@ const Header = () => {
       : ""
     }`;
   const [deleteStorageUsername] = useLocalStorage('username', 'delete');
+  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const navigate = useNavigate()
 
@@ -123,11 +124,12 @@ const Header = () => {
   const onLogout = async () => {
     try {
       setLoggedIn(false);
-      Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedIn });
-      await userService.logoutUser();
-      navigate('/');
+      Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
+      // await userService.logoutUser();
+       navigate('/');
     } catch (error) {
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      console.log(error);
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   };
   return (
@@ -238,15 +240,15 @@ const Header = () => {
             >
               <span className="header-list-name profile-image">
                 <Avatar
-                  name={profile.username}
-                  bgColor={profile.avatarColor}
+                  name={profile?.username}
+                  bgColor={profile?.avatarColor}
                   textColor="#ffffff"
                   size={40}
                   avatarSrc=""
                 ></Avatar>
               </span>
               <span className="header-list-name profile-name">
-                {profile.username}
+                {profile?.username}
                 {isSettingActive ?
                   <FaCaretDown className="header-list-icon caret" /> :
                   <FaCaretUp className="header-list-icon caret" />}
