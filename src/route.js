@@ -10,6 +10,7 @@ import Chat from '@pages/social/chat/Chat';
 import People from '@pages/social/people/People';
 import Notifications from '@pages/social/notifications/Notifications';
 import ProtectedRoute from '@pages/ProtectedRoute';
+import Error from '@pages/error/Error';
 const AppRouter = () => {
     const elements = useRoutes([
         {
@@ -67,6 +68,10 @@ const AppRouter = () => {
 
             ]
 
+        },
+        {
+            path: '*',
+            element: <Error />
         }
 
     ]);
