@@ -11,6 +11,8 @@ import People from '@pages/social/people/People';
 import Notifications from '@pages/social/notifications/Notifications';
 import ProtectedRoute from '@pages/ProtectedRoute';
 import Error from '@pages/error/Error';
+import { Suspense } from 'react';
+import StreamsSkeleton from '@pages/social/streams/StreamsSkeleton';
 const AppRouter = () => {
     const elements = useRoutes([
         {
@@ -35,7 +37,7 @@ const AppRouter = () => {
             children: [
                 {
                     path: "streams",
-                    element: <Streams></Streams>
+                    element: <Suspense fallback={StreamsSkeleton}><Streams></Streams></Suspense>
                 },
                 {
                     path: "chat/messages",

@@ -24,6 +24,7 @@ import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { ProfileUtils } from "@services/utils/profile-utils.service";
+import HeaderSkeleton from "./HeaderSkeleton";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -40,7 +41,7 @@ const Header = () => {
   const [messageNotifications, setMessageNotifications] = useState([]);
   // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
-  
+
   const [notificationCount, setNotificationCount] = useState(0);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -126,15 +127,16 @@ const Header = () => {
       setLoggedIn(false);
       Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
       await userService.logoutUser();
-       navigate('/');
+      navigate('/');
     } catch (error) {
       console.log(error);
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   };
   return (
+
     <>
-      <div className="header-nav-wrapper" data-testid="header-wrapper">
+      {!profile ? <HeaderSkeleton /> : <div className="header-nav-wrapper" data-testid="header-wrapper">
         <div ref={messageRef}>
           {isMesssageActive &&
             <div ref={messageRef}>
@@ -150,8 +152,8 @@ const Header = () => {
 
         <div className="header-navbar">
           <div className="header-image" data-testid="header-image"
-          
-          onClick={()=>navigate('/app/social/streams')}
+
+            onClick={() => navigate('/app/social/streams')}
           >
             <img src={logo} className="img-fluid" alt="" />
             <div className="app-name">
@@ -278,7 +280,8 @@ const Header = () => {
             </li>
           </ul>
         </div>
-      </div>
+      </div>}
+
     </>
   );
 };
