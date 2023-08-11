@@ -6,27 +6,50 @@ import { FaRegCircle } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { Utils } from "@services/utils/utils.service";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { notificationService } from "@services/api/notification/notification.service";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { timeAgo } from "@services/utils/time.ago.utils";
+import { NotificationUtils } from "@services/utils/notification-utils.service";
 const Notification = () => {
+  const { profile } = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();
   const getUserNotification = async () => {
     try {
+
       const rs = await notificationService.getUserNotifications()
       setNotifications(rs.data.notifications)
+      console.log("set to data", rs.data.notifications);
     } catch (error) {
-      console.log(error);
+
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
-  useEffectOnce(()=>{
+  useEffectOnce(() => {
+
     getUserNotification()
   })
+
+  const markAsRead = async (notification) => {
+    try {
+      await notificationService.markNotificationAsRead(notification._id)
+    } catch (error) {
+
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
+  useEffect(() => {
+    NotificationUtils.socketIONotification(
+      profile,
+      notifications,
+      setNotifications,
+      "notificationPage"
+    )
+  }, [notifications])
+
   return (
     <>
 
@@ -38,6 +61,7 @@ const Notification = () => {
               className="notification-box"
               data-testid="notification-box"
               key={notification?._id}
+              onClick={() => markAsRead(notification)}
 
             >
               <div className="notification-box-sub-card">

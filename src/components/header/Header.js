@@ -80,23 +80,6 @@ const Header = () => {
   useEffectOnce(() => {
     Utils.mapSettingsDropdownItems(setSettings);
   });
-  useEffect(() => {
-    NotificationUtils.socketIONotification(
-      profile,
-      notifications,
-      setNotifications,
-      "header",
-      setNotificationCount
-    );
-    NotificationUtils.socketIOMessageNotification(
-      profile,
-      messageNotifications,
-      setMessageNotifications,
-      setMessageCount,
-      dispatch,
-      location
-    );
-  }, [profile, notifications, dispatch, location, messageNotifications]);
 
   const openChatPage = async (notification) => {
     console.log("OPEN CHAT PAGE");
