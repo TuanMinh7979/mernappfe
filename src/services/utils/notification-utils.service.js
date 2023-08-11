@@ -51,7 +51,7 @@ export class NotificationUtils {
       let newNotifications = [...notifications].filter(item => item._id === notificationId)
       if (type === "notificationPage") {
         setNotifications(newNotifications);
-      }else {
+      } else {
         const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
         setNotifications(mappedNotifications);
       }
@@ -62,6 +62,22 @@ export class NotificationUtils {
 
   static async markMessageAsRead(messageId, notification, setNotificationDialogContent) {
 
+    if (notification.notificationType !== "follow") {
+      const notiDialog = {
+        createdAt: notification?.createdAt,
+        post: notification?.post,
+        imgUrl: notification?.imgId
+          ? Utils.appImageUrl(notification?.imgVersion, notification?.imgId)
+          : notification?.gifUrl
+            ? notification?.gifUrl
+            : notification?.imgUrl,
+        comment: notification?.comment,
+        reaction: notification?.reaction,
+        senderName: notification?.userFrom ? notification?.userFrom.username : notification?.username,
+
+      }
+      setNotificationDialogContent(notiDialog)
+    }
     await notificationService.markNotificationAsRead(messageId);
   }
 

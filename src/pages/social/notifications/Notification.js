@@ -43,7 +43,7 @@ const Notification = () => {
 
   const markAsRead = async (notification) => {
     try {
-      NotificationUtils.markMessageAsRead(notification._id)
+      NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
     } catch (error) {
 
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
@@ -73,7 +73,7 @@ const Notification = () => {
     <>
       {notificationDialogContent?.senderName &&
         <NotificationPreview
-          title="your post"
+          title="Your post"
           post={notificationDialogContent?.post}
           imgUrl={notificationDialogContent?.imgUrl}
           comment={notificationDialogContent?.comment}
