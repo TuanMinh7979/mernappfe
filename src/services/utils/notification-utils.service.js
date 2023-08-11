@@ -13,59 +13,34 @@ export class NotificationUtils {
     setNotificationsCount
   ) {
     socketService?.socket?.on("insert notification", (data, userToData) => {
+      // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
         notifications = [...data];
         if (type === "notificationPage") {
           setNotifications(notifications);
-        } else {
-          const mappedNotifications =
-            NotificationUtils.mapNotificationDropdownItems(
-              notifications,
-              setNotificationsCount
-            );
-          setNotifications(mappedNotifications);
         }
       }
     });
 
     socketService?.socket?.on("update notification", (notificationId) => {
-      notifications = cloneDeep(notifications);
-      const notificationData = find(
-        notifications,
-        (notification) => notification._id === notificationId
-      );
-      if (notificationData) {
-        const index = findIndex(
-          notifications,
-          (notification) => notification._id === notificationId
-        );
-        notificationData.read = true;
-        notifications.splice(index, 1, notificationData);
+      let newNotifications = [...notifications];
+      const updatedIdx =
+        newNotifications.findIndex(
+          (notification) => notification._id === notificationId)
+
+      if (updatedIdx) {
+        newNotifications[updatedIdx].read = true
         if (type === "notificationPage") {
-          setNotifications(notifications);
-        } else {
-          const mappedNotifications =
-            NotificationUtils.mapNotificationDropdownItems(
-              notifications,
-              setNotificationsCount
-            );
-          setNotifications(mappedNotifications);
+          setNotifications(newNotifications);
         }
       }
     });
 
     socketService?.socket?.on("delete notification", (notificationId) => {
-      notifications = cloneDeep(notifications);
-      remove(notifications, { _id: notificationId });
+
+      let newNotifications = [...notifications].filter(item => item._id === notificationId)
       if (type === "notificationPage") {
-        setNotifications(notifications);
-      } else {
-        const mappedNotifications =
-          NotificationUtils.mapNotificationDropdownItems(
-            notifications,
-            setNotificationsCount
-          );
-        setNotifications(mappedNotifications);
+        setNotifications(newNotifications);
       }
     });
   }
