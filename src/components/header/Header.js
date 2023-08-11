@@ -25,6 +25,9 @@ import { useNavigate } from "react-router-dom";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { ProfileUtils } from "@services/utils/profile-utils.service";
 import HeaderSkeleton from "./HeaderSkeleton";
+import { notificationService } from "@services/api/notification/notification.service";
+
+import NotificationPreview from "@components/dialog/NotificationPreview";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -41,8 +44,14 @@ const Header = () => {
   const [messageNotifications, setMessageNotifications] = useState([]);
   // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
-
   const [notificationCount, setNotificationCount] = useState(0);
+  const [notificationDialogContent, setNotificationDialogContent] = useState({
+    post: '',
+    imgUrl: '',
+    comment: '',
+    reaction: '',
+    senderName: ''
+  })
   const dispatch = useDispatch();
   const location = useLocation();
   const backgroundColor = `${environment === "DEV" || environment === "LOCAL"
@@ -56,30 +65,58 @@ const Header = () => {
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   const env = Utils.appEnvironment();
-  //   setEnvironment(env);
-  //   const count = sumBy(chatList, (notification) => {
-  //     return !notification.isRead &&
-  //       notification.receiverUsername === profile?.username
-  //       ? 1
-  //       : 0;
-  //   });
-  //   setMessageCount(count);
-  //   setMessageNotifications(chatList);
-  // }, [chatList, profile]);
+  const getUserNotification = async () => {
+    try {
+
+      const rs = await notificationService.getUserNotifications()
+      const mapNotis = NotificationUtils.mapNotificationDropdownItems(rs.data.notifications,
+        setNotificationCount
+      )
+      setNotifications(mapNotis)
+      console.log("set to data", rs.data.notifications);
+    } catch (error) {
+
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
+
+
   const onMarkAsRead = async (notification) => {
+    try {
+      NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
+    } catch (error) {
 
-  };
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
 
-  const onDeleteNotification = async (messageId) => {
+  const onDeleteNotification = async ( notificationId) => {
 
-  };
+    try {
+      const response = await notificationService.deleteNotification(notificationId);
+      Utils.dispatchNotification(response.data.message, 'success', dispatch);
+    } catch (error) {
+
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
 
   const [settings, setSettings] = useState('')
   useEffectOnce(() => {
+
     Utils.mapSettingsDropdownItems(setSettings);
+    getUserNotification()
   });
+
+  useEffect(() => {
+    NotificationUtils.socketIONotification(
+      profile,
+      notifications,
+      setNotifications,
+      "header",
+      setNotificationCount
+    )
+  }, [notifications, profile])
 
   const openChatPage = async (notification) => {
     console.log("OPEN CHAT PAGE");
@@ -116,154 +153,182 @@ const Header = () => {
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   };
+
+  console.log("-------------", notificationCount);
   return (
 
     <>
-      {!profile ? <HeaderSkeleton /> : <div className="header-nav-wrapper" data-testid="header-wrapper">
-        <div ref={messageRef}>
+      {!profile
+        ? <HeaderSkeleton /> :
+        <div className="header-nav-wrapper" data-testid="header-wrapper">
           {isMesssageActive &&
             <div ref={messageRef}>
-              <MessageSidebar
-                profile={profile}
-                messageCount={messageCount}
-                messageNotifications={[]}
-                openChatPage={openChatPage}
-              />
+              <div ref={messageRef}>
+                <MessageSidebar
+                  profile={profile}
+                  messageCount={messageCount}
+                  messageNotifications={[]}
+                  openChatPage={openChatPage}
+                />
+              </div>
             </div>
+
+
           }
-        </div>
 
-        <div className="header-navbar">
-          <div className="header-image" data-testid="header-image"
 
-            onClick={() => navigate('/app/social/streams')}
-          >
-            <img src={logo} className="img-fluid" alt="" />
-            <div className="app-name">
-              Chatty
-              {environment && (
-                <span
-                  className="environment"
-                  style={{ backgroundColor: `${backgroundColor}` }}
-                >
-                  {environment}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="header-menu-toggle">
-            <span className="bar"></span>
-            <span className="bar"></span>
-            <span className="bar"></span>
-          </div>
-          {/* header nav */}
-          <ul className="header-nav">
-            <li
-              data-testid="notification-list-item"
-              className="header-nav-item active-item"
-              onClick={() => {
-                setIsMessageActive(false)
-                setIsNotificationActive(true)
-                setIsSettingActive(false)
+          {notificationDialogContent?.senderName &&
+            <NotificationPreview
+              title="Your post"
+              post={notificationDialogContent?.post}
+              imgUrl={notificationDialogContent?.imgUrl}
+              comment={notificationDialogContent?.comment}
+              reaction={notificationDialogContent?.reaction}
+              senderName={notificationDialogContent?.senderName}
+              secondButtonText="Close"
+              secondBtnHandler={() => {
+                setNotificationDialogContent({
+                  post: '',
+                  imgUrl: '',
+                  comment: '',
+                  reaction: '',
+                  senderName: ''
+                })
               }}
+
+
+            />
+          }
+
+          <div className="header-navbar">
+            <div className="header-image" data-testid="header-image"
+
+              onClick={() => navigate('/app/social/streams')}
             >
-              <span className="header-list-name">
-                <FaRegBell className="header-list-icon" />
-
-                <span
-                  className="bg-danger-dots dots"
-                  data-testid="notification-dots"
-                >
-                  {
-                    isNotificationActive &&
-                    <ul className="dropdown-ui" ref={notificationRef}>
-                      <li className="dropdown-li">
-                        <Dropdown
-                          height={300}
-                          style={{ right: '250px', top: '20px' }}
-                          data={notifications}
-                          notificationCount={notificationCount}
-                          title="Notifications"
-                          onMarkAsRead={onMarkAsRead}
-                          onDeleteNotification={onDeleteNotification}
-                        ></Dropdown>
-                      </li>
-                    </ul>
-
+              <img src={logo} className="img-fluid" alt="" />
+              <div className="app-name">
+                Chatty
+                {environment && (
+                  <span
+                    className="environment"
+                    style={{ backgroundColor: `${backgroundColor}` }}
+                  >
+                    {environment}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="header-menu-toggle">
+              <span className="bar"></span>
+              <span className="bar"></span>
+              <span className="bar"></span>
+            </div>
+            {/* header nav */}
+            <ul className="header-nav">
+              <li
+                data-testid="notification-list-item"
+                className="header-nav-item active-item"
+                onClick={() => {
+                  setIsMessageActive(false);
+                  setIsNotificationActive(true);
+                  setIsSettingActive(false)
+                }}
+              >
+                <span className="header-list-name">
+                  <FaRegBell className="header-list-icon" />
+                  {notificationCount > 0 && (
+                    <span className="bg-danger-dots dots" data-testid="notification-dots">
+                      {notificationCount}
+                    </span>
+                  )
                   }
                 </span>
-              </span>
-              &nbsp;
-            </li>
-            <li
-              data-testid="message-list-item"
-              className="header-nav-item active-item"
+                {isNotificationActive && (
+                  <ul className="dropdown-ul" ref={notificationRef}>
+                    <li className="dropdown-li">
+                      <Dropdown
+                        height={300}
+                        style={{ right: '250px', top: '20px' }}
+                        data={notifications}
+                        notificationCount={notificationCount}
+                        title="Notifications"
+                        onMarkAsRead={onMarkAsRead}
+                        onDeleteNotification={onDeleteNotification}
+                      />
+                    </li>
+                  </ul>
+                )}
+                &nbsp;
+              </li>
+              <li
+                data-testid="message-list-item"
+                className="header-nav-item active-item"
 
-              onClick={() => {
-                setIsMessageActive(true)
-                setIsNotificationActive(false)
-                setIsSettingActive(false)
-              }}
-            >
-              <span className="header-list-name">
-                <FaRegEnvelope className="header-list-icon" />
+                onClick={() => {
+                  setIsMessageActive(true)
+                  setIsNotificationActive(false)
+                  setIsSettingActive(false)
+                }}
+              >
+                <span className="header-list-name">
+                  <FaRegEnvelope className="header-list-icon" />
 
-                <span
-                  className="bg-danger-dots dots"
-                  data-testid="messages-dots"
-                ></span>
-              </span>
-              &nbsp;
-            </li>
-            <li data-testid="settings-list-item" className="header-nav-item"
-              onClick={() => {
-                setIsMessageActive(false)
-                setIsNotificationActive(false)
-                setIsSettingActive(true)
-              }}
+                  <span
+                    className="bg-danger-dots dots"
+                    data-testid="messages-dots"
+                  ></span>
+                </span>
+                &nbsp;
+              </li>
+              <li data-testid="settings-list-item" className="header-nav-item"
+                onClick={() => {
+                  setIsMessageActive(false)
+                  setIsNotificationActive(false)
+                  setIsSettingActive(true)
+                }}
 
-            >
-              <span className="header-list-name profile-image">
-                <Avatar
-                  name={profile?.username}
-                  bgColor={profile?.avatarColor}
-                  textColor="#ffffff"
-                  size={40}
-                  avatarSrc=""
-                ></Avatar>
-              </span>
-              <span className="header-list-name profile-name">
-                {profile?.username}
-                {isSettingActive ?
-                  <FaCaretDown className="header-list-icon caret" /> :
-                  <FaCaretUp className="header-list-icon caret" />}
+              >
+                <span className="header-list-name profile-image">
+                  <Avatar
+                    name={profile?.username}
+                    bgColor={profile?.avatarColor}
+                    textColor="#ffffff"
+                    size={40}
+                    avatarSrc=""
+                  ></Avatar>
+                </span>
+                <span className="header-list-name profile-name">
+                  {profile?.username}
+                  {isSettingActive ?
+                    <FaCaretDown className="header-list-icon caret" /> :
+                    <FaCaretUp className="header-list-icon caret" />}
 
-              </span>
-              {
-                isSettingActive &&
-                <ul className="dropdown-ul" ref={settingsRef}>
-                  <li className="dropdown-li">
-                    <Dropdown
-                      height={300}
-                      style={{ right: '150px', top: '40px' }}
-                      data={settings}
-                      notificationCount={0}
-                      title="Settings"
-                      onLogout={onLogout}
-                      onNavigate={() => {
-                        ProfileUtils.navigateToProfile(profile, navigate)
-                      }}
-                    ></Dropdown>
-                  </li>
+                </span>
+                {
+                  isSettingActive &&
+                  <ul className="dropdown-ul" ref={settingsRef}>
+                    <li className="dropdown-li">
+                      <Dropdown
+                        height={300}
+                        style={{ right: '150px', top: '40px' }}
+                        data={settings}
+                        notificationCount={0}
+                        title="Settings"
+                        onLogout={onLogout}
+                        onNavigate={() => {
+                          ProfileUtils.navigateToProfile(profile, navigate)
+                        }}
+                      ></Dropdown>
+                    </li>
+                  </ul>
+                }
+                <ul className="dropdown-ul">
+                  <li className="dropdown-li"></li>
                 </ul>
-              }
-              <ul className="dropdown-ul">
-                <li className="dropdown-li"></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>}
+              </li>
+            </ul>
+          </div>
+        </div>}
 
     </>
   );

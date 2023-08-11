@@ -21,11 +21,11 @@ export class NotificationUtils {
         notifications = [...data];
         if (type === "notificationPage") {
           setNotifications(notifications);
+        }else {
+          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+          setNotifications(mappedNotifications);
         }
-      } else {
-        const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
-        setNotifications(mappedNotifications);
-      }
+      } 
     });
 
     socketService?.socket?.on("update notification", (notificationId) => {
@@ -109,12 +109,13 @@ export class NotificationUtils {
     }
 
     const readItemCnt = items.reduce((sum, item) => {
-      if (item.read === true) {
+      if (item.read === false) {
         return sum + 1;
       } else {
         return sum;
       }
     }, 0);
+
 
     setNotificationsCount(readItemCnt)
     return items
