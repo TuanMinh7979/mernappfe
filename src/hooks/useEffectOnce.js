@@ -11,3 +11,4 @@ const useEffectOnce = (callback) => {
   }, [callback]);
 };
 export default useEffectOnce;
+ 

@@ -17,7 +17,7 @@ const Social = lazy(() => import('@pages/social/Socical'));
 const Chat = lazy(() => import('@pages/social/chat/Chat'));
 const Follower = lazy(() => import('@pages/social/follower/Follower'));
 const Following = lazy(() => import('@pages/social/following/Following'));
-const Notifications = lazy(() => import('@pages/social/notifications/Notifications'));
+const Notifications = lazy(() => import('@pages/social/notifications/Notification'));
 const People = lazy(() => import('@pages/social/people/People'));
 const Photos = lazy(() => import('@pages/social/photos/Photos'));
 
