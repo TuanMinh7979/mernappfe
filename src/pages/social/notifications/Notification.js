@@ -41,6 +41,17 @@ const Notification = () => {
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   }
+
+  const deleteNotification = async (event, notificationId) => {
+    event.stopPropagation()
+    try {
+      const response = await notificationService.deleteNotification(notificationId);
+      Utils.dispatchNotification(response.data.message, 'success', dispatch);
+    } catch (error) {
+
+      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
   useEffect(() => {
     NotificationUtils.socketIONotification(
       profile,
@@ -48,7 +59,7 @@ const Notification = () => {
       setNotifications,
       "notificationPage"
     )
-  }, [notifications])
+  }, [notifications, profile])
 
   return (
     <>
@@ -81,7 +92,7 @@ const Notification = () => {
                       <small
                         data-testid="subtitle"
                         className="subtitle"
-
+                        onClick={(event) => deleteNotification(event, notification._id)}
                       >
                         <FaRegTrashAlt className="trash" />
                       </small>
