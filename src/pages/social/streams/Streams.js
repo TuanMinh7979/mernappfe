@@ -9,6 +9,7 @@ import useEffectOnce from "@hooks/useEffectOnce";
 import { useDispatch } from "react-redux";
 import { getUserSuggestions } from "@root/redux/api/suggestion";
 import { useEffect } from "react";
+import PostForm from "@components/posts/post-form/PostForm";
 const Streams = () => {
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
@@ -17,19 +18,11 @@ const Streams = () => {
     dispatch(getUserSuggestions());
   });
 
-
-
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">
         <div className="streams-post" ref={bodyRef}>
-          {/* <PostForm /> */}
-          {/* <Posts
-            allPosts={posts}
-            postsLoading={loading}
-            userFollowing={following}
-          />  */}
-
+          <PostForm />
           <div
             ref={bottomLineRef}
             style={{ marginBottom: "50px", height: "50px" }}
