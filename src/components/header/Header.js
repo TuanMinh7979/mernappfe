@@ -28,6 +28,7 @@ import HeaderSkeleton from "./HeaderSkeleton";
 import { notificationService } from "@services/api/notification/notification.service";
 
 import NotificationPreview from "@components/dialog/NotificationPreview";
+import { socketService } from "@services/socket/socket.service";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -64,23 +65,20 @@ const Header = () => {
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const navigate = useNavigate()
-
+  const storedUsername = useLocalStorage("username", "get")
   const getUserNotification = async () => {
     try {
-
       const rs = await notificationService.getUserNotifications()
       const mapNotis = NotificationUtils.mapNotificationDropdownItems(rs.data.notifications,
         setNotificationCount
       )
       setNotifications(mapNotis)
+      socketService?.socket.emit('setup', { userId: storedUsername })
       console.log("set to data", rs.data.notifications);
     } catch (error) {
-
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   }
-
-
   const onMarkAsRead = async (notification) => {
     try {
       NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
@@ -90,20 +88,18 @@ const Header = () => {
     }
   }
 
-  const onDeleteNotification = async ( notificationId) => {
+  const onDeleteNotification = async (notificationId) => {
 
     try {
       const response = await notificationService.deleteNotification(notificationId);
       Utils.dispatchNotification(response.data.message, 'success', dispatch);
     } catch (error) {
-
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
   const [settings, setSettings] = useState('')
   useEffectOnce(() => {
-
     Utils.mapSettingsDropdownItems(setSettings);
     getUserNotification()
   });

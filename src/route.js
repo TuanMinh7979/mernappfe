@@ -13,6 +13,7 @@ import ProtectedRoute from '@pages/ProtectedRoute';
 import Error from '@pages/error/Error';
 import { Suspense, lazy } from 'react';
 import StreamsSkeleton from '@pages/social/streams/StreamsSkeleton';
+import NotificationSkeleton from '@pages/social/notifications/NotificationsSkeleon';
 const Social = lazy(() => import('@pages/social/Socical'));
 const Chat = lazy(() => import('@pages/social/chat/Chat'));
 const Follower = lazy(() => import('@pages/social/follower/Follower'));
@@ -48,7 +49,7 @@ const AppRouter = () => {
             children: [
                 {
                     path: "streams",
-                    element: <Suspense fallback={StreamsSkeleton}><Streams></Streams></Suspense>
+                    element: <Suspense fallback={<StreamsSkeleton/>}><Streams></Streams></Suspense>
                 },
                 {
                     path: "chat/messages",
@@ -72,7 +73,7 @@ const AppRouter = () => {
                 },
                 {
                     path: "notifications",
-                    element: <Suspense><Notifications></Notifications></Suspense>
+                    element: <Suspense fallback={<NotificationSkeleton/>}><Notifications></Notifications></Suspense>
                 },
                 {
                     path: "profile/:username",
