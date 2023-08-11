@@ -3,7 +3,7 @@ import { notificationService } from "@services/api/notification/notification.ser
 import { socketService } from "@services/socket/socket.service";
 import { Utils } from "@services/utils/utils.service";
 import { cloneDeep, find, findIndex, remove, sumBy } from "lodash";
-
+import { timeAgo } from "./time.ago.utils";
 
 export class NotificationUtils {
   static socketIONotification(
@@ -22,6 +22,9 @@ export class NotificationUtils {
         if (type === "notificationPage") {
           setNotifications(notifications);
         }
+      } else {
+        const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+        setNotifications(mappedNotifications);
       }
     });
 
@@ -36,6 +39,9 @@ export class NotificationUtils {
         newNotifications[updatedIdx].read = true
         if (type === "notificationPage") {
           setNotifications(newNotifications);
+        } else {
+          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+          setNotifications(mappedNotifications);
         }
       }
     });
@@ -45,10 +51,62 @@ export class NotificationUtils {
       let newNotifications = [...notifications].filter(item => item._id === notificationId)
       if (type === "notificationPage") {
         setNotifications(newNotifications);
+      }else {
+        const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+        setNotifications(mappedNotifications);
       }
     });
   }
 
+
+
+  static async markMessageAsRead(messageId, notification, setNotificationDialogContent) {
+
+    await notificationService.markNotificationAsRead(messageId);
+  }
+
+
+  static mapNotificationDropdownItems(notificationData, setNotificationsCount) {
+    const items = [];
+    for (const notification of notificationData) {
+      const item = {
+        _id: notification?._id,
+        topText: notification?.topText ? notification?.topText : notification?.message,
+        subText: timeAgo.transform(notification?.createdAt),
+        createdAt: notification?.createdAt,
+        username: notification?.userFrom ? notification?.userFrom.username : notification?.username,
+        avatarColor: notification?.userFrom ? notification?.userFrom.avatarColor : notification?.avatarColor,
+        profilePicture: notification?.userFrom ? notification?.userFrom.profilePicture : notification?.profilePicture,
+        read: notification?.read,
+        post: notification?.post,
+        imgUrl: notification?.imgId
+          ? Utils.appImageUrl(notification?.imgVersion, notification?.imgId)
+          : notification?.gifUrl
+            ? notification?.gifUrl
+            : notification?.imgUrl,
+        comment: notification?.comment,
+        reaction: notification?.reaction,
+        senderName: notification?.userFrom ? notification?.userFrom.username : notification?.username,
+        notificationType: notification?.notificationType
+      };
+      items.push(item);
+    }
+
+    const readItemCnt = items.reduce((sum, item) => {
+      if (item.read === true) {
+        return sum + 1;
+      } else {
+        return sum;
+      }
+    }, 0);
+
+    setNotificationsCount(readItemCnt)
+    return items
+
+
+
+
+  }
 
 
 

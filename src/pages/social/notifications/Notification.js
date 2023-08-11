@@ -11,11 +11,19 @@ import { notificationService } from "@services/api/notification/notification.ser
 import useEffectOnce from "@hooks/useEffectOnce";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import { NotificationUtils } from "@services/utils/notification-utils.service";
+import NotificationPreview from "@components/dialog/NotificationPreview";
 const Notification = () => {
   const { profile } = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();
+  const [notificationDialogContent, setNotificationDialogContent] = useState({
+    post: '',
+    imgUrl: '',
+    comment: '',
+    reaction: '',
+    senderName: ''
+  })
   const getUserNotification = async () => {
     try {
 
@@ -35,7 +43,7 @@ const Notification = () => {
 
   const markAsRead = async (notification) => {
     try {
-      await notificationService.markNotificationAsRead(notification._id)
+      NotificationUtils.markMessageAsRead(notification._id)
     } catch (error) {
 
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
@@ -63,7 +71,28 @@ const Notification = () => {
 
   return (
     <>
+      {notificationDialogContent?.senderName &&
+        <NotificationPreview
+          title="your post"
+          post={notificationDialogContent?.post}
+          imgUrl={notificationDialogContent?.imgUrl}
+          comment={notificationDialogContent?.comment}
+          reaction={notificationDialogContent?.reaction}
+          senderName={notificationDialogContent?.senderName}
+          secondButtonText="Close"
+          secondBtnHandler={() => {
+            setNotificationDialogContent({
+              post: '',
+              imgUrl: '',
+              comment: '',
+              reaction: '',
+              senderName: ''
+            })
+          }}
 
+
+        />
+      }
       <div className="notifications-container">
         <div className="notifications">Notifications</div>
         {notifications.length > 0 && <div className="notifications-box">
@@ -115,10 +144,6 @@ const Notification = () => {
         {!loading && !notifications.length && <h3 className="empty-page" data-testid="empty-page">
           You have no notifications
         </h3>}
-
-
-
-
       </div>
     </>
   );

@@ -56,13 +56,13 @@ export class Utils {
   static dispatchNotification(message, type, dispatch) {
     dispatch(addNotification({ message, type }));
   }
-  static dispatchClearNotification(dispatch){
+  static dispatchClearNotification(dispatch) {
     dispatch(clearNotification())
   }
   static mapSettingsDropdownItems(setSettings) {
     const items = [];
     const item = {
-      topText: 'My Profile', 
+      topText: 'My Profile',
       subText: 'View personal profile.'
     };
     items.push(item);
@@ -78,5 +78,14 @@ export class Utils {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+  }
+
+
+  static appImageUrl(version, id) {
+    if (typeof version === 'string' && typeof id === 'string') {
+      version = version.replace(/['"]+/g, '');
+      id = id.replace(/['"]+/g, '');
+    }
+    return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
   }
 }
