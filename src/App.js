@@ -4,23 +4,14 @@ import { useEffect } from 'react';
 import './App.scss'
 import { socketService } from '@services/socket/socket.service';
 import Toast from '@components/toast/Toast';
-import checkIcon from '@assets/images/check.svg'
-import errorIcon from '@assets/images/error.svg'
-import infoIcon from '@assets/images/info.svg'
-import warningIcon from '@assets/images/warning.svg'
-const App = () => {
-  const notifications = [
-    {
-      id: 1,
-      description: "This is a success message",
-      type: 'success',
-      icon: checkIcon,
-      backgroundColor: "green"
 
-    },
+import { useSelector } from 'react-redux';
+const App = () => {
+  const { notifications } = useSelector((state) => state);
+
    
 
-  ]
+  
   useEffect(() => {
     socketService.setupSocketConnection()
   }, [])

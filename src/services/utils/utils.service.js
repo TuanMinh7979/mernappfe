@@ -1,7 +1,7 @@
 import { addUser, clearUser } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
-import { addNotification } from "@root/redux/reducers/notifications/notification.reducer";
+import { addNotification, clearNotification } from "@root/redux/reducers/notifications/notification.reducer";
 export class Utils {
   static avatarColor() {
     return avatarColors[floor(random(0.9) * avatarColors.length)];
@@ -56,10 +56,13 @@ export class Utils {
   static dispatchNotification(message, type, dispatch) {
     dispatch(addNotification({ message, type }));
   }
+  static dispatchClearNotification(dispatch){
+    dispatch(clearNotification())
+  }
   static mapSettingsDropdownItems(setSettings) {
     const items = [];
     const item = {
-      topText: 'My Profile',
+      topText: 'My Profile', 
       subText: 'View personal profile.'
     };
     items.push(item);
