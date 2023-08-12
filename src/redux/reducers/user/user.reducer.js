@@ -9,17 +9,17 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        addUser: (state, action) => {
+        updLoggedUser: (state, action) => {
             const { token, profile } = action.payload;
             state.token = token;
             state.profile = profile;
         },
 
-        clearUser:(state)=>{
+        emptyLoggedUser:(state)=>{
             state.token= '';
             state.profile=null
         },
-        updateUserProfile:(state, action)=>{
+        updLoggedUserProfile:(state, action)=>{
         
             state.profile=action.payload.profile
         }
@@ -27,5 +27,5 @@ const userSlice = createSlice({
     }
 });
 
-export const { addUser,clearUser, updateUserProfile} = userSlice.actions;
+export const { updLoggedUser,emptyLoggedUser, updLoggedUserProfile} = userSlice.actions;
 export default userSlice.reducer;

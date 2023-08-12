@@ -1,0 +1,28 @@
+// *RULE reducer function naming: 
+// update all list : updListName
+// update a element of List : updListNameEle
+//  remove all list: removeListName
+//  remove list element: removeListNameEle
+//  add element to list: updListNameNewEle
+
+
+// update all object : updObjectName
+// update a key of Object : updObjectNameKeyName
+//  empty object: emptyObjectName
+//  empty object key: emptyObjectNameKey
+
+
+
+//3.Object have a List key:(as a list above them tien to objectname la duoc)
+// update all object.list: updObjecNameListName
+// remove all object.list: removeObjecNameListName
+// add to object.list : updObjectNameKeyNameNewEle
+// update to object.list ele : updObjectNameKeyNameEle
+// remove object.list ele : removeObjectNameKeyNameEle
+
+
+// ASYNC REDUCER:
+
+// tat ca truong hop  them "fetch" phia truoc la xong
+
+// *RULE

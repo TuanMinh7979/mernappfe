@@ -1,7 +1,7 @@
 import useEffectOnce from '@hooks/useEffectOnce';
 import useLocalStorage from '@hooks/useLocalStorage';
 import useSessionStorage from '@hooks/useSessionStorage';
-import { addUser } from '@redux/reducers/user/user.reducer';
+import { updLoggedUser } from '@redux/reducers/user/user.reducer';
 import { userService } from '@services/api/user/user.service';
 import { Utils } from '@services/utils/utils.service';
 import { useCallback, useState } from 'react';
@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
 
       setUserData(response.data.user);
       setTokenIsValid(true);
-      dispatch(addUser({ token: response.data.token, profile: response.data.user }));
+      dispatch(updLoggedUser({ token: response.data.token, profile: response.data.user }));
     } catch (error) {
       setTokenIsValid(false);
       setTimeout(async () => {

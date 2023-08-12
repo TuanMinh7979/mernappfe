@@ -7,7 +7,7 @@ import Suggestions from "@components/suggestions/Suggestions";
 import { useRef } from "react";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { useDispatch } from "react-redux";
-import { getUserSuggestions } from "@root/redux/api/suggestion";
+import { fetchUpdSugUsers } from "@root/redux/api/suggestion";
 import { useEffect } from "react";
 import PostForm from "@components/posts/post-form/PostForm";
 const Streams = () => {
@@ -15,7 +15,7 @@ const Streams = () => {
   const bottomLineRef = useRef();
   const dispatch = useDispatch();
   useEffectOnce(() => {
-    dispatch(getUserSuggestions());
+    dispatch(fetchUpdSugUsers());
   });
 
   return (

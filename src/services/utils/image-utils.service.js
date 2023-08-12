@@ -1,4 +1,4 @@
-import { updatePostItem } from "@redux/reducers/post/post.reducer";
+import { updPostKey } from "@redux/reducers/post/post.reducer";
 
 export class ImageUtils {
     // valid file type
@@ -32,7 +32,7 @@ export class ImageUtils {
         // ! TO STATE:
         setSelectedPostImage(file)
         // ! TO REDUX:
-        dispatch(updatePostItem({
+        dispatch(updPostKey({
             image: URL.createObjectURL(file),
             gifUrl: '',
             imgId: '',

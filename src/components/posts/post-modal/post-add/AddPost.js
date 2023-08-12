@@ -11,11 +11,11 @@ import Button from '@components/button/Button'
 import { PostUtils } from '@services/utils/post-utils.service'
 import { useRef } from 'react'
 import { closeModal } from '@redux/reducers/modal/modal.reducer'
-import { clearPost } from '@redux/reducers/post/post.reducer'
+import { emptyPost } from '@redux/reducers/post/post.reducer'
 import AddPostBottomSelection from '../modal-box-content/AddPostBottomSelection'
 const AddPost = () => {
     const dispatch = useDispatch()
-    const { gifModalIsOpen } = useSelector(state => state.modal)
+    const { isGifModalOpen } = useSelector(state => state.modal)
     const { gifUrl, image, privacy, video } = useSelector((state) => state.post);
     //  Form post image state
     const [postImage, setPostImage] = useState('');
@@ -83,13 +83,13 @@ const AddPost = () => {
 
     const closePostModal = () => {
         dispatch(closeModal())
-        dispatch(clearPost())
+        dispatch(emptyPost())
     }
 
     return (
         <PostWrapper>
             <div></div>
-            {!gifModalIsOpen &&
+            {!isGifModalOpen &&
                 <div className='modal-box'>
                     {loading && <div className='modal-box-loading'
                         data-testid='modal-box-loading'
@@ -205,7 +205,7 @@ const AddPost = () => {
                 </div>
 
             }
-            {gifModalIsOpen && <div>GIF</div>
+            {isGifModalOpen && <div>GIF</div>
 
             }
 

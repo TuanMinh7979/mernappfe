@@ -1,4 +1,4 @@
-import { addUser } from '@redux/reducers/user/user.reducer';
+import { updLoggedUser } from '@redux/reducers/user/user.reducer';
 import { followerService } from '@services/api/follow/follow.service';
 
 import { Utils } from '@services/utils/utils.service';

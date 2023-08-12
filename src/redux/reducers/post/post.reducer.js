@@ -1,4 +1,4 @@
-import { getUserSuggestions } from '@redux/api/suggestion';
+import { fetchUpdSugUsers } from '@redux/api/suggestion';
 import { createSlice } from '@reduxjs/toolkit';
 import { emptyPostData } from '@services/utils/static.data';
 
@@ -7,12 +7,12 @@ const postSlice = createSlice({
     name: 'post',
     initialState,
     reducers: {
-        updatePostItem: (state, action) => {
+        updPostKey: (state, action) => {
             for (const [key, value] of Object.entries(action.payload)) {
                 state[key] = value
             }
         },
-        clearPost: () => {
+        emptyPost: () => {
             return emptyPostData
         }
 
@@ -20,5 +20,5 @@ const postSlice = createSlice({
 
 });
 
-export const { updatePostItem, clearPost } = postSlice.actions;
+export const { updPostKey, emptyPost } = postSlice.actions;
 export default postSlice.reducer;

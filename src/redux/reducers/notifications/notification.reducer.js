@@ -4,7 +4,8 @@ import checkIcon from '@assets/images/check.svg'
 import errorIcon from '@assets/images/error.svg'
 import infoIcon from '@assets/images/info.svg'
 import warningIcon from '@assets/images/warning.svg'
-import { cloneDeep, uniqBy } from "lodash";
+import { uniqBy } from "lodash";
+
 
 const initialState = [];
 
@@ -19,7 +20,7 @@ const notificationSlice = createSlice({
   name: "notifications",
   initialState,
   reducers: {
-    addNotification: (state, action) => {
+    updNotificationsNewEle: (state, action) => {
       const { message, type } = action.payload;
       const toastIconObject = toastIcons.find((item) => item[type]);
       console.log(toastIconObject);
@@ -30,20 +31,19 @@ const notificationSlice = createSlice({
         icon: toastIconObject[type], // checkIcon || errorIcon ||...
         backgroundColor: toastIconObject.color,
       };
-  
+
       //   them vao dau list
-      let newList=[...state]
+      let newList = [...state]
       newList.unshift(toastItem);
       newList = [...uniqBy(newList, "description")];
       return newList;
     },
-    clearNotification: () => {
-      
+    removeNotifications: () => {
       return [];
     },
   },
 });
 
-export const { addNotification, clearNotification } =
+export const { updNotificationsNewEle, removeNotifications } =
   notificationSlice.actions;
 export default notificationSlice.reducer;

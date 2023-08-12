@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux'
 import { feelingsList } from '@services/utils/static.data'
 import "./Feelings.scss"
 import { useDispatch } from 'react-redux'
-import { addPostFeeling, toggleFeelingModal } from '@redux/reducers/modal/modal.reducer'
+import { updModalFeeling, updModalIsFeelingOpen } from '@redux/reducers/modal/modal.reducer'
 const Feelings = () => {
-    const { feelingsIsOpen } = useSelector((state) => state.modal)
+    const { isFeelingOpen } = useSelector((state) => state.modal)
     const dispatch = useDispatch();
 
     const selectFeeling = (feeling) => {
         // ! TO REDUX 
-        dispatch(addPostFeeling({ feeling }));
-        dispatch(toggleFeelingModal(!feelingsIsOpen));
+        dispatch(updModalFeeling({ feeling }));
+        dispatch(updModalIsFeelingOpen(!isFeelingOpen));
     };
 
     return (

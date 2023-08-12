@@ -7,12 +7,12 @@ const initialState = {
     feeling: '',
     image: '',
     data: null,
-    feelingsIsOpen: false,
-    openFileDialog: false,
-    gifModalIsOpen: false,
-    reactionsModalIsOpen: false,
-    commentsModalIsOpen: false,
-    deleteDialogIsOpen: false
+    isFeelingOpen: false,
+    isFileDialogOpen: false,
+    isGifModalOpen: false,
+    isReactionsModalOpen: false,
+    isCommentsModalOpen: false,
+    isDeleteDialogOpen: false
 
 }
 
@@ -35,38 +35,38 @@ const modalSlice = createSlice({
             state.feeling = '';
             state.image = '';
             state.data = null;
-            state.feelingsIsOpen = false;
-            state.gifModalIsOpen = false;
-            state.reactionsModalIsOpen = false;
-            state.commentsModalIsOpen = false;
-            state.openFileDialog = false;
+            state.isFeelingOpen = false;
+            state.isGifModalOpen = false;
+            state.isReactionsModalOpen = false;
+            state.isCommentsModalOpen = false;
+            state.isFileDialogOpen = false;
           
-            state.deleteDialogIsOpen = false;
+            state.isDeleteDialogOpen = false;
         },
-        addPostFeeling: (state, action) => {
-            console.log("-------add");
+        updModalFeeling: (state, action) => {
+          
             const { feeling } = action.payload;
             state.feeling = feeling;
         },
-        toggleImageModal: (state, action) => {
-            state.openFileDialog = action.payload;
+        updModalIsFileDialogOpen: (state, action) => {
+            state.isFileDialogOpen = action.payload;
         },
 
-        toggleFeelingModal: (state, action) => {
-            state.feelingsIsOpen = action.payload;
+        updModalIsFeelingOpen: (state, action) => {
+            state.isFeelingOpen = action.payload;
         },
-        toggleGifModal: (state, action) => {
-            state.gifModalIsOpen = action.payload;
+        updModalIsGifModalOpen: (state, action) => {
+            state.isGifModalOpen = action.payload;
         },
-        toggleReactionsModal: (state, action) => {
-            state.reactionsModalIsOpen = action.payload;
+        updIsReactionsModalOpen: (state, action) => {
+            state.isReactionsModalOpen = action.payload;
         },
-        toggleCommentsModal: (state, action) => {
-            state.commentsModalIsOpen = action.payload;
+        updModalIsCommentsModalOpen: (state, action) => {
+            state.isCommentsModalOpen = action.payload;
         },
-        toggleDeleteDialog: (state, action) => {
+        updModalIsDeleteDialogOpen: (state, action) => {
             const { data, toggle } = action.payload;
-            state.deleteDialogIsOpen = toggle;
+            state.isDeleteDialogOpen = toggle;
             state.data = data;
         }
     }
@@ -76,13 +76,13 @@ const modalSlice = createSlice({
 export const {
     openModal,
     closeModal,
-    addPostFeeling,
-    toggleImageModal,
+    updModalFeeling,
+    updModalIsFileDialogOpen,
 
-    toggleFeelingModal,
-    toggleGifModal,
-    toggleReactionsModal,
-    toggleCommentsModal,
-    toggleDeleteDialog
+    updModalIsFeelingOpen,
+    updModalIsGifModalOpen,
+    updIsReactionsModalOpen,
+    updModalIsCommentsModalOpen,
+    updModalIsDeleteDialogOpen
 } = modalSlice.actions;
 export default modalSlice.reducer;
