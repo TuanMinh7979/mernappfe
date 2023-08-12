@@ -5,7 +5,7 @@ import { updatePostItem } from '@redux/reducers/post/post.reducer';
 import './SelectDropdown.scss';
 
 const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
-  const dropdownRef = useRef(null);
+
   const dispatch = useDispatch();
 
   const selectItem = (item) => {
@@ -15,7 +15,7 @@ const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
 
   return (
     <div className="menu-container" data-testid="menu-container">
-      <nav ref={dropdownRef} className={`menu ${isActive ? 'active' : 'inactive'}`}>
+      <nav  className={`menu ${isActive ? 'active' : 'inactive'}`}>
         <ul>
           {items.map((item, index) => (
             <li data-testid="select-dropdown" key={index} onClick={() => selectItem(item)}>

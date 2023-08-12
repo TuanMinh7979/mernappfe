@@ -26,10 +26,7 @@ const ModalBoxContent = () => {
         }
     }, [privacy])
 
-    useEffect(() => {
-        displayPostPrivary();
-
-    }, [displayPostPrivary])
+    console.log('MODAL', togglePrivary);
 
 
     return (
@@ -59,9 +56,8 @@ const ModalBoxContent = () => {
                     <div className="selected-item-text" data-testid="box-item-text">
                         {selectedItem.topText}
                     </div>
-                    <div>
+                    <div ref={privacyRef}>
                         <SelectDropdown
-                            ref={privacyRef}
                             isActive={togglePrivary}
                             items={privacyList}
                             setSelectedItem={setSelectedItem}
