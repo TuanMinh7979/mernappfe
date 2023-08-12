@@ -6,23 +6,26 @@ import Input from '@components/input/Input';
 import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
 import Feelings from '@components/feelings/Feelings';
 import { useDispatch, useSelector } from 'react-redux';
-const ModalBoxSelection = () => {
+import { ImageUtils } from '@services/utils/image.-utils.service';
+import PropTypes from 'prop-types';
+const ModalBoxSelection = ({ setSelectedPostImage }) => {
   const dispatch = useDispatch()
   // feeling
   const { feelingsIsOpen } = useSelector((state) => state.modal)
+  const { post } = useSelector((state) => state.post)
   const feelingsRef = useRef(null)
   const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, feelingsIsOpen)
   // feeling
   const fileInputRef = useRef(null)
   // *Params:
   // *Res:
-  // use for tricker file input
+  // use for trigger file input
   const onFileInputClicked = () => {
     fileInputRef.current.click();
 
   }
-  const onFileInputChange = (e) => {
-
+  const onFileInputChange = (event) => {
+    ImageUtils.addFileToRedux(event, post, setSelectedPostImage, dispatch)
   }
   return (
     <>
@@ -41,13 +44,13 @@ const ModalBoxSelection = () => {
               name="image"
               type="file"
               className="file-input"
-              onClick={() => {
-                console.log("--------------->>>>>");
+              onClick={(event) => {
+            
                 if (fileInputRef.current) {
                   fileInputRef.current.value = null
                 }
               }}
-              handleChange={onFileInputChange}
+              handleChange={(event)=>onFileInputChange(event)}
 
             />
             <img src={photo} alt="" /> Photo
@@ -68,5 +71,8 @@ const ModalBoxSelection = () => {
     </>
   )
 }
+ModalBoxSelection.propTypes = {
+  setSelectedPostImage: PropTypes.func,
 
+};
 export default ModalBoxSelection

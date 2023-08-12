@@ -9,6 +9,7 @@ import { bgColors } from '@services/utils/static.data'
 import ModalBoxSelection from '../modal-box-content/ModalBoxSelection'
 import Button from '@components/button/Button'
 import { PostUtils } from '@services/utils/post-utils.service'
+
 const AddPost = () => {
     const { gifModalIsOpen } = useSelector(state => state.modal)
     const [loading] = useState(false)
@@ -38,6 +39,7 @@ const AddPost = () => {
 
         )
     }
+    const [selectedPostImage, setSelectedPostImage] = useState('')
     return (
         <PostWrapper>
             <div></div>
@@ -137,7 +139,7 @@ const AddPost = () => {
                         {allowedNumberOfCharacters}
                     </span>
 
-                    <ModalBoxSelection></ModalBoxSelection>
+                    <ModalBoxSelection setSelectedPostImage={setSelectedPostImage}></ModalBoxSelection>
 
                     <div className="modal-box-button" data-testid="post-button">
 
