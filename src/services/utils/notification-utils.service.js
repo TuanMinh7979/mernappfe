@@ -2,7 +2,6 @@
 import { notificationService } from "@services/api/notification/notification.service";
 import { socketService } from "@services/socket/socket.service";
 import { Utils } from "@services/utils/utils.service";
-import { cloneDeep, find, findIndex, remove, sumBy } from "lodash";
 import { timeAgo } from "./time.ago.utils";
 
 export class NotificationUtils {
@@ -14,7 +13,6 @@ export class NotificationUtils {
     setNotificationsCount
   ) {
 
-    console.log("init", notifications);
     socketService?.socket?.on("insert notification", (data, userToData) => {
       // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
@@ -30,11 +28,11 @@ export class NotificationUtils {
 
     socketService?.socket?.on("update notification", (notificationId) => {
       let newNotifications = [...notifications];
-      console.log(newNotifications);
+
       const updatedIdx =
         newNotifications.findIndex(
           (notification) => notification._id === notificationId)
-      console.log(updatedIdx);
+
       if (updatedIdx !== -1) {
         newNotifications[updatedIdx].read = true
         if (type === "notificationPage") {

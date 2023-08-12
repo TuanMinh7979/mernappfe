@@ -40,10 +40,7 @@ const Header = () => {
   )
   const [isNotificationActive, setIsNotificationActive] = useDetectOutsideClick(notificationRef, false);
   const [isSettingActive, setIsSettingActive] = useDetectOutsideClick(settingsRef, false);
-
   const [messageCount, setMessageCount] = useState(0);
-  const [messageNotifications, setMessageNotifications] = useState([]);
-  // const { chatList } = useSelector((state) => state.chat);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationDialogContent, setNotificationDialogContent] = useState({
@@ -74,7 +71,7 @@ const Header = () => {
       )
       setNotifications(mapNotis)
       socketService?.socket.emit('setup', { userId: storedUsername })
-      console.log("set to data", rs.data.notifications);
+    
     } catch (error) {
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
@@ -116,26 +113,7 @@ const Header = () => {
 
   const openChatPage = async (notification) => {
     console.log("OPEN CHAT PAGE");
-    // try {
-    //   const params = ChatUtils.chatUrlParams(notification, profile);
-    //   ChatUtils.joinRoomEvent(notification, profile);
-    //   ChatUtils.privateChatMessages = [];
-    //   const receiverId =
-    //     notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
-    //   if (notification?.receiverUsername === profile?.username && !notification.isRead) {
-    //     await chatService.markMessagesAsRead(profile?._id, receiverId);
-    //   }
-    //   const userTwoName =
-    //     notification?.receiverUsername !== profile?.username
-    //       ? notification?.receiverUsername
-    //       : notification?.senderUsername;
-    //   await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-    //   navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
-    //   setIsMessageActive(false);
-    //   dispatch(getConversationList());
-    // } catch (error) {
-    //   Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
-    // }
+  
   };
 
   const onLogout = async () => {
@@ -150,7 +128,6 @@ const Header = () => {
     }
   };
 
-  console.log("-------------", notificationCount);
   return (
 
     <>

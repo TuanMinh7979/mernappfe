@@ -9,9 +9,16 @@ import '@components/posts/post-form/PostForm.scss';
 
 import { useSelector } from 'react-redux';
 import "./PostForm.scss"
+import { useDispatch } from 'react-redux';
+import { openModal } from '@redux/reducers/modal/modal.reducer';
+import AddPost from '../post-modal/post-add/AddPost';
 const PostForm = () => {
+    const dispatch = useDispatch()
     const { profile } = useSelector(state => state.user)
-
+    const { type, isOpen } = useSelector(state => state.modal)
+    const openPostModal = () => {
+        dispatch(openModal({ type: 'add' }))
+    }
     return (
         <>
             <div className="post-form" data-testid="post-form">
@@ -20,7 +27,9 @@ const PostForm = () => {
                         <h4 className="post-form-title">Create Post</h4>
                     </div>
                     <div className="post-form-body">
-                        <div className="post-form-input-body" data-testid="input-body">
+                        <div className="post-form-input-body" data-testid="input-body"
+                            onClick={() => openPostModal()}
+                        >
                             <Avatar name={profile?.username} bgColor={profile?.avatarColor} textColor="#ffffff" size={50}
                                 avatarSrc={profile?.profilePicture} />
                             <div className="post-form-input" data-placeholder="Write something here..."></div>
@@ -41,7 +50,7 @@ const PostForm = () => {
                     </div>
                 </div>
             </div>
-
+            {isOpen && type === 'add' && <AddPost />}
         </>
     );
 };

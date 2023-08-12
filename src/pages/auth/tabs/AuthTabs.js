@@ -16,7 +16,6 @@ const AuthTabs = () => {
     useEffect(() => {
         const env = Utils.appEnvironment();
         setEnvironment(env);
-        console.log("KEEEEEEEEEPLOGIN", keepLoggedIn);
         if (keepLoggedIn) navigate('/app/social/streams');
     }, [keepLoggedIn, navigate]);
 

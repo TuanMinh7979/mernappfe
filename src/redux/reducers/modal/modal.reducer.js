@@ -23,7 +23,8 @@ const modalSlice = createSlice({
         openModal: (state, action) => {
             const { type, data } = action.payload
             state.isOpen = true;
-            state.type = true;
+            
+            state.type = type;
             state.data = data
         },
 

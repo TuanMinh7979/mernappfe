@@ -23,7 +23,6 @@ const suggestionsSlice = createSlice({
     builder.addCase(getUserSuggestions.fulfilled, (state, action) => {
       
       state.isLoading = false;
-      console.log("------------------------><><><<<><><>");
       const { users } = action.payload;
       console.log(action.payload);
       state.users = [...users];
