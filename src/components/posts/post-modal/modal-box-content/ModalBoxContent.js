@@ -1,10 +1,35 @@
 import Avatar from '@components/avatar/Avatar';
-
+import SelectDropdown from '@components/select-dropdown/SelectDropdown';
+import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
+import { privacyList } from '@services/utils/static.data';
+import { useCallback, useEffect, useRef } from 'react';
+import { FaGlobe } from 'react-icons/fa';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
 const ModalBoxContent = () => {
     const { profile } = useSelector((state) => state.user);
+    const { privacy } = useSelector((state) => state.post);
+    const { feeling } = useSelector((state) => state.modal);
+    const privacyRef = useRef(null)
+    const [selectedItem, setSelectedItem] = useState({
+        topText: 'Public',
+        subText: 'Any',
+        icon: <FaGlobe className="globe-icon globe"></FaGlobe>
+    })
+    const [togglePrivary, setTogglePrivacy] = useDetectOutsideClick(privacyRef, false)
+    const displayPostPrivary = useCallback(() => {
+        if (privacy) {
+            const postPrivacy = privacyList.filter(data => data.topText === privacy)[0]
+            setSelectedItem(postPrivacy)
+        }
+    }, [privacy])
+
+    useEffect(() => {
+        displayPostPrivary();
+
+    }, [displayPostPrivary])
 
 
     return (
@@ -17,17 +42,30 @@ const ModalBoxContent = () => {
             </div>
             <div className="modal-box-info">
                 <h5 className="inline-title-display" data-testid="box-username">
-                    Danny
+                    {profile.usename}
                 </h5>
-                <p className="inline-display" data-testid="box-feeling">
-                    is feeling <img className="feeling-icon" src="" alt="" /> <span>Happy</span>
-                </p>
-                <div data-testid="box-text-display" className="time-text-display">
+
+                {feeling?.name
+                    && <p className="inline-display" data-testid="box-feeling">
+                        is feeling <img
+                            className="feeling-icon"
+                            src={`${feeling?.image}`}
+                            alt="" />
+                        <span>{feeling.name}</span>
+                    </p>}
+                <div data-testid="box-text-display" className="time-text-display"
+
+                    onClick={() => setTogglePrivacy(!togglePrivary)}>
                     <div className="selected-item-text" data-testid="box-item-text">
-                        Feeling
+                        {selectedItem.topText}
                     </div>
                     <div>
-
+                        <SelectDropdown
+                            ref={privacyRef}
+                            isActive={togglePrivary}
+                            items={privacyList}
+                            setSelectedItem={setSelectedItem}
+                        ></SelectDropdown>
                     </div>
                 </div>
             </div>
