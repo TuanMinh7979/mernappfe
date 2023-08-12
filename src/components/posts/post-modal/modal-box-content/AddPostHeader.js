@@ -1,5 +1,5 @@
 import Avatar from '@components/avatar/Avatar';
-import SelectDropdown from '@components/select-dropdown/SelectDropdown';
+import PostPrivacySelectDropdown from '@components/select-dropdown/PostPrivacySelectDropdown';
 import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
 import { privacyList } from '@services/utils/static.data';
 import { useCallback, useEffect, useRef } from 'react';
@@ -48,11 +48,11 @@ const AddPostHeader = () => {
                         {selectedPrivacy.topText}
                     </div>
                     <div ref={privacyRef}>
-                        <SelectDropdown
+                        <PostPrivacySelectDropdown
                             isActive={isPrivacySelectActive}
                             items={privacyList}
                             setSelectedItem={setSelectedPrivacy}
-                        ></SelectDropdown>
+                        ></PostPrivacySelectDropdown>
                     </div>
                 </div>
             </div>

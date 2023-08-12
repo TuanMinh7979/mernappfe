@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { sumBy } from "lodash";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
-import Dropdown from "@components/dropdown/Dropdown";
+import NotiDropdown from "@components/dropdown/NotiDropdown";
 
 import useLocalStorage from "@hooks/useLocalStorage";
 import useSessionStorage from "@hooks/useSessionStorage";
@@ -71,7 +71,7 @@ const Header = () => {
       )
       setNotifications(mapNotis)
       socketService?.socket.emit('setup', { userId: storedUsername })
-    
+
     } catch (error) {
       Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
     }
@@ -113,7 +113,7 @@ const Header = () => {
 
   const openChatPage = async (notification) => {
     console.log("OPEN CHAT PAGE");
-  
+
   };
 
   const onLogout = async () => {
@@ -219,7 +219,7 @@ const Header = () => {
                 {isNotificationActive && (
                   <ul className="dropdown-ul" ref={notificationRef}>
                     <li className="dropdown-li">
-                      <Dropdown
+                      <NotiDropdown
                         height={300}
                         style={{ right: '250px', top: '20px' }}
                         data={notifications}
@@ -281,7 +281,7 @@ const Header = () => {
                   isSettingActive &&
                   <ul className="dropdown-ul" ref={settingsRef}>
                     <li className="dropdown-li">
-                      <Dropdown
+                      <NotiDropdown
                         height={300}
                         style={{ right: '150px', top: '40px' }}
                         data={settings}
@@ -291,7 +291,7 @@ const Header = () => {
                         onNavigate={() => {
                           ProfileUtils.navigateToProfile(profile, navigate)
                         }}
-                      ></Dropdown>
+                      ></NotiDropdown>
                     </li>
                   </ul>
                 }

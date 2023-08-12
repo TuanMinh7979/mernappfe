@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { cloneDeep } from 'lodash';
 
-import '@components/toast/Toast.scss';
+import './Toast.scss';
 import { Utils } from '@services/utils/utils.service';
 import { useDispatch } from 'react-redux';
 

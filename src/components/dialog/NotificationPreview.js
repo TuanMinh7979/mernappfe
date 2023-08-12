@@ -2,7 +2,7 @@ import Button from '@components/button/Button';
 import { reactionsMap } from '@services/utils/static.data';
 import PropTypes from 'prop-types';
 
-import '@components/dialog/NotificationPreview.scss';
+import './NotificationPreview.scss';
 
 const NotificationPreview = ({
   title,

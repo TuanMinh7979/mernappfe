@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { updPostKey } from '@redux/reducers/post/post.reducer';
-import './SelectDropdown.scss';
+import './PostPrivacySelectDropdown.scss';
 
-const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
+const PostPrivacySelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -34,10 +34,10 @@ const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
   );
 };
 
-SelectDropdown.propTypes = {
+PostPrivacySelectDropdown.propTypes = {
   isActive: PropTypes.bool,
   setSelectedItem: PropTypes.func,
   items: PropTypes.array
 };
 
-export default SelectDropdown;
+export default PostPrivacySelectDropdown;

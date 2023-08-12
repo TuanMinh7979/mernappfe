@@ -4,10 +4,10 @@ import Button from '@components/button/Button';
 import PropTypes from 'prop-types';
 import { FaCircle, FaRegCircle, FaTrashAlt, FaUserAlt } from 'react-icons/fa';
 
-import '@components/dropdown/Dropdown.scss';
+import './NotiDropdown.scss';
 import { Utils } from '@services/utils/utils.service';
 
-const Dropdown = ({
+const NotiDropdown = ({
   data,
   notificationCount,
   title,
@@ -87,7 +87,7 @@ const Dropdown = ({
   );
 };
 
-Dropdown.propTypes = {
+NotiDropdown.propTypes = {
   data: PropTypes.array,
   notificationCount: PropTypes.number,
   title: PropTypes.string,
@@ -99,4 +99,4 @@ Dropdown.propTypes = {
   onNavigate: PropTypes.func
 };
 
-export default Dropdown;
+export default NotiDropdown;
