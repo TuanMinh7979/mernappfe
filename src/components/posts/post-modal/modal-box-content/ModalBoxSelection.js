@@ -5,12 +5,25 @@ import feeling from '@assets/images/feeling.png';
 import Input from '@components/input/Input';
 import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
 import Feelings from '@components/feelings/Feelings';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 const ModalBoxSelection = () => {
+  const dispatch = useDispatch()
+  // feeling
   const { feelingsIsOpen } = useSelector((state) => state.modal)
   const feelingsRef = useRef(null)
   const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, feelingsIsOpen)
-  console.log('MODAL----------', isFeelingActive);
+  // feeling
+  const fileInputRef = useRef(null)
+  // *Params:
+  // *Res:
+  // use for tricker file input
+  const onFileInputClicked = () => {
+    fileInputRef.current.click();
+
+  }
+  const onFileInputChange = (e) => {
+
+  }
   return (
     <>
       {isFeelingActive && (
@@ -20,11 +33,21 @@ const ModalBoxSelection = () => {
       )}
       <div className="modal-box-selection" data-testid="modal-box-selection">
         <ul className="post-form-list" data-testid="list-item">
-          <li className="post-form-list-item image-select" >
+          <li className="post-form-list-item image-select"
+            onClick={onFileInputClicked}
+          >
             <Input
+              ref={fileInputRef}
               name="image"
               type="file"
               className="file-input"
+              onClick={() => {
+                console.log("--------------->>>>>");
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = null
+                }
+              }}
+              handleChange={onFileInputChange}
 
             />
             <img src={photo} alt="" /> Photo
