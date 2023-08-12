@@ -5,13 +5,14 @@ const useDetectOutsideClick = (ref, initialState) => {
 
   useEffect(() => {
     const onClick = (event) => {
-      console.log("MOUSE DOWN IN WINDOW", ref, ref.current);
+      console.log("ONCLICK BEFORE SET VALUE", isActive);
       if ( ref.current !== null && !ref.current.contains(event.target)) {
         console.log("goto here to set isActive");
         setIsActive(!isActive);
       }
+   
     };
-
+    console.log("ONLICK AFTER SET", isActive);
     if (isActive) {
       console.log("CLICK ON WINDOW call onClick", ref)
       window.addEventListener('mousedown', onClick);

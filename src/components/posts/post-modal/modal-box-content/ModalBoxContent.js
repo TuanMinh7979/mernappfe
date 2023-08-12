@@ -26,7 +26,7 @@ const ModalBoxContent = () => {
         }
     }, [privacy])
 
-    console.log('MODAL', togglePrivary);
+  
 
 
     return (
