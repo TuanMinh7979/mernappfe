@@ -8,29 +8,20 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 
-const ModalBoxContent = () => {
+const AddPostHeader = () => {
     const { profile } = useSelector((state) => state.user);
-    const { privacy } = useSelector((state) => state.post);
     const { feeling } = useSelector((state) => state.modal);
     const privacyRef = useRef(null)
-    const [selectedItem, setSelectedItem] = useState({
+    const [selectedPrivacy, setSelectedPrivacy] = useState({
         topText: 'Public',
         subText: 'Any',
         icon: <FaGlobe className="globe-icon globe"></FaGlobe>
     })
-    const [togglePrivary, setTogglePrivacy] = useDetectOutsideClick(privacyRef, false)
-    const displayPostPrivary = useCallback(() => {
-        if (privacy) {
-            const postPrivacy = privacyList.filter(data => data.topText === privacy)[0]
-            setSelectedItem(postPrivacy)
-        }
-    }, [privacy])
-
-  
+    const [isPrivacySelectActive, setIsPrivacySelectActive] = useDetectOutsideClick(privacyRef, false)
 
 
     return (
-        <div className="modal-box-content" data-testid="modal-box-content">
+        <div style={{ border: "1px solid red" }} className="modal-box-content" data-testid="modal-box-content">
             <div className="user-post-image" data-testid="box-avatar">
                 <Avatar name={profile?.username}
                     bgColor={profile?.avatarColor}
@@ -39,7 +30,7 @@ const ModalBoxContent = () => {
             </div>
             <div className="modal-box-info">
                 <h5 className="inline-title-display" data-testid="box-username">
-                    {profile.usename}
+                    {profile.username}
                 </h5>
 
                 {feeling?.name
@@ -52,15 +43,15 @@ const ModalBoxContent = () => {
                     </p>}
                 <div data-testid="box-text-display" className="time-text-display"
 
-                    onClick={() => setTogglePrivacy(!togglePrivary)}>
+                    onClick={() => setIsPrivacySelectActive(!isPrivacySelectActive)}>
                     <div className="selected-item-text" data-testid="box-item-text">
-                        {selectedItem.topText}
+                        {selectedPrivacy.topText}
                     </div>
                     <div ref={privacyRef}>
                         <SelectDropdown
-                            isActive={togglePrivary}
+                            isActive={isPrivacySelectActive}
                             items={privacyList}
-                            setSelectedItem={setSelectedItem}
+                            setSelectedItem={setSelectedPrivacy}
                         ></SelectDropdown>
                     </div>
                 </div>
@@ -68,4 +59,4 @@ const ModalBoxContent = () => {
         </div>
     );
 };
-export default ModalBoxContent;
+export default AddPostHeader;

@@ -1,24 +1,48 @@
 import PostWrapper from '@components/posts/modal-wrappers/post-wrapper/PostWrapper'
 import { setDate } from 'date-fns'
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import "./AddPost.scss"
-import ModalBoxContent from '../modal-box-content/ModalBoxContent'
+import AddPostHeader from '../modal-box-content/AddPostHeader'
 import { FaTimes } from 'react-icons/fa'
 import { bgColors } from '@services/utils/static.data'
-import ModalBoxSelection from '../modal-box-content/ModalBoxSelection'
+
 import Button from '@components/button/Button'
 import { PostUtils } from '@services/utils/post-utils.service'
-
+import { useRef } from 'react'
+import { closeModal } from '@redux/reducers/modal/modal.reducer'
+import { clearPost } from '@redux/reducers/post/post.reducer'
+import AddPostBottomSelection from '../modal-box-content/AddPostBottomSelection'
 const AddPost = () => {
+    const dispatch = useDispatch()
     const { gifModalIsOpen } = useSelector(state => state.modal)
+    const { gifUrl, image, privacy, video } = useSelector((state) => state.post);
+    //  Form post image state
+    const [postImage, setPostImage] = useState('');
+    const [selectedPostImage, setSelectedPostImage] = useState('')
+
+    // Limit character
+    const [allowedNumberOfCharacters] = useState('100/100');
+    // Disable add post button
+    const [disable, setDisable] = useState(false);
+    //*  Background color for post (for text background):
+    // state for color background
+    const [textAreaBackground, setTextAreaBackground] = useState("#ffffff")
+    // select post banckground color
+    const selectBackground = (bgColor) => {
+        PostUtils.selectBackground(
+            bgColor,
+            postData,
+            setTextAreaBackground,
+            setPostData,
+            setDisable
+        )
+    }
+    //  * Loading
     const [loading] = useState(false)
 
-    const [postImage, setPostImage] = useState('');
-    const [allowedNumberOfCharacters] = useState('100/100');
 
-
-    const [textAreaBackground, setTextAreaBackground] = useState("#ffffff")
+    // * Data for new post:
     const [postData, setPostData] = useState({
         post: '',
         bgColor: textAreaBackground,
@@ -28,18 +52,40 @@ const AddPost = () => {
         profilePicture: '',
         image: ''
     })
-    const [disable, setDisable] = useState(false);
-    const selectBackground = (bgColor) => {
-        PostUtils.selectBackground(
-            bgColor,
-            postData,
-            setTextAreaBackground,
-            setPostData,
-            setDisable
 
-        )
+    const counterRef = useRef(null);
+    // TODO: move to env
+    const max_char_cnt = 100;
+    const onInputPostText = (event) => {
+        const currentTextLength = event.target.textContent.length
+        const counter = max_char_cnt - currentTextLength;
+        counterRef.current.textContent = `${counter}/100`
+        postData.post = event.target.textContent;
+        //! TO STATE
+        setPostData(postData);
     }
-    const [selectedPostImage, setSelectedPostImage] = useState('')
+
+    //  TODO: fix when client copy and paste
+    const onKeyDownPostText = (event) => {
+        const currentTextLength = event.target.textContent.length
+        if (currentTextLength >= max_char_cnt && event.keyCode !== 8) {
+            event.preventDefault()
+        }
+    }
+    // * UseEffect: 
+    useEffect(() => {
+        if (gifUrl) {
+            setPostImage(gifUrl)
+        } else {
+            setPostImage(image)
+        }
+    }, [gifUrl, image])
+
+    const closePostModal = () => {
+        dispatch(closeModal())
+        dispatch(clearPost())
+    }
+
     return (
         <PostWrapper>
             <div></div>
@@ -54,10 +100,12 @@ const AddPost = () => {
                     }
                     <div className="modal-box-header">
                         <h2>Createpost</h2>
-                        <button className='modal-box-header-cancel'>X</button>
+                        <button
+                            onClick={closePostModal}
+                            className='modal-box-header-cancel'>X</button>
                     </div>
                     <hr />
-                    <ModalBoxContent></ModalBoxContent>
+                    <AddPostHeader></AddPostHeader>
 
                     {!postImage && (
                         <>
@@ -74,6 +122,7 @@ const AddPost = () => {
                                     }}
 
                                 >
+                                    {/* //* content in background color */}
                                     <div className="flex-row">
                                         <div
                                             data-testid="editable"
@@ -83,7 +132,8 @@ const AddPost = () => {
                                             className={`editable flex-item ${textAreaBackground != '#ffffff' ?
                                                 'textInputColor' : ''}`}
                                             contentEditable={true}
-
+                                            onInput={(event) => onInputPostText(event)}
+                                            onKeyDown={onKeyDownPostText}
                                             data-placeholder="What's on your mind?..."
                                         ></div>
                                     </div>
@@ -95,6 +145,7 @@ const AddPost = () => {
                     {postImage && (
                         <>
                             <div className="modal-box-image-form">
+                                {/* //* content  */}
                                 <div
                                     data-testid="post-editable"
                                     name="post"
@@ -104,6 +155,7 @@ const AddPost = () => {
                                     contentEditable={true}
                                     data-placeholder="What's on your mind?..."
                                 ></div>
+                                {/* //* image  */}
                                 <div className="image-display">
                                     <div
                                         className="image-delete-btn"
@@ -135,11 +187,12 @@ const AddPost = () => {
                             )}
                         </ul>
                     </div>
-                    <span className='char_count' data-testid="allowed-number">
+                    <span className='char_count' data-testid="allowed-number"
+                        ref={counterRef}>
                         {allowedNumberOfCharacters}
                     </span>
 
-                    <ModalBoxSelection setSelectedPostImage={setSelectedPostImage}></ModalBoxSelection>
+                    <AddPostBottomSelection setSelectedPostImage={setSelectedPostImage}></AddPostBottomSelection>
 
                     <div className="modal-box-button" data-testid="post-button">
 
@@ -149,17 +202,13 @@ const AddPost = () => {
 
                         </Button>
                     </div>
-
-
-
-
-
                 </div>
 
             }
             {gifModalIsOpen && <div>GIF</div>
 
             }
+
 
         </PostWrapper>
     )

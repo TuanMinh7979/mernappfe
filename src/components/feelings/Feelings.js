@@ -9,6 +9,7 @@ const Feelings = () => {
     const dispatch = useDispatch();
 
     const selectFeeling = (feeling) => {
+        // ! TO REDUX 
         dispatch(addPostFeeling({ feeling }));
         dispatch(toggleFeelingModal(!feelingsIsOpen));
     };

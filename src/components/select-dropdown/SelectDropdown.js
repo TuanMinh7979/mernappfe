@@ -5,17 +5,19 @@ import { updatePostItem } from '@redux/reducers/post/post.reducer';
 import './SelectDropdown.scss';
 
 const SelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
-
+  const dropdownRef = useRef(null);
   const dispatch = useDispatch();
 
   const selectItem = (item) => {
+    //  ! STATE
     setSelectedItem(item);
+    //  ! REDUX :
     dispatch(updatePostItem({ privacy: item.topText }));
   };
 
   return (
     <div className="menu-container" data-testid="menu-container">
-      <nav  className={`menu ${isActive ? 'active' : 'inactive'}`}>
+      <nav ref={dropdownRef} className={`menu ${isActive ? 'active' : 'inactive'}`}>
         <ul>
           {items.map((item, index) => (
             <li data-testid="select-dropdown" key={index} onClick={() => selectItem(item)}>

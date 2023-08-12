@@ -35,6 +35,7 @@ const PostForm = () => {
                             <div className="post-form-input" data-placeholder="Write something here..."></div>
                         </div>
                         <hr />
+                        {/* //*bottom preview */}
                         <ul className="post-form-list" data-testid="list-item">
                             <li className="post-form-list-item image-select">
                                 <Input name="image" type="file" className="file-input" />

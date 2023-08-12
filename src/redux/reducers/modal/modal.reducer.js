@@ -21,6 +21,7 @@ const modalSlice = createSlice({
     initialState,
     reducers: {
         openModal: (state, action) => {
+            console.log("OPEN MODAL");
             const { type, data } = action.payload
             state.isOpen = true;
             
@@ -43,6 +44,7 @@ const modalSlice = createSlice({
             state.deleteDialogIsOpen = false;
         },
         addPostFeeling: (state, action) => {
+            console.log("-------add");
             const { feeling } = action.payload;
             state.feeling = feeling;
         },

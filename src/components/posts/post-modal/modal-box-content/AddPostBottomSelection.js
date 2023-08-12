@@ -6,25 +6,25 @@ import Input from '@components/input/Input';
 import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
 import Feelings from '@components/feelings/Feelings';
 import { useDispatch, useSelector } from 'react-redux';
-import { ImageUtils } from '@services/utils/image.-utils.service';
+import { ImageUtils } from '@services/utils/image-utils.service';
 import PropTypes from 'prop-types';
-const ModalBoxSelection = ({ setSelectedPostImage }) => {
+const AddPostBottomSelection = ({ setSelectedPostImage }) => {
   const dispatch = useDispatch()
-  // feeling
-  const { feelingsIsOpen } = useSelector((state) => state.modal)
+  // Feeling
+  const { isFeelingSelectOpen } = useSelector((state) => state.modal)
   const { post } = useSelector((state) => state.post)
   const feelingsRef = useRef(null)
-  const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, feelingsIsOpen)
-  // feeling
+  const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, isFeelingSelectOpen)
+  // Input
   const fileInputRef = useRef(null)
-  // *Params:
-  // *Res:
-  // use for trigger file input
+
+  // Use for trigger file input
   const onFileInputClicked = () => {
     fileInputRef.current.click();
 
   }
   const onFileInputChange = (event) => {
+    //! TO REDUX:
     ImageUtils.addFileToRedux(event, post, setSelectedPostImage, dispatch)
   }
   return (
@@ -44,7 +44,7 @@ const ModalBoxSelection = ({ setSelectedPostImage }) => {
               name="image"
               type="file"
               className="file-input"
-              onClick={(event) => {
+              onClick={() => {
             
                 if (fileInputRef.current) {
                   fileInputRef.current.value = null
@@ -71,8 +71,8 @@ const ModalBoxSelection = ({ setSelectedPostImage }) => {
     </>
   )
 }
-ModalBoxSelection.propTypes = {
+AddPostBottomSelection.propTypes = {
   setSelectedPostImage: PropTypes.func,
 
 };
-export default ModalBoxSelection
+export default AddPostBottomSelection
