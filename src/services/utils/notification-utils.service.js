@@ -38,21 +38,18 @@ export default class NotificationUtils {
         if (type === "notificationPage") {
           setNotifications(newNotifications);
         } else {
-          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(newNotifications, setNotificationsCount)
           setNotifications(mappedNotifications);
         }
       }
     });
 
     socketService?.socket?.on("delete notification", (notificationId) => {
-
-      console.log("DATA FROM SOCKET", notificationId, notifications);
       let newNotifications = [...notifications].filter(item => item._id !== notificationId)
       if (type === "notificationPage") {
-        console.log("SET NOTI HERE");
         setNotifications(newNotifications);
       } else {
-        const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+        const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(newNotifications, setNotificationsCount)
         setNotifications(mappedNotifications);
       }
     });

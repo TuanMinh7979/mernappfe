@@ -55,7 +55,6 @@ const Notification = () => {
       const response = await notificationService.deleteNotification(notificationId);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
-
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
@@ -66,6 +65,7 @@ const Notification = () => {
       setNotifications,
       "notificationPage"
     )
+    // if notichanges , call init socket data
   }, [notifications, profile])
 
   return (
