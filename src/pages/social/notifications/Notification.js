@@ -24,9 +24,8 @@ const Notification = () => {
     reaction: '',
     senderName: ''
   })
-  const getUserNotification = async () => {
+  const initNotifications = async () => {
     try {
-
       const rs = await notificationService.getUserNotifications()
       setNotifications(rs.data.notifications)
       console.log("set to data", rs.data.notifications);
@@ -37,7 +36,7 @@ const Notification = () => {
   }
 
   useEffectOnce(() => {
-    getUserNotification()
+    initNotifications()
   })
 
   const markAsRead = async (notification) => {

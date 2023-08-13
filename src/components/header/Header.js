@@ -64,7 +64,7 @@ const Header = () => {
   const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
   const navigate = useNavigate()
   const storedUsername = useLocalStorage("username", "get")
-  const getUserNotification = async () => {
+  const initNotifications = async () => {
     try {
       const rs = await notificationService.getUserNotifications()
       const mapNotis = NotificationUtils.mapNotificationDropdownItems(rs.data.notifications,
@@ -99,7 +99,7 @@ const Header = () => {
   const [settings, setSettings] = useState('')
   useEffectOnce(() => {
     Utils.mapSettingsDropdownItems(setSettings);
-    getUserNotification()
+    initNotifications()
   });
 
   useEffect(() => {
@@ -114,7 +114,6 @@ const Header = () => {
 
   const openChatPage = async (notification) => {
     console.log("OPEN CHAT PAGE");
-
   };
 
   const onLogout = async () => {

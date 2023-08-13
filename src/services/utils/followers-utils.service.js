@@ -8,7 +8,5 @@ export class FollowersUtils {
   static async followUser(user, dispatch) {
     const response = await followerService.followUser(user?._id);
     Utils.updToastsNewEle(response.data.message, 'success', dispatch);
-  }
-
-  
+  } 
 }

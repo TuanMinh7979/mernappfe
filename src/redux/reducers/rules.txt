@@ -26,3 +26,5 @@
 // tat ca truong hop  them "fetch" phia truoc la xong
 
 // *RULE
+
+

@@ -11,7 +11,16 @@
 + state for data post,update, delete to DB, add suffix "Data" at the end
 
 
-
--function call to update redux: tham khảo file rules.txt của redux và thay update => upd, empty=>emp , remove=>rem
--function call to update state:  tuong tu redux: thay update =>  change or edit, thay empty=>reset thay remove=>clear
+TO REDUX FUNCTION:  
+-function call to update redux: tham khảo file rules.txt của redux, có thêm tiền tố fetch + thay update => upd, empty=>emp , remove=>rem
+TO STATE FUNCTION:
+-function call to update state:  thay update => init or change , thay empty=>reset thay remove=>clean
+USE REDUX STATE:
 -Dùng useSelector với tên của store (VD: reduxPost)cho để phân biệt biến nào của redux biến nào của component
+
+- ngược lại các function không liên quan đến redux hay state thì nên né các prefix :"fetch"(redux) và 
+"init"->call setState(init Value),
+ "change"->call setState(updated Value),
+
+  "reset"->call setState("") for object
+  , "clean"->call setState ([]) for list
