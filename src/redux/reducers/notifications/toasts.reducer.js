@@ -16,11 +16,11 @@ const toastIcons = [
   { warning: warningIcon, color: "#f0ad4e" },
 ];
 
-const notificationSlice = createSlice({
-  name: "notifications",
+const toastsSlice = createSlice({
+  name: "toasts",
   initialState,
   reducers: {
-    updateNotificationsNewEle: (state, action) => {
+    updateToastsNewEle: (state, action) => {
       const { message, type } = action.payload;
       const toastIconObject = toastIcons.find((item) => item[type]);
       console.log(toastIconObject);
@@ -38,12 +38,12 @@ const notificationSlice = createSlice({
       newList = [...uniqBy(newList, "description")];
       return newList;
     },
-    removeNotifications: () => {
+    removeToasts: () => {
       return [];
     },
   },
 });
 
-export const { updateNotificationsNewEle, removeNotifications } =
-  notificationSlice.actions;
-export default notificationSlice.reducer;
+export const { updateToastsNewEle, removeToasts } =
+  toastsSlice.actions;
+export default toastsSlice.reducer;

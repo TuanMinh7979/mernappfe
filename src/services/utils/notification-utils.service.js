@@ -4,7 +4,7 @@ import { socketService } from "@services/socket/socket.service";
 import { Utils } from "@services/utils/utils.service";
 import { timeAgo } from "./time.ago.utils";
 
-export class NotificationUtils {
+export default class NotificationUtils {
   static socketIONotification(
     profile,
     notifications,
@@ -12,18 +12,18 @@ export class NotificationUtils {
     type,
     setNotificationsCount
   ) {
-
+    console.log(notifications);
     socketService?.socket?.on("insert notification", (data, userToData) => {
       // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
-        notifications = [...data];
+
         if (type === "notificationPage") {
-          setNotifications(notifications);
-        }else {
-          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
+          setNotifications([...data]);
+        } else {
+          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems([...data], setNotificationsCount)
           setNotifications(mappedNotifications);
         }
-      } 
+      }
     });
 
     socketService?.socket?.on("update notification", (notificationId) => {
@@ -46,8 +46,10 @@ export class NotificationUtils {
 
     socketService?.socket?.on("delete notification", (notificationId) => {
 
-      let newNotifications = [...notifications].filter(item => item._id === notificationId)
+      console.log("DATA FROM SOCKET", notificationId, notifications);
+      let newNotifications = [...notifications].filter(item => item._id !== notificationId)
       if (type === "notificationPage") {
+        console.log("SET NOTI HERE");
         setNotifications(newNotifications);
       } else {
         const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(notifications, setNotificationsCount)
@@ -80,6 +82,7 @@ export class NotificationUtils {
   }
 
 
+  // * use to map from api data to NotiDropdown can use 
   static mapNotificationDropdownItems(notificationData, setNotificationsCount) {
     const items = [];
     for (const notification of notificationData) {

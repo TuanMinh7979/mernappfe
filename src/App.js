@@ -7,19 +7,15 @@ import Toast from '@components/toast/Toast';
 
 import { useSelector } from 'react-redux';
 const App = () => {
-  const { notifications } = useSelector((state) => state);
-
-   
-
-  
+  const reduxToasts = useSelector((state) => state.toasts);  
   useEffect(() => {
     socketService.setupSocketConnection()
   }, [])
   return <>
-    {notifications && notifications.length > 0 &&
+    {reduxToasts && reduxToasts.length > 0 &&
       <Toast
         position="top-right"
-        toastList={notifications}
+        toastList={reduxToasts}
         autoDelete={false}
 
       />

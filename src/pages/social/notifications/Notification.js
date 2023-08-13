@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { notificationService } from "@services/api/notification/notification.service";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { timeAgo } from "@services/utils/time.ago.utils";
-import { NotificationUtils } from "@services/utils/notification-utils.service";
+import NotificationUtils from "@services/utils/notification-utils.service";
 import NotificationPreview from "@components/dialog/NotificationPreview";
 const Notification = () => {
   const { profile } = useSelector(state => state.user)
@@ -32,7 +32,7 @@ const Notification = () => {
       console.log("set to data", rs.data.notifications);
     } catch (error) {
 
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -45,7 +45,7 @@ const Notification = () => {
       NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
     } catch (error) {
 
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -53,10 +53,10 @@ const Notification = () => {
     event.stopPropagation()
     try {
       const response = await notificationService.deleteNotification(notificationId);
-      Utils.dispatchNotification(response.data.message, 'success', dispatch);
+      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
 
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
   useEffect(() => {

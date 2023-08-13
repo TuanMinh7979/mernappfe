@@ -22,7 +22,7 @@ const Suggestions = () => {
       setUsers(result);
       dispatch(updateSugUsersNewEle({ users: result, isLoading: false }));
     } catch (error) {
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 

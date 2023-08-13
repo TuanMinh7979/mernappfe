@@ -19,7 +19,7 @@ const Toast = (props) => {
         setList([...listData.current]);
         if (!listData.current.length) {
             list.length = 0;
-            Utils.dispatchClearNotification(dispatch)
+            Utils.remToasts(dispatch)
         }
     }, [list, dispatch]);
 
@@ -50,10 +50,10 @@ const Toast = (props) => {
                     <button className="cancel-button" onClick={() => deleteToast()}>
                         X
                     </button>
-                    <div className={`toast-notification-image ${toast.description.length <= 73 ? 'toast-icon' : ''}`}>
+                    <div className={`toast-notification-image ${toast?.description?.length <= 73 ? 'toast-icon' : ''}`}>
                         <img src={toast.icon} alt="" />
                     </div>
-                    <div className={`toast-notification-message ${toast.description.length <= 73 ? 'toast-message' : ''}`}>
+                    <div className={`toast-notification-message ${toast?.description?.length <= 73 ? 'toast-message' : ''}`}>
                         {toast.description}
                     </div>
                 </div>

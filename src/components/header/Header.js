@@ -11,7 +11,7 @@ import MessageSidebar from "@components/message-sidebar/MessageSidebar";
 import "@components/header/Header.scss";
 import Avatar from "@components/avatar/Avatar";
 import { Utils } from "@services/utils/utils.service";
-import { NotificationUtils } from "@services/utils/notification-utils.service";
+import  NotificationUtils  from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { sumBy } from "lodash";
@@ -74,7 +74,7 @@ const Header = () => {
       socketService?.socket.emit('setup', { userId: storedUsername })
 
     } catch (error) {
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
   const onMarkAsRead = async (notification) => {
@@ -82,7 +82,7 @@ const Header = () => {
       NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
     } catch (error) {
 
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -90,9 +90,9 @@ const Header = () => {
 
     try {
       const response = await notificationService.deleteNotification(notificationId);
-      Utils.dispatchNotification(response.data.message, 'success', dispatch);
+       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -125,7 +125,7 @@ const Header = () => {
       navigate('/');
     } catch (error) {
       console.log(error);
-      Utils.dispatchNotification(error?.response?.data?.message, 'error', dispatch);
+       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
 

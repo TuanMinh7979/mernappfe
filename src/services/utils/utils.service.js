@@ -1,7 +1,7 @@
 import { updateLoggedUser, emptyLoggedUser } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
-import { updateNotificationsNewEle, removeNotifications } from "@root/redux/reducers/notifications/notification.reducer";
+import { updateToastsNewEle, removeToasts } from "@redux/reducers/notifications/toasts.reducer";
 export class Utils {
   static avatarColor() {
     return avatarColors[floor(random(0.9) * avatarColors.length)];
@@ -53,11 +53,11 @@ export class Utils {
     }
   };
 
-  static dispatchNotification(message, type, dispatch) {
-    dispatch(updateNotificationsNewEle({ message, type }));
+  static updToastsNewEle(message, type, dispatch) {
+    dispatch(updateToastsNewEle({ message, type }));
   }
-  static dispatchClearNotification(dispatch) {
-    dispatch(removeNotifications())
+  static remToasts(dispatch) {
+    dispatch(removeToasts())
   }
   static mapSettingsDropdownItems(setSettings) {
     const items = [];

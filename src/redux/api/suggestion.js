@@ -7,7 +7,7 @@ const fetchUpdSugUsers = createAsyncThunk('user/getSuggestions', async (name, { 
     const response = await userService.fetchUpdSugUsers();
     return response.data;
   } catch (error) {
-    Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
   }
 });
 

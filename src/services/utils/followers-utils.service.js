@@ -7,7 +7,7 @@ import { Utils } from '@services/utils/utils.service';
 export class FollowersUtils {
   static async followUser(user, dispatch) {
     const response = await followerService.followUser(user?._id);
-    Utils.dispatchNotification(response.data.message, 'success', dispatch);
+    Utils.updToastsNewEle(response.data.message, 'success', dispatch);
   }
 
   
