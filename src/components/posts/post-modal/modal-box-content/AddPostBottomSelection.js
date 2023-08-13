@@ -8,11 +8,12 @@ import Feelings from '@components/feelings/Feelings';
 import { useDispatch, useSelector } from 'react-redux';
 import { ImageUtils } from '@services/utils/image-utils.service';
 import PropTypes from 'prop-types';
-const AddPostBottomSelection = ({ setSelectedPostImage }) => {
+import { updatePost } from '@redux/reducers/post/post.reducer';
+const AddPostBottomSelection = ({ changePostDataImage }) => {
   const dispatch = useDispatch()
   // Feeling
   const { isFeelingSelectOpen } = useSelector((state) => state.modal)
-  const { post } = useSelector((state) => state.post)
+
   const feelingsRef = useRef(null)
   const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, isFeelingSelectOpen)
   // Input
@@ -24,8 +25,13 @@ const AddPostBottomSelection = ({ setSelectedPostImage }) => {
 
   }
   const onFileInputChange = (event) => {
-    //! TO REDUX:
-    ImageUtils.addFileToRedux(event, post, setSelectedPostImage, dispatch)
+    const file = event.target.files[0]
+    ImageUtils.checkFile(file)
+    // ! TO REDUX
+    console.log(URL.createObjectURL(file));
+    dispatch(updatePost({
+      image: URL.createObjectURL(file),
+    }))
   }
   return (
     <>
@@ -45,12 +51,12 @@ const AddPostBottomSelection = ({ setSelectedPostImage }) => {
               type="file"
               className="file-input"
               onClick={() => {
-            
+
                 if (fileInputRef.current) {
                   fileInputRef.current.value = null
                 }
               }}
-              handleChange={(event)=>onFileInputChange(event)}
+              handleChange={(event) => onFileInputChange(event)}
 
             />
             <img src={photo} alt="" /> Photo

@@ -1,4 +1,4 @@
-import { updPostKey } from "@redux/reducers/post/post.reducer";
+import { updatePost } from "@redux/reducers/post/post.reducer";
 
 export class ImageUtils {
     // valid file type
@@ -23,23 +23,5 @@ export class ImageUtils {
 
     }
 
-    // * Params:
-    // * Res:
-    // * use for
-    static addFileToRedux(event, post, setSelectedPostImage, dispatch) {
-        const file = event.target.files[0]
-        ImageUtils.checkFile(file)
-        // ! TO STATE:
-        setSelectedPostImage(file)
-        // ! TO REDUX:
-        dispatch(updPostKey({
-            image: URL.createObjectURL(file),
-            gifUrl: '',
-            imgId: '',
-            imgVersion: '',
-            videoId: '',
-            videoVersion: '',
-            post
-        }))
-    }
+
 }

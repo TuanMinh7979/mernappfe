@@ -8,50 +8,45 @@ import { FaTimes } from 'react-icons/fa'
 import { bgColors } from '@services/utils/static.data'
 
 import Button from '@components/button/Button'
-import { PostUtils } from '@services/utils/post-utils.service'
+import { updatePost } from '@redux/reducers/post/post.reducer'
 import { useRef } from 'react'
 import { closeModal } from '@redux/reducers/modal/modal.reducer'
 import { emptyPost } from '@redux/reducers/post/post.reducer'
 import AddPostBottomSelection from '../modal-box-content/AddPostBottomSelection'
 const AddPost = () => {
     const dispatch = useDispatch()
-    const { isGifModalOpen } = useSelector(state => state.modal)
-    const { gifUrl, image, privacy, video } = useSelector((state) => state.post);
-    //  Form post image state
-    const [postImage, setPostImage] = useState('');
-    const [selectedPostImage, setSelectedPostImage] = useState('')
-
-    // Limit character
+    const reduxModal = useSelector(state => state.modal)
+    const reduxPost = useSelector((state) => state.post);
+    // * Limit character
     const [allowedNumberOfCharacters] = useState('100/100');
-    // Disable add post button
+    // * Disable add post button
     const [disable, setDisable] = useState(false);
     //*  Background color for post (for text background):
-    // state for color background
-    const [textAreaBackground, setTextAreaBackground] = useState("#ffffff")
-    // select post banckground color
-    const selectBackground = (bgColor) => {
-        PostUtils.selectBackground(
-            bgColor,
-            postData,
-            setTextAreaBackground,
-            setPostData,
-            setDisable
-        )
-    }
+    // * For color background
+
+
     //  * Loading
     const [loading] = useState(false)
-
-
     // * Data for new post:
     const [postData, setPostData] = useState({
         post: '',
-        bgColor: textAreaBackground,
+        bgColor: '',
         privacy: '',
         feeling: '',
         gifUrl: '',
         profilePicture: '',
         image: ''
     })
+
+    // select post banckground color
+    const changePostDataBgColor = (bgColor) => {
+        // TODO : Dont do this
+        // postData.bgColor = bgColor;
+        // setPostData(postData)
+        // TODO : Do this mean: postData= new object(not current old object)
+        setPostData({ ...postData, bgColor })
+    }
+
 
     const counterRef = useRef(null);
     // TODO: move to env
@@ -62,7 +57,7 @@ const AddPost = () => {
         counterRef.current.textContent = `${counter}/100`
         postData.post = event.target.textContent;
         //! TO STATE
-        setPostData(postData);
+        setPostData({ postData });
     }
 
     //  TODO: fix when client copy and paste
@@ -72,24 +67,30 @@ const AddPost = () => {
             event.preventDefault()
         }
     }
-    // * UseEffect: 
-    useEffect(() => {
-        if (gifUrl) {
-            setPostImage(gifUrl)
-        } else {
-            setPostImage(image)
-        }
-    }, [gifUrl, image])
+
 
     const closePostModal = () => {
         dispatch(closeModal())
         dispatch(emptyPost())
     }
 
+
+    const postAndImagePostInputRef = useRef(null)
+    // ? 
+    const postNoImagePostInputRef = useRef(null)
+    const clearPostModalImage = () => {
+        setPostData({ ...postData, image: '' })
+        dispatch(
+            updatePost({ gifUrl: '', image: '', imgId: '', imgVersion: '', video: '', videoId: '', videoVersion: '' })
+        );
+
+    }
+    // ? 
+    console.log("STATE:PostData", postData);
     return (
         <PostWrapper>
             <div></div>
-            {!isGifModalOpen &&
+            {!reduxModal.isGifModalOpen &&
                 <div className='modal-box'>
                     {loading && <div className='modal-box-loading'
                         data-testid='modal-box-loading'
@@ -107,17 +108,18 @@ const AddPost = () => {
                     <hr />
                     <AddPostHeader></AddPostHeader>
 
-                    {!postImage && (
+                    {!reduxPost.image && (
                         <>
                             <div
-                                className="modal-box-form"
+                                className={`modal-box-form ${postData.bgColor}`}
                                 data-testid="modal-box-form"
-                                style={{ background: `${textAreaBackground}` }}
+
+                                style={{ background: postData.bgColor }}
 
                             >
                                 <div className="main"
                                     style={{
-                                        margin: textAreaBackground != '#ffffff' ?
+                                        margin: postData.bgColor != '#ffffff' ?
                                             '0 auto' : ''
                                     }}
 
@@ -127,22 +129,27 @@ const AddPost = () => {
                                         <div
                                             data-testid="editable"
                                             id="editable"
+                                            ref={(el) => {
+                                                postNoImagePostInputRef.current = el
+                                                postNoImagePostInputRef?.current?.focus()
+                                            }}
                                             name="post"
 
-                                            className={`editable flex-item ${textAreaBackground != '#ffffff' ?
-                                                'textInputColor' : ''}`}
+                                            className={`editable flex-item ${postData.bgColor != '#ffffff' ?
+                                                '' : ''}`}
                                             contentEditable={true}
                                             onInput={(event) => onInputPostText(event)}
                                             onKeyDown={onKeyDownPostText}
+
                                             data-placeholder="What's on your mind?..."
-                                        ></div>
+                                        >{postData.post}</div>
                                     </div>
                                 </div>
                             </div>
                         </>
                     )}
 
-                    {postImage && (
+                    {reduxPost.image && (
                         <>
                             <div className="modal-box-image-form">
                                 {/* //* content  */}
@@ -150,21 +157,26 @@ const AddPost = () => {
                                     data-testid="post-editable"
                                     name="post"
                                     id="editable"
-
+                                    ref={(el) => {
+                                        postAndImagePostInputRef.current = el
+                                        postAndImagePostInputRef?.current?.focus()
+                                    }}
+                                    onInput={(event) => onInputPostText(event)}
+                                    onKeyDown={onKeyDownPostText}
                                     className="post-input flex-item"
                                     contentEditable={true}
                                     data-placeholder="What's on your mind?..."
-                                ></div>
+                                >{postData.post}</div>
                                 {/* //* image  */}
                                 <div className="image-display">
                                     <div
                                         className="image-delete-btn"
                                         data-testid="image-delete-btn"
-
+                                        onClick={clearPostModalImage}
                                     >
                                         <FaTimes />
                                     </div>
-                                    <img data-testid="post-image" className="post-image" src={`${postImage}`} alt="" />
+                                    <img data-testid="post-image" className="post-image" src={`${reduxPost.image}`} alt="" />
 
                                 </div>
                             </div>
@@ -180,7 +192,7 @@ const AddPost = () => {
                                     key={index}
                                     className={`${color === "#ffffff" ? 'whiteColorBorder' : ''}`}
                                     style={{ backgroundColor: `${color}` }}
-                                    onClick={() => selectBackground(color)}
+                                    onClick={() => changePostDataBgColor(color)}
                                 >
 
                                 </li>
@@ -192,7 +204,7 @@ const AddPost = () => {
                         {allowedNumberOfCharacters}
                     </span>
 
-                    <AddPostBottomSelection setSelectedPostImage={setSelectedPostImage}></AddPostBottomSelection>
+                    <AddPostBottomSelection ></AddPostBottomSelection>
 
                     <div className="modal-box-button" data-testid="post-button">
 
@@ -205,7 +217,7 @@ const AddPost = () => {
                 </div>
 
             }
-            {isGifModalOpen && <div>GIF</div>
+            {reduxModal.isGifModalOpen && <div>GIF</div>
 
             }
 

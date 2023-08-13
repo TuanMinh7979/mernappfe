@@ -43,28 +43,28 @@ const modalSlice = createSlice({
           
             state.isDeleteDialogOpen = false;
         },
-        updModalFeeling: (state, action) => {
+        updateModalFeeling: (state, action) => {
           
             const { feeling } = action.payload;
             state.feeling = feeling;
         },
-        updModalIsFileDialogOpen: (state, action) => {
+        updateModalIsFileDialogOpen: (state, action) => {
             state.isFileDialogOpen = action.payload;
         },
 
-        updModalIsFeelingOpen: (state, action) => {
+        updateModalIsFeelingOpen: (state, action) => {
             state.isFeelingOpen = action.payload;
         },
-        updModalIsGifModalOpen: (state, action) => {
+        updateModalIsGifModalOpen: (state, action) => {
             state.isGifModalOpen = action.payload;
         },
-        updIsReactionsModalOpen: (state, action) => {
+        updateIsReactionsModalOpen: (state, action) => {
             state.isReactionsModalOpen = action.payload;
         },
-        updModalIsCommentsModalOpen: (state, action) => {
+        updateModalIsCommentsModalOpen: (state, action) => {
             state.isCommentsModalOpen = action.payload;
         },
-        updModalIsDeleteDialogOpen: (state, action) => {
+        updateModalIsDeleteDialogOpen: (state, action) => {
             const { data, toggle } = action.payload;
             state.isDeleteDialogOpen = toggle;
             state.data = data;
@@ -76,13 +76,13 @@ const modalSlice = createSlice({
 export const {
     openModal,
     closeModal,
-    updModalFeeling,
-    updModalIsFileDialogOpen,
+    updateModalFeeling,
+    updateModalIsFileDialogOpen,
 
-    updModalIsFeelingOpen,
-    updModalIsGifModalOpen,
-    updIsReactionsModalOpen,
-    updModalIsCommentsModalOpen,
-    updModalIsDeleteDialogOpen
+    updateModalIsFeelingOpen,
+    updateModalIsGifModalOpen,
+    updateIsReactionsModalOpen,
+    updateModalIsCommentsModalOpen,
+    updateModalIsDeleteDialogOpen
 } = modalSlice.actions;
 export default modalSlice.reducer;

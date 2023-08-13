@@ -10,7 +10,7 @@ const suggestionsSlice = createSlice({
   name: 'suggestions',
   initialState,
   reducers: {
-    updSugUsersNewEle: (state, action) => {
+    updateSugUsersNewEle: (state, action) => {
       const { isLoading, users } = action.payload;
       state.users = [...users];
       state.isLoading = isLoading;
@@ -33,5 +33,5 @@ const suggestionsSlice = createSlice({
   }
 });
 
-export const { updSugUsersNewEle } = suggestionsSlice.actions;
+export const { updateSugUsersNewEle } = suggestionsSlice.actions;
 export default suggestionsSlice.reducer;

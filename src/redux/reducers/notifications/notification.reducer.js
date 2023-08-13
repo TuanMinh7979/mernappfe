@@ -20,7 +20,7 @@ const notificationSlice = createSlice({
   name: "notifications",
   initialState,
   reducers: {
-    updNotificationsNewEle: (state, action) => {
+    updateNotificationsNewEle: (state, action) => {
       const { message, type } = action.payload;
       const toastIconObject = toastIcons.find((item) => item[type]);
       console.log(toastIconObject);
@@ -44,6 +44,6 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { updNotificationsNewEle, removeNotifications } =
+export const { updateNotificationsNewEle, removeNotifications } =
   notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -1,1 +1,17 @@
-Event có prefix "on"
+*naming function:
+-handle event có prefix "on"
+*comment: 
+-start và end 1 cụm state, hàm ,biến thực hiện chung chức năng thì dùng // ? để phân biệt
+-comment giải thích thông thường hay không ám chỉ biến hay hàm cụ thế nào thì dùng // 
+-để làm sau đó thì // TODO
+- CMN : dùng // !
+- comment: ám chỉ 1 biến hay hàm 1 cụ thể thì dùng // *
+
+-rule state namming:
++ state for data post,update, delete to DB, add suffix "Data" at the end
+
+
+
+-function call to update redux: tham khảo file rules.txt của redux và thay update => upd, empty=>emp , remove=>rem
+-function call to update state:  tuong tu redux: thay update =>  change or edit, thay empty=>reset thay remove=>clear
+-Dùng useSelector với tên của store (VD: reduxPost)cho để phân biệt biến nào của redux biến nào của component

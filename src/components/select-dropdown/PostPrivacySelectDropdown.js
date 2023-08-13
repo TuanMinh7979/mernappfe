@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { updPostKey } from '@redux/reducers/post/post.reducer';
+import { updatePost } from '@redux/reducers/post/post.reducer';
 import './PostPrivacySelectDropdown.scss';
 
 const PostPrivacySelectDropdown = ({ isActive, setSelectedItem, items = [] }) => {
@@ -12,7 +12,7 @@ const PostPrivacySelectDropdown = ({ isActive, setSelectedItem, items = [] }) =>
     //  ! STATE
     setSelectedItem(item);
     //  ! REDUX :
-    dispatch(updPostKey({ privacy: item.topText }));
+    dispatch(updatePost({ privacy: item.topText }));
   };
 
   return (

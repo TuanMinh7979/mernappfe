@@ -50,6 +50,7 @@ const Header = () => {
     reaction: '',
     senderName: ''
   })
+  
   const dispatch = useDispatch();
   const location = useLocation();
   const backgroundColor = `${environment === "DEV" || environment === "LOCAL"

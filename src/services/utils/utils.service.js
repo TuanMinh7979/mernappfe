@@ -1,7 +1,7 @@
-import { updLoggedUser, emptyLoggedUser } from "@redux/reducers/user/user.reducer";
+import { updateLoggedUser, emptyLoggedUser } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
-import { updNotificationsNewEle, removeNotifications } from "@root/redux/reducers/notifications/notification.reducer";
+import { updateNotificationsNewEle, removeNotifications } from "@root/redux/reducers/notifications/notification.reducer";
 export class Utils {
   static avatarColor() {
     return avatarColors[floor(random(0.9) * avatarColors.length)];
@@ -29,7 +29,7 @@ export class Utils {
 
   static dispatchUser = (result, pageReload, dispatch, setUser) => {
     pageReload(true);
-    dispatch(updLoggedUser({ token: result.data.token, profile: result.data.user }));
+    dispatch(updateLoggedUser({ token: result.data.token, profile: result.data.user }));
     setUser(result.data.user);
   };
   static clearStore = ({
@@ -54,7 +54,7 @@ export class Utils {
   };
 
   static dispatchNotification(message, type, dispatch) {
-    dispatch(updNotificationsNewEle({ message, type }));
+    dispatch(updateNotificationsNewEle({ message, type }));
   }
   static dispatchClearNotification(dispatch) {
     dispatch(removeNotifications())

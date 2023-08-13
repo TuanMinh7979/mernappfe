@@ -7,8 +7,9 @@ const postSlice = createSlice({
     name: 'post',
     initialState,
     reducers: {
-        updPostKey: (state, action) => {
+        updatePost: (state, action) => {
             for (const [key, value] of Object.entries(action.payload)) {
+                console.log("key value", key, value);
                 state[key] = value
             }
         },
@@ -20,5 +21,5 @@ const postSlice = createSlice({
 
 });
 
-export const { updPostKey, emptyPost } = postSlice.actions;
+export const { updatePost, emptyPost } = postSlice.actions;
 export default postSlice.reducer;
