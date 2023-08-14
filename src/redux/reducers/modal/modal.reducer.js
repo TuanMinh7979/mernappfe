@@ -32,8 +32,6 @@ const modalSlice = createSlice({
         closeModal: (state) => {
             state.isOpen = false;
             state.type = '';
-            state.feeling = '';
-            state.image = '';
             state.data = null;
             state.isFeelingOpen = false;
             state.isGifModalOpen = false;
@@ -43,11 +41,7 @@ const modalSlice = createSlice({
           
             state.isDeleteDialogOpen = false;
         },
-        updateModalFeeling: (state, action) => {
-          
-            const { feeling } = action.payload;
-            state.feeling = feeling;
-        },
+
         updateModalIsFileDialogOpen: (state, action) => {
             state.isFileDialogOpen = action.payload;
         },
