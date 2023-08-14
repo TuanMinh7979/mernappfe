@@ -10,9 +10,11 @@ import { bgColors } from '@services/utils/static.data'
 import Button from '@components/button/Button'
 import { updatePost } from '@redux/reducers/post/post.reducer'
 import { useRef } from 'react'
-import { closeModal } from '@redux/reducers/modal/modal.reducer'
+import { closeModal, updateModalIsGifModalOpen } from '@redux/reducers/modal/modal.reducer'
 import { emptyPost } from '@redux/reducers/post/post.reducer'
 import AddPostBottomSelection from '../modal-box-content/AddPostBottomSelection'
+import { FaArrowLeft } from 'react-icons/fa'
+import Giphy from '@components/giphy/Giphy'
 const AddPost = () => {
     const dispatch = useDispatch()
     const reduxModal = useSelector(state => state.modal)
@@ -108,7 +110,7 @@ const AddPost = () => {
                     <hr />
                     <AddPostHeader></AddPostHeader>
 
-                    {!reduxPost.image && (
+                    {!reduxPost.image && !reduxPost.gifUrl && (
                         <>
                             <div
                                 className={`modal-box-form ${postData.bgColor}`}
@@ -147,12 +149,14 @@ const AddPost = () => {
                                 </div>
                             </div>
                         </>
-                    )}
+                    
+                    )} 
 
-                    {reduxPost.image && (
+                    {(reduxPost.image || reduxPost.gifUrl) && (
                         <>
                             <div className="modal-box-image-form">
                                 {/* //* content  */}
+
                                 <div
                                     data-testid="post-editable"
                                     name="post"
@@ -176,7 +180,7 @@ const AddPost = () => {
                                     >
                                         <FaTimes />
                                     </div>
-                                    <img data-testid="post-image" className="post-image" src={`${reduxPost.image}`} alt="" />
+                                    <img data-testid="post-image" className="post-image" src={`${reduxPost.image ? reduxPost.image : reduxPost.gifUrl}`} alt="" />
 
                                 </div>
                             </div>
@@ -217,8 +221,20 @@ const AddPost = () => {
                 </div>
 
             }
-            {reduxModal.isGifModalOpen && <div>GIF</div>
-
+            {reduxModal.isGifModalOpen &&
+                <div className="modal-giphy" data-testid="modal-giphy">
+                    <div className="modal-giphy-header">
+                        <Button
+                            label={<FaArrowLeft />}
+                            className="back-button"
+                            disabled={false}
+                            handleClick={() => dispatch(updateModalIsGifModalOpen(!reduxModal.isGifModalOpen))}
+                        />
+                        <h2>Choose a GIF</h2>
+                    </div>
+                    <hr />
+                    <Giphy />
+                </div>
             }
 
 

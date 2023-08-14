@@ -3,7 +3,7 @@ import { GiphyUtils } from '@services/utils/giphy-utils.service';
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-import '@components/giphy/Giphy.scss';
+import './Giphy.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePost } from '@redux/reducers/post/post.reducer';
 import { updateModalIsGifModalOpen } from '@redux/reducers/modal/modal.reducer';
@@ -14,8 +14,9 @@ const Giphy = () => {
     const [gifs, setGifs] = useState([]);
     const [loading, setLoading] = useState(false);
     const updPostGifUrl = (gifUrl) => {
+        console.log("12121212");
         dispatch(updatePost({ gifUrl: gifUrl, image: '' }))
-        dispatch(updateModalIsGifModalOpen(!reduxModal.isGifModalOpen))
+        dispatch(updateModalIsGifModalOpen(false))
     }
     return (
         <>
@@ -30,7 +31,7 @@ const Giphy = () => {
                             labelText=""
                             placeholder="Search Gif"
                             className="giphy-container-picker-form-input"
-                            handleChange={(e) => GiphyUtils.searchGif(e.target.value, setGifs, setLoading)}
+                            handleChange={(e) => GiphyUtils.searchGifs(e.target.value, setGifs, setLoading)}
                         />
                     </div>
 

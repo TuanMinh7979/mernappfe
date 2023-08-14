@@ -21,6 +21,7 @@ export class GiphyUtils {
     try {
       const response = await giphyService.search(gif);
       setGifs(response.data.data);
+      console.log(response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);

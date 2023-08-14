@@ -9,13 +9,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ImageUtils } from '@services/utils/image-utils.service';
 import PropTypes from 'prop-types';
 import { updatePost } from '@redux/reducers/post/post.reducer';
+import { updateModalIsGifModalOpen } from '@redux/reducers/modal/modal.reducer';
 const AddPostBottomSelection = ({ changePostDataImage }) => {
   const dispatch = useDispatch()
   // Feeling
-  const { isFeelingSelectOpen } = useSelector((state) => state.modal)
+  const reduxModal = useSelector((state) => state.modal)
+  const { isFeelingOpen } = useSelector((state) => state.modal)
 
   const feelingsRef = useRef(null)
-  const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, isFeelingSelectOpen)
+  const [isFeelingActive, setIsFeelingActive] = useDetectOutsideClick(feelingsRef, isFeelingOpen)
   // Input
   const fileInputRef = useRef(null)
 
@@ -33,6 +35,7 @@ const AddPostBottomSelection = ({ changePostDataImage }) => {
       image: URL.createObjectURL(file),
     }))
   }
+
   return (
     <>
       {isFeelingActive && (
@@ -62,7 +65,7 @@ const AddPostBottomSelection = ({ changePostDataImage }) => {
             <img src={photo} alt="" /> Photo
           </li>
           <li className="post-form-list-item"
-
+            onClick={() => dispatch(updateModalIsGifModalOpen(!reduxModal.isGifModalOpen))}
           >
             <img src={gif} alt="" /> Gif
           </li>

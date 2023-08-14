@@ -46,6 +46,7 @@ export class Utils {
 
   static appEnvironment = () => {
     const env = process.env.REACT_APP_ENVIROMENT;
+    console.log("ENVVVVVV",env);
     if (env == "development") {
       return "DEV";
     } else if (env == "production") {
