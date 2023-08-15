@@ -98,14 +98,14 @@ export class Utils {
     return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
   }
 
-  static checkIfUserIsBlocked(blocked, userId) {
-    
-    return blocked && blocked.length >= 0 && blocked.some((id) => id === userId);
+  static checkIfUserIsBlocked(myBlockedByArray, postAuthorUserId) {
+    console.log(myBlockedByArray, postAuthorUserId);
+    return myBlockedByArray && myBlockedByArray.length >= 0 && myBlockedByArray.some((id) => id === postAuthorUserId);
   }
 
-  static checkIfUserIsFollowed(userFollowers, postCreatorId, userId) {
+  static checkIfUserIsFollowed(userFollowers, postCreatorId, loggedUserId) {
     return userFollowers.some(
-      (user) => user._id === postCreatorId || postCreatorId === userId
+      (user) => user._id === postCreatorId || postCreatorId === loggedUserId
     );
   }
 

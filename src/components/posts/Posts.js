@@ -7,17 +7,17 @@ import { useSelector } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
 import { useEffect } from "react";
 import { PostUtils } from "@services/utils/post-utils.service";
-const Posts = ({ allPosts, userFollowing, postsLoading }) => {
+const Posts = ({ allPosts, loggedUserIdolsProp, postsLoading }) => {
   const { profile } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
-  const [following, setFollowing] = useState([]);
+  const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setPosts(allPosts);
-    setFollowing(userFollowing);
+    setLoggedUserIdols(loggedUserIdolsProp);
     setLoading(postsLoading);
-  }, [allPosts, userFollowing, postsLoading]);
+  }, [allPosts, loggedUserIdolsProp, postsLoading]);
 
   return (
     <div className="posts-container" data-testid="posts">
@@ -28,7 +28,7 @@ const Posts = ({ allPosts, userFollowing, postsLoading }) => {
             {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, post?.userId) ||
               post?.userId === profile?._id) && (
               <>
-                {PostUtils.checkPrivacy(post, profile, following) && (
+                {PostUtils.checkPrivacy(post, profile, loggedUserIdols) && (
                   <>
                     <Post post={post} showIcons={false} />
                   </>

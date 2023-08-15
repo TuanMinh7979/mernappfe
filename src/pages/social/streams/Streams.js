@@ -18,14 +18,12 @@ import { getPosts } from "@redux/api/post";
 import { getActiveElement } from "@testing-library/user-event/dist/utils";
 import { orderBy, uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
-
+import { followerService } from "@services/api/follow/follow.service";
 const Streams = () => {
 
 
   // ? app post
-
   let appPosts = useRef([])
-
   const fetchPostData = () => {
     let pageNum = currentPage
     console.log(currentPage, Math.round(reduxPosts.totalPostsCount / 3));
@@ -49,11 +47,23 @@ const Streams = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log("------------------------", error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
   // ? end app post
+
+  // ? get logged user idols
+  const [loggedUserIdols, setLoggedUserIdols] = useState([]);
+  const getUserFollowing = async () => {
+    try {
+      const response = await followerService.getLoggedUserIdols();
+      setLoggedUserIdols(response.data.following);
+    } catch (error) {
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
+  };
+  // ?  END get logged user idols
+
 
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
@@ -67,20 +77,14 @@ const Streams = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const [postsCnt, setPostsCnt] = useState(1);
-
-
   // ? end  post
-
-  // ? sug users
-
-  // ? end sug users
   useEffectOnce(() => {
     dispatch(fetchUpdSugUsers());
+    getUserFollowing();
+    dispatch(getPosts())
 
   });
-  useEffect(() => {
-    dispatch(getPosts())
-  }, [dispatch]);
+
   useEffect(() => {
 
     setLoading(reduxPosts?.isLoading)
@@ -92,7 +96,7 @@ const Streams = () => {
       <div className="streams-content">
         <div className="streams-post" ref={bodyRef}>
           <PostForm />
-          <Posts allPosts={posts} postsLoading={loading} userFollowing={[]} />
+          <Posts allPosts={posts} postsLoading={loading} loggedUserIdolsProp={loggedUserIdols} />
           <div
             ref={bottomLineRef}
             style={{ marginBottom: "50px", height: "50px" }}
