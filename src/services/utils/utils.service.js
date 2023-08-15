@@ -99,7 +99,7 @@ export class Utils {
   }
 
   static checkIfUserIsBlocked(blocked, userId) {
-    console.log(blocked);
+    
     return blocked && blocked.length >= 0 && blocked.some((id) => id === userId);
   }
 

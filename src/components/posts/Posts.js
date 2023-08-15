@@ -18,7 +18,7 @@ const Posts = ({ allPosts, userFollowing, postsLoading }) => {
     setFollowing(userFollowing);
     setLoading(postsLoading);
   }, [allPosts, userFollowing, postsLoading]);
-console.log("PROFILE", profile);
+
   return (
     <div className="posts-container" data-testid="posts">
       {!loading &&

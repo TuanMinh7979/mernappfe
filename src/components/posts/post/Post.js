@@ -8,7 +8,7 @@ import { timeAgo } from "@services/utils/time.ago.utils";
 import PropTypes from "prop-types";
 import { Utils } from "@services/utils/utils.service";
 const Post = ({ post, showIcons }) => {
-  console.log("props post", post);
+
   const getFeeling = (name) => {
     const feeling = feelingsList.find((data) => data.name === name);
     return feeling?.image;
