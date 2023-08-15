@@ -194,8 +194,12 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
                         postNoImagePostInputRef?.current?.focus();
                       }}
                       name="post"
-                      className={`editable flex-item ${postData.bgColor != "#ffffff" ? "" : ""
-                        }`}
+                      className={`editable flex-item ${postData.bgColor !== "#ffffff" ? "textInputColor" : ""
+                        }
+                        ${postData.post.length === 0 && postData.bgColor !== '#ffffff' ? 'defaultInputTextColor' : ''
+                        }`
+
+                      }
                       contentEditable={true}
                       onInput={(event) => onInputPostText(event)}
                       onKeyDown={onKeyDownPostText}
