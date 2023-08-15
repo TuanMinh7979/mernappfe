@@ -19,6 +19,8 @@ import { getActiveElement } from "@testing-library/user-event/dist/utils";
 import { orderBy, uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
+import useLocalStorage from "@hooks/useLocalStorage";
+import { updReactions } from "@redux/reducers/post/user-post-reaction";
 const Streams = () => {
 
 
@@ -59,7 +61,7 @@ const Streams = () => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
   // ?  END get logged user idols
@@ -81,6 +83,7 @@ const Streams = () => {
   useEffectOnce(() => {
     dispatch(fetchUpdSugUsers());
     getUserFollowing();
+    getReactionsByUsername()
     dispatch(getPosts())
 
   });
@@ -97,6 +100,21 @@ const Streams = () => {
   useEffect(() => {
     PostUtils.socketIOPost(posts, setPosts);
   }, [posts]);
+
+  // ? get all reactions of current user
+  const { profile } = useSelector((state) => state.user);
+
+  const getReactionsByUsername = async () => {
+    try {
+      console.log("USERNAME: ", profile.username);
+      const rs = await postService.getReactionsByUsername(profile.username)
+      dispatch(updReactions(rs.data.reactions));
+    } catch (e) {
+      Utils.updToastsNewEle (e.response.data.message, 'error', dispatch);
+
+    }
+  }
+    // ? END get all reactions of current user
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">

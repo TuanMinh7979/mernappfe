@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import like from "@assets/reactions/like.png"
 import Reactions from '../reactions/Reactions';
 import { Utils } from '@services/utils/utils.service';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useCallback } from 'react';
 import { reactionsMap } from '@services/utils/static.data';
 const ReactionAndCommentArea = ({ post }) => {
+    const { reactions } = useSelector((state) => state.userPostReaction)
     const [choosedReaction, setChoosedReaction] = useState('Like');
-    const reactions = []
+
     const initLoggedUserChoosedReaction = useCallback(
         (postReactions) => {
             const userReaction = postReactions?.filter((reaction) => reaction.postId === post._id)[0];
@@ -22,7 +23,7 @@ const ReactionAndCommentArea = ({ post }) => {
     );
 
     useEffect(() => {
-        initLoggedUserChoosedReaction()
+        initLoggedUserChoosedReaction(reactions)
     }, [initLoggedUserChoosedReaction, reactions])
 
     const dispatch = useDispatch()
