@@ -121,6 +121,10 @@ export class Utils {
     }
     return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
   }
-
+  
+  static firstLetterUpperCase(word) {
+    if (!word) return '';
+    return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+  }
 
 }

@@ -1,12 +1,12 @@
-import CommentArea from '../comment-area/CommentArea';
+import ReactionAndCommentArea from '../comment-area/ReactionAndCommentArea';
 import PropTypes from 'prop-types';
-import ReactionsAndCommentDisplay from '../reactions/reactions-comments-display/ReactionsAndCommentsDisplay';
+import ReactionsAndCommentsDisplay from '../reactions/reactions-comments-display/ReactionsAndCommentsDisplay';
 
 const PostCommentSection = ({ post }) => {
     return (
         <div data-testid="comment-section">
-            <ReactionsAndCommentDisplay post={post} />
-            <CommentArea post={post} />
+            <ReactionsAndCommentsDisplay post={post} />
+            <ReactionAndCommentArea post={post} />
         </div>
     );
 };
