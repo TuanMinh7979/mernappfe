@@ -4,7 +4,7 @@ const Button = (props) => {
     const { label, className, disabled, handleClick } = props
     return (
         <>
-            <button className={className}
+            <button className={`${className} ${disabled}`}
                 onClick={handleClick}
                 disabled={disabled}
             >

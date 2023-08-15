@@ -34,12 +34,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
   // * Limit character
   const [allowedNumberOfCharacters] = useState("100/100");
   // * Disable add post button
-  const [disable, setDisable] = useState(false);
-  //*  Background color for post (for text background):
-  // * For color background
-
-  //  * Loading
-
+  const [disabled, setDisabled] = useState(true);
   // * Data for new post:
   const [postData, setPostData] = useState({
     post: "",
@@ -51,6 +46,15 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
     image: "",
     feelings: "",
   });
+  useEffect(() => {
+    setDisabled(postData.post.length <= 0 && !reduxPost.image && !reduxPost.gifUrl);
+  }, [reduxPost.image, postData.post, reduxPost.gifUrl])
+  //*  Background color for post (for text background):
+  // * For color background
+
+  //  * Loading
+
+
 
   // select post banckground color
   const changePostDataBgColor = (bgColor) => {
@@ -190,9 +194,8 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
                         postNoImagePostInputRef?.current?.focus();
                       }}
                       name="post"
-                      className={`editable flex-item ${
-                        postData.bgColor != "#ffffff" ? "" : ""
-                      }`}
+                      className={`editable flex-item ${postData.bgColor != "#ffffff" ? "" : ""
+                        }`}
                       contentEditable={true}
                       onInput={(event) => onInputPostText(event)}
                       onKeyDown={onKeyDownPostText}
@@ -235,9 +238,8 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
                   <img
                     data-testid="post-image"
                     className="post-image"
-                    src={`${
-                      reduxPost.image ? reduxPost.image : reduxPost.gifUrl
-                    }`}
+                    src={`${reduxPost.image ? reduxPost.image : reduxPost.gifUrl
+                      }`}
                     alt=""
                   />
                 </div>
@@ -273,7 +275,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
             <Button
               label="Create Post"
               className="post-button"
-              disabled={false}
+              disabled={disabled}
               handleClick={createPost}
             />
           </div>
