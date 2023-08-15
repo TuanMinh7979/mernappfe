@@ -91,6 +91,12 @@ const Streams = () => {
     setPosts(reduxPosts?.posts)
     setPostsCnt(reduxPosts?.totalPostsCount)
   }, [reduxPosts.posts]);
+
+
+
+  useEffect(() => {
+    PostUtils.socketIOPost(posts, setPosts);
+  }, [posts]);
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">
