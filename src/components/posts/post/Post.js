@@ -7,6 +7,7 @@ import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import PropTypes from "prop-types";
 import { Utils } from "@services/utils/utils.service";
+import PostCommentSection from "../post-comment-section/PostCommentSection";
 const Post = ({ post, showIcons }) => {
 
   const getFeeling = (name) => {
@@ -90,6 +91,7 @@ const Post = ({ post, showIcons }) => {
               </div>
             )}
             {(post?.reactions.length > 0 || post?.commentsCount > 0) && <hr />}
+            <PostCommentSection post={post}></PostCommentSection>
           </div>
         </div>
       </div>
