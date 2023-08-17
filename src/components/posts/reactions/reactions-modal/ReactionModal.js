@@ -12,24 +12,25 @@ import { useDispatch } from 'react-redux'
 import "./ReactionModal.scss"
 import { closeModal } from '@redux/reducers/modal/modal.reducer'
 import { emptyPost } from '@redux/reducers/post/post.reducer'
+import { reactionsColor } from '@services/utils/static.data'
 const ReactionModal = () => {
     const dispatch = useDispatch()
     const { _id, reactions } = useSelector(state => state.post)
     const [activeViewAllTab, setActiveViewAllTab] = useState(true)
     const [formattedReactions, setFormattedReactions] = useState([])
-    const [reactionType, setReactionType] = useState("")
-    const [reactionColor, setReactionColor] = useState("")
+    const [activeReactionTypeText, setActiveReactionTypeText] = useState("")
+    const [activeReactionColor, setActiveReactionColor] = useState("")
 
 
-    const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
-    const [oriReactionsOfCurPost, setOriReactionsOfCurPost] = useState([])
+    const [activeReactionsOfCurPost, setActiveReactionsOfCurPost] = useState([])
+    const [allReactionsOfCurPost, setAllReactionsOfCurPost] = useState([])
     const getReactionDocsOfCurPost = async () => {
         try {
             const response = await postService.getReactionDocsOfAPost(_id);
 
             const orderedPosts = orderBy(response.data?.reactions, ['createdAt'], ['desc']);
-            setReactionsOfCurPost(orderedPosts);
-            setOriReactionsOfCurPost(orderedPosts);
+            setActiveReactionsOfCurPost(orderedPosts);
+            setAllReactionsOfCurPost(orderedPosts);
 
         } catch (error) {
             Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -47,23 +48,24 @@ const ReactionModal = () => {
 
     const onViewAllClick = () => {
         setActiveViewAllTab(true);
-        setReactionType('');
-        reactionsOfCurPost(oriReactionsOfCurPost);
+        setActiveReactionTypeText('');
+        setActiveReactionsOfCurPost(allReactionsOfCurPost);
     }
 
 
 
     const reactionList = (type) => {
         setActiveViewAllTab(false);
-        setReactionType(type);
-        const exist = oriReactionsOfCurPost.some((reaction) => reaction.type === type);
-        const filteredReactions = exist ? oriReactionsOfCurPost.filter((reaction) => reaction.type === type) : [];
-        setReactionsOfCurPost(filteredReactions);
-        setReactionColor(reactionColor[type]);
+        setActiveReactionTypeText(type);
+        const exist = allReactionsOfCurPost.some((reaction) => reaction.type === type);
+        const filteredReactions = exist ? allReactionsOfCurPost.filter((reaction) => reaction.type === type) : [];
+        setActiveReactionsOfCurPost(filteredReactions);
+        setActiveReactionColor(reactionsColor[type]);
     };
 
     return (
         <div><ReactionWrapper closeModal={closeReactionsModal}>
+            {/* header [0] */}
             <div className='modal-reactions-headers-tabs'>
 
                 <ul className='modal-reactions-header-tabs-list'>
@@ -76,8 +78,8 @@ const ReactionModal = () => {
 
                         <li
                             key={idx}
-                            className={`${el.type === reactionType ? 'activeTab' : ''}`}
-                            style={{ color: `${el.type === reactionType ? reactionColor : ''} ` }}
+                            className={`${el.type === activeReactionTypeText ? 'activeTab' : ''}`}
+                            style={{ color: `${el.type === activeReactionTypeText ? activeReactionColor : ''} ` }}
                             onClick={() => reactionList(el.type)}
 
                         >
@@ -89,8 +91,9 @@ const ReactionModal = () => {
                 </ul>
 
             </div>
+               {/* body [1] */}
             <div className='modal-reactions-list'>
-                <ReactionList postReactions={reactionsOfCurPost} />
+                <ReactionList postReactions={activeReactionsOfCurPost} />
             </div>
             <div></div>
         </ReactionWrapper></div>
