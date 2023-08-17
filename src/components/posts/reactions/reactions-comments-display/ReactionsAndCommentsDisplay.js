@@ -7,7 +7,13 @@ import { Utils } from '@services/utils/utils.service';
 import { useDispatch } from 'react-redux';
 import { postService } from '@services/api/post/post.service';
 import { reactionsMap } from '@services/utils/static.data';
+import { updatePost } from '@redux/reducers/post/post.reducer';
+import { useSelector } from 'react-redux';
+import { updateIsReactionsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
+
+  const { isReactionsModalOpen } = useSelector(state => state.modal)
+
 
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
@@ -35,8 +41,16 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
   }, [post])
 
+
+  const openReactionsCom = () => {
+
+    dispatch(updatePost(post))
+    dispatch(updateIsReactionsModalOpen(true))
+  }
+
   console.log("PROPS", reactionsOfCurPost);
   console.log("after format raw object", reactionsProp);
+
 
 
   return (
@@ -58,7 +72,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
                     onMouseEnter={() => getReactionDocsOfCurPost()}
 
                   />
-    
+
                   <div className="tooltip-container-text tooltip-container-bottom" data-testid="reaction-tooltip">
                     <p className="title">
                       <img className="title-img" src={reactionsMap[reactRawItem.type]} alt="" />
@@ -97,7 +111,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
           <span data-testid="reactions-count"
             className="tooltip-container reactions-count"
             onMouseEnter={() => getReactionDocsOfCurPost()}
-
+            onClick={openReactionsCom}
           >
             {sumAllReactions(reactionsProp)}
             <div className="tooltip-container-text tooltip-container-likes-bottom" data-testid="tooltip-container">

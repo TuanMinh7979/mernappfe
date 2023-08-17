@@ -182,12 +182,12 @@ export const avatarColors = [
 
 export const emptyPostData = {
   _id: '',
-  // post: '',// dont need to save in redux
+  post: '',// dont need to save in redux when add new
   bgColor: '',
   privacy: '',
   feelings: '',
   gifUrl: '',
-  // profilePicture: '',// dont need to save in redux
+  profilePicture: '',// dont need to save in redux when add new
   image: '',
   userId: '',
   username: '',

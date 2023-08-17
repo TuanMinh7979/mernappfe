@@ -1,6 +1,6 @@
 import PostFormSkeleton from '@components/posts/post-form/PostFormSkeleton';
 import '@pages/social/streams/Streams.scss';
-
+import SuggestionsSkeletons from '@components/suggestions/SuggestionsSkeletons';
 
 const StreamsSkeleton = () => {
   return (
@@ -15,7 +15,7 @@ const StreamsSkeleton = () => {
           ))}
         </div>
         <div className="streams-suggestions">
-         
+        <SuggestionsSkeletons />
         </div>
       </div>
     </div>
