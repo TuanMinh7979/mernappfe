@@ -8,11 +8,11 @@ const reactionsSlice = createSlice({
     name: 'reactions',
     initialState,
     reducers: {
-        updReactions: (state, action) => {
+        updateLoggedUserReactions: (state, action) => {
             state.reactions = action.payload;
         }
     }
 });
 
-export const { updReactions } = reactionsSlice.actions;
+export const { updateLoggedUserReactions } = reactionsSlice.actions;
 export default reactionsSlice.reducer;

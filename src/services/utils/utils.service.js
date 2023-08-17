@@ -54,7 +54,7 @@ export class Utils {
 
   static appEnvironment = () => {
     const env = process.env.REACT_APP_ENVIROMENT;
-    console.log("ENVVVVVV", env);
+
     if (env == "development") {
       return "DEV";
     } else if (env == "production") {
@@ -99,7 +99,7 @@ export class Utils {
   }
 
   static checkIfUserIsBlocked(myBlockedByArray, postAuthorUserId) {
-    console.log(myBlockedByArray, postAuthorUserId);
+
     return myBlockedByArray && myBlockedByArray.length >= 0 && myBlockedByArray.some((id) => id === postAuthorUserId);
   }
 

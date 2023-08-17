@@ -20,7 +20,7 @@ import { orderBy, uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
 import useLocalStorage from "@hooks/useLocalStorage";
-import { updReactions } from "@redux/reducers/post/user-post-reaction";
+import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 const Streams = () => {
 
 
@@ -108,7 +108,7 @@ const Streams = () => {
     try {
       console.log("USERNAME: ", profile.username);
       const rs = await postService.getReactionsByUsername(profile.username)
-      dispatch(updReactions(rs.data.reactions));
+      dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
       Utils.updToastsNewEle (e.response.data.message, 'error', dispatch);
 
