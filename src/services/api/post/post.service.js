@@ -41,6 +41,11 @@ class PostService {
     );
     return response;
   }
+
+  async getReactionDocsOfAPost(postId) {
+    const response = await axios.get(`/post/reactions/${postId}`);
+    return response;
+  }
 }
 
 export const postService = new PostService();

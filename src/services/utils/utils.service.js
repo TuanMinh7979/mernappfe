@@ -8,6 +8,7 @@ import {
   updateToastsNewEle,
   removeToasts,
 } from "@redux/reducers/notifications/toasts.reducer";
+import millify from "millify";
 export class Utils {
   static avatarColor() {
     return avatarColors[floor(random(0.9) * avatarColors.length)];
@@ -126,5 +127,33 @@ export class Utils {
     if (!word) return '';
     return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
   }
+
+  // object to array of object
+  static formattedReactions(reactions) {
+    const postReactions = [];
+    for (const [key, value] of Object.entries(reactions)) {
+      if (value > 0) {
+        const reactionObject = {
+          type: key,
+          value
+        };
+        postReactions.push(reactionObject);
+      }
+    }
+    return postReactions;
+  }
+
+  static shortenLargeNumbers(data) {
+    if (data === undefined) {
+      return 0;
+    } else {
+      return millify(data);
+    }
+  }
+
+  
+
+
+
 
 }

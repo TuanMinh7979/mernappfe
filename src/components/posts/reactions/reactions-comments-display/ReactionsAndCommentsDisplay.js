@@ -1,44 +1,131 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./ReactionsAndCommentsDisplay.scss"
 import { FaSpinner } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import like from "@assets/reactions/like.png"
+import { Utils } from '@services/utils/utils.service';
+import { useDispatch } from 'react-redux';
+import { postService } from '@services/api/post/post.service';
+import { reactionsMap } from '@services/utils/static.data';
 const ReactionsAndCommentsDisplay = ({ post }) => {
+
+  const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
+  const [reactionsProp, setReactionsProp] = useState([]);
+  const dispatch = useDispatch()
+  const getReactionDocsOfCurPost = async () => {
+    try {
+      const response = await postService.getReactionDocsOfAPost(post?._id);
+      console.log(response);
+      setReactionsOfCurPost(response.data.reactions);
+    } catch (error) {
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+    }
+  };
+
+  const sumAllReactions = (reactionsProp) => {
+    if (reactionsProp?.length) {
+      const result = reactionsProp.map((item) => item.value).reduce((prev, next) => prev + next);
+      return Utils.shortenLargeNumbers(result);
+    }
+  };
+
+
+  useEffect(() => {
+    setReactionsProp(Utils.formattedReactions(post?.reactions))
+
+  }, [post])
+
+  console.log("PROPS", reactionsOfCurPost);
+  console.log("after format raw object", reactionsProp);
+
+
   return (
     <div className="reactions-display">
       <div className="reaction">
         <div className="likes-block">
           <div className="likes-block-icons reactions-icon-display">
-            <div className="tooltip-container">
-              <img data-testid="reaction-img" className="reaction-img" src={like} alt="" />
-              <div className="tooltip-container-text tooltip-container-bottom" data-testid="reaction-tooltip">
-                <p className="title">
-                  <img className="title-img" src={like} alt="" />
-                  Love
-                </p>
-                <div className="likes-block-icons-list">
-                  <FaSpinner className="circle-notch" />
-                  <div>
-                    <span>Manny</span>
+            {reactionsProp.length > 0 &&
+              reactionsProp.map(reactRawItem => <>
+                <div
+
+                  key={Utils.generateString(10)}
+                  className="tooltip-container">
+
+                  <img
+                    data-testid="reaction-img"
+                    className="reaction-img"
+                    src={reactionsMap[reactRawItem.type]} alt=""
+                    onMouseEnter={() => getReactionDocsOfCurPost()}
+
+                  />
+    
+                  <div className="tooltip-container-text tooltip-container-bottom" data-testid="reaction-tooltip">
+                    <p className="title">
+                      <img className="title-img" src={reactionsMap[reactRawItem.type]} alt="" />
+                      {reactRawItem?.type}
+                    </p>
+                    <div className="likes-block-icons-list">
+                      {reactionsOfCurPost.length === 0 &&
+                        <FaSpinner className="circle-notch" />
+                      }
+                      {reactionsOfCurPost.length > 0 &&
+                        <>
+
+                          {reactionsOfCurPost.slice(0, 19).map((reactionDoc) => (
+                            <div key={Utils.generateString(10)}>
+                              {reactionDoc?.type === reactRawItem?.type && (
+                                <span key={reactionDoc?._id}>{reactionDoc?.username}</span>
+                              )}
+                            </div>
+                          ))}
+                          {reactionsOfCurPost.length > 20 && <span>and {reactionsOfCurPost.length - 20} others...</span>}
+
+                        </>
+                      }
+
+                    </div>
                   </div>
-                  <span>and 50 others...</span>
                 </div>
-              </div>
-            </div>
+              </>
+              )}
+
+
+
           </div>
-          <span data-testid="reactions-count" className="tooltip-container reactions-count">
-            20
+          {/* number of reaction */}
+
+          <span data-testid="reactions-count"
+            className="tooltip-container reactions-count"
+            onMouseEnter={() => getReactionDocsOfCurPost()}
+
+          >
+            {sumAllReactions(reactionsProp)}
             <div className="tooltip-container-text tooltip-container-likes-bottom" data-testid="tooltip-container">
               <div className="likes-block-icons-list">
-                <FaSpinner className="circle-notch" />
-                <span>Stan</span>
-                <span>and 50 others...</span>
+
+
+                {reactionsOfCurPost.length === 0 &&
+                  <FaSpinner className="circle-notch" />
+                }
+                {reactionsOfCurPost.length > 0 &&
+                  <>
+
+                    {reactionsOfCurPost.slice(0, 19).map((reactionDoc) => (
+
+                      <span key={Utils.generateString(10)}>{reactionDoc?.username}</span>
+
+                    ))}
+                    {reactionsOfCurPost.length > 20 && <span>and {reactionsOfCurPost.length - 20} others...</span>}
+
+                  </>
+                }
               </div>
             </div>
           </span>
+          {/* end number of reaction */}
         </div>
       </div>
-      <div className="comment tooltip-container" data-testid="comment-container">
+      {/* <div className="comment tooltip-container" data-testid="comment-container">
         <span data-testid="comment-count">
           20 Comments
         </span>
@@ -51,7 +138,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
