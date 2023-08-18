@@ -9,7 +9,7 @@ const postSlice = createSlice({
     reducers: {
         updatePost: (state, action) => {
             for (const [key, value] of Object.entries(action.payload)) {
-                console.log("key value", key, value);
+             
                 state[key] = value
             }
         },

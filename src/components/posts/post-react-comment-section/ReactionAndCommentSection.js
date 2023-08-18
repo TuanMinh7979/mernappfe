@@ -1,8 +1,8 @@
-import ReactionAndCommentArea from '../comment-area/ReactionAndCommentArea';
+import ReactionAndCommentArea from '../reaction-comment-area/ReactionAndCommentArea';
 import PropTypes from 'prop-types';
 import ReactionsAndCommentsDisplay from '../reactions/reactions-comments-display/ReactionsAndCommentsDisplay';
 
-const PostCommentSection = ({ post }) => {
+const ReactionAndCommentSection = ({ post }) => {
     return (
         <div data-testid="comment-section">
             <ReactionsAndCommentsDisplay post={post} />
@@ -11,8 +11,8 @@ const PostCommentSection = ({ post }) => {
     );
 };
 
-PostCommentSection.propTypes = {
+ReactionAndCommentSection.propTypes = {
     post: PropTypes.object
 };
 
-export default PostCommentSection;
+export default ReactionAndCommentSection;

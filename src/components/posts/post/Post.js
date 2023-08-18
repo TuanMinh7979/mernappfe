@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Post.scss";
 import Avatar from "@components/avatar/Avatar";
 import { feelingsList } from "@services/utils/static.data";
@@ -7,10 +7,18 @@ import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import PropTypes from "prop-types";
 import { Utils } from "@services/utils/utils.service";
-import PostCommentSection from "../post-comment-section/PostCommentSection";
+import ReactionAndCommentSection from "../post-react-comment-section/ReactionAndCommentSection";
 import { useSelector } from "react-redux";
 import ReactionModal from "../reactions/reactions-modal/ReactionModal";
+import CommentInputBox from "../comment/comment-input/CommentInputBox";
+import useLocalStorage from "@hooks/useLocalStorage";
+import { useState } from "react";
 const Post = ({ post, showIcons }) => {
+
+  // ?comment
+  // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
+  const { _id } = useSelector(state => state.post)
+  // ? end comment
 
   const getFeeling = (name) => {
     const feeling = feelingsList.find((data) => data.name === name);
@@ -22,6 +30,8 @@ const Post = ({ post, showIcons }) => {
   };
 
   const { isReactionsModalOpen } = useSelector(state => state.modal)
+
+
 
 
   return (
@@ -97,9 +107,11 @@ const Post = ({ post, showIcons }) => {
                 </div>
               )}
               {(post?.reactions.length > 0 || post?.commentsCount > 0) && <hr />}
-              <PostCommentSection post={post}></PostCommentSection>
+              <ReactionAndCommentSection post={post}></ReactionAndCommentSection>
             </div>
           </div>
+          {_id === post?._id && <CommentInputBox post={post}></CommentInputBox>
+          }
         </div>
       </div>
     </>

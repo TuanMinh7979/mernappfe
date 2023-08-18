@@ -12,13 +12,29 @@ import { reactionsMap } from "@services/utils/static.data";
 import { postService } from "@services/api/post/post.service";
 import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
+import useLocalStorage from "@hooks/useLocalStorage";
+import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 const ReactionAndCommentArea = ({ post }) => {
   const dispatch = useDispatch();
+  // ? comment
+  const { _id } = useSelector(state => state.post)
+
+  const toggleCommentInput = () => {
+    if (!_id || _id !== post?._id) {
+      dispatch(updatePost(post))
+    } else {
+
+      dispatch(emptyPost())
+    }
+  }
+  // comment
+
   const { profile } = useSelector((state) => state.user);
   // ? init reaction of this user in current post
   const loggedUserReactions = useSelector(
     (state) => state.userPostReaction.reactions
   );
+
   const [choosedReaction, setChoosedReaction] = useState("Like");
   const initLoggedUserChoosedReaction = useCallback(
     (postReactions) => {
@@ -206,7 +222,7 @@ const ReactionAndCommentArea = ({ post }) => {
           <Reactions handleClick={onReactionClick}></Reactions>
         </div>
       </div>
-      <div className="comment-block">
+      <div className="comment-block" onClick={toggleCommentInput}>
         <span className="comments-text">
           <FaRegCommentAlt className="comment-alt" /> <span>Comments</span>
         </span>
