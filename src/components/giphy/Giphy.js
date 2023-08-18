@@ -10,7 +10,7 @@ import { updateModalIsGifModalOpen } from '@redux/reducers/modal/modal.reducer';
 
 const Giphy = () => {
     const dispatch = useDispatch();
-    const reduxModal = useSelector(state => state.post)
+
     const [gifs, setGifs] = useState([]);
     const [loading, setLoading] = useState(false);
     const updPostGifUrl = (gifUrl) => {

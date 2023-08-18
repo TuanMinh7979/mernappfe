@@ -46,13 +46,21 @@ const Post = ({ post, showIcons }) => {
   // ? edit and delete post
   const openEditModal = () => {
 
-    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
+    dispatch(updatePost({
+      ...post,
+      feelings: feelingsList.find((data) => post.feelings === data.name),
+      image: post.imgId ? Utils.getImage(post.imgId, post.imgVersion) : ""
+    }))
     dispatch(openModal({ type: "edit" }));
   };
 
   const reduxModal = useSelector(state => state.modal)
   const openDeleteDialog = () => {
-    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
+    dispatch(updatePost({
+      ...post,
+      feelings: feelingsList.find((data) => post.feelings === data.name),
+      image: post.imgId ? Utils.getImage(post.imgId, post.imgVersion) : ""
+    }))
     dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen))
 
   }

@@ -33,9 +33,11 @@ const EditPost = () => {
         ImageUtils.checkFile(file);
         setGlobalChoosedPostImage(file);
         // ! TO REDUX
+        console.log("updateeeeeredux",);
         dispatch(
             updatePost({
                 image: URL.createObjectURL(file),
+                gifUrl: ''
             })
         );
     };
@@ -58,12 +60,12 @@ const EditPost = () => {
     const [postData, setPostData] = useState({
         post: reduxPost.post ? reduxPost.post : "",
         bgColor: reduxPost.bgColor ? reduxPost.bgColor : "#ffffff",
-        privacy: "",
+        privacy: reduxPost.privacy ? reduxPost.privacy : "",
 
-        gifUrl: "",
-        profilePicture: "",
-        image: "",
-        feelings: "",
+        gifUrl: reduxPost.gifUrl ? reduxPost.gifUrl : "",
+        profilePicture: reduxPost.profilePicture ? reduxPost.profilePicture : "",
+        image: reduxPost.image,
+        feelings: reduxPost.feelings?.name,
 
         // for update
         imgId: reduxPost.imgId,
@@ -119,7 +121,6 @@ const EditPost = () => {
     // ?
     const postNoImagePostInputRef = useRef(null);
     const clearPostModalImage = () => {
-        setPostData({ ...postData, image: "" });
         dispatch(
             updatePost({
                 gifUrl: "",
@@ -136,62 +137,77 @@ const EditPost = () => {
 
     const updatePostToServer = async () => {
         setLoading(true);
-
+        console.log(">>>>>>>>>>>>redux", reduxPost, "postData", postData);
         try {
+            //  postData.post is always newest and reduxPost.post is not change
+            //   new feeling
+            console.log(">>>>>>>>>>>>111redux", reduxPost, "postData", postData);
             if (Object.keys(reduxPost.feelings).length) {
                 postData.feelings = reduxPost.feelings?.name;
             }
+            //   new privacy
             postData.privacy = reduxPost.privacy || "Public";
-            postData.profilePicture = profile?.profilePicture;
-
-            if (reduxPost.image) {
-
+            //   new imgId, imgVersion
+            if (postData.image !== reduxPost.image) {
+               
+                // must do
                 postData.imgId = "";
                 postData.imgVersion = "";
-                postData.bgColor = "#ffffff"
-                postData.gifUrl = "";
 
-                postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
-                console.log(postData);
-                const response = await postService.updatePostWithImage(reduxPost._id, postData);
+                postData.image = reduxPost.image ? await ImageUtils.readAsBase64(globalChoosedPostImage) : reduxPost.image
 
-                setLoading(false);
-                dispatch(closeModal());
-                dispatch(emptyPost());
-            } else if (reduxPost.gifUrl) {
-                postData.imgId = "";
-                postData.imgVersion = "";
-                postData.bgColor = "#ffffff"
+                // additional
+                if (reduxPost.image) {
+                 
+                    postData.bgColor = "#ffffff"
+                    postData.gifUrl = "";
+                }
 
+
+            }
+
+            if (postData.gifUrl !== reduxPost.gifUrl) {
+             
+                // must do
                 postData.gifUrl = reduxPost.gifUrl;
-                console.log(postData);
+                // additional
+                if (reduxPost.gifUrl) {
+                
+                    postData.imgId = "";
+                    postData.imgVersion = "";
+                    postData.bgColor = "#ffffff"
+                }
 
-                const response = await postService.updatePost(reduxPost._id, postData);
-                setLoading(false);
-                dispatch(closeModal());
-                dispatch(emptyPost());
-            } else if (reduxPost.bgColor !== "#ffffff") {
-                postData.imgId = "";
-                postData.imgVersion = "";
-                postData.gifUrl = "";
 
-                postData.bgColor = reduxPost.bgColor
-                console.log(postData);
+            }
+            if (reduxPost.bgColor !== postData.bgColor) {
+                // additional
+                if (postData.bgColor !== "#ffffff") {
+                   
+                    postData.imgId = "";
+                    postData.imgVersion = "";
+                    postData.gifUrl = "";
+                }
 
-                const response = await postService.updatePost(reduxPost._id, postData);
-                setLoading(false);
-                dispatch(closeModal());
-                dispatch(emptyPost());
-            } else {
-                const response = await postService.updatePost(reduxPost._id, postData);
-                setLoading(false);
-                dispatch(closeModal());
-                dispatch(emptyPost());
             }
             console.log(postData);
+
+            if (postData.image) {
+                await postService.updatePostWithImage(reduxPost._id, postData);
+            } else {
+                await postService.updatePost(reduxPost._id, postData);
+            }
+
+            setLoading(false);
+            dispatch(closeModal());
+            dispatch(emptyPost());
+
+
+
         } catch (error) {
             setLoading(false);
-            Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+            console.log(error);
+            Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
         }
     };
 
@@ -209,7 +225,7 @@ const EditPost = () => {
 
 
     //   ? END get feellings  from post in redux
-    console.log("STATE:PostData", postData);
+
     return (
         <PostWrapper>
             <div></div>
@@ -238,7 +254,7 @@ const EditPost = () => {
                     <hr />
                     <AddPostHeader privacyObject={getPrivacyObject(reduxPost.privacy)}></AddPostHeader>
 
-                    {!reduxPost.image && !reduxPost.gifUrl && !reduxPost.imgId && (
+                    {!reduxPost.image && !reduxPost.gifUrl && (
                         <>
                             <div
                                 className={`modal-box-form ${postData.bgColor}`}
@@ -278,7 +294,7 @@ const EditPost = () => {
                         </>
                     )}
 
-                    {(reduxPost.image || reduxPost.gifUrl || reduxPost.imgId) && (
+                    {(reduxPost.image || reduxPost.gifUrl) && (
                         <>
                             <div className="modal-box-image-form">
                                 {/* //* content  */}
@@ -310,8 +326,8 @@ const EditPost = () => {
                                         data-testid="post-image"
                                         className="post-image"
                                         src={reduxPost.image ? reduxPost.image :
-                                            reduxPost.gifUrl ? reduxPost.gifUrl :
-                                                Utils.getImage(reduxPost.imgId, reduxPost.imgVersion)
+                                            reduxPost.gifUrl
+
                                         }
                                         alt=""
                                     />
