@@ -12,9 +12,6 @@ import { useSelector } from 'react-redux';
 import { updateIsReactionsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
 
-  const { isReactionsModalOpen } = useSelector(state => state.modal)
-
-
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
@@ -43,13 +40,27 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
 
   const openReactionsCom = () => {
-
     dispatch(updatePost(post))
     dispatch(updateIsReactionsModalOpen(true))
   }
 
-  console.log("PROPS", reactionsOfCurPost);
-  console.log("after format raw object", reactionsProp);
+
+  // ? comment names
+  const [postCommentNames, setPostCommentNames] = useState([]);
+  // 1 person can comment multiple times so we need to use Set
+  const getPostCommentNames = async () => {
+    try {
+      const response = await postService.getPostCommentNames(post._id)
+      setPostCommentNames([...new Set(response.data.comments.name)])
+    } catch (e) {
+      Utils.updToastsNewEle(e?.response?.data?.message, 'error', dispatch);
+
+    }
+  }
+  // ? end comment names
+
+  // console.log("PROPS", reactionsOfCurPost);
+  // console.log("after format raw object", reactionsProp);
 
 
 
@@ -139,20 +150,29 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
           {/* end number of reaction */}
         </div>
       </div>
-      {/* <div className="comment tooltip-container" data-testid="comment-container">
+      <div className="comment tooltip-container" data-testid="comment-container">
         <span data-testid="comment-count">
-          20 Comments
+
+          {post?.commentsCount > 0 && (
+            <span onMouseEnter={getPostCommentNames} data-testid="comment-count">
+              {Utils.shortenLargeNumbers(post?.commentsCount)} {`${post?.commentsCount === 1 ? 'Comment' : 'Comments'}`}
+            </span>
+          )}
         </span>
         <div className="tooltip-container-text tooltip-container-comments-bottom" data-testid="comment-tooltip">
           <div className="likes-block-icons-list">
-            <FaSpinner className="circle-notch" />
-            <div>
-              <span>Stan</span>
-              <span>and 50 others...</span>
-            </div>
+            {postCommentNames.length === 0 && <FaSpinner className="circle-notch" />}
+            {postCommentNames.length && (
+              <>
+                {postCommentNames.slice(0, 19).map((names) => (
+                  <span key={Utils.generateString(10)}>{names}</span>
+                ))}
+                {postCommentNames.length > 20 && <span>and {postCommentNames.length - 20} others...</span>}
+              </>
+            )}
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }

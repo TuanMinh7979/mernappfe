@@ -23,7 +23,6 @@ const ReactionAndCommentArea = ({ post }) => {
     if (!_id || _id !== post?._id) {
       dispatch(updatePost(post))
     } else {
-
       dispatch(emptyPost())
     }
   }

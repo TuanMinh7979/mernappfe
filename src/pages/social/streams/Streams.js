@@ -23,6 +23,7 @@ import useLocalStorage from "@hooks/useLocalStorage";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 const Streams = () => {
 
+  const [loading, setLoading] = useState(false)
 
   // ? app post
   let appPosts = useRef([])
@@ -71,10 +72,13 @@ const Streams = () => {
   const bottomLineRef = useRef();
   const dispatch = useDispatch();
   useInfiniteScroll(bodyRef, bottomLineRef, fetchPostData)
-  const [loading, setLoading] = useState(true);
+
+
   // ? all posts
   const reduxPosts = useSelector(state => state.posts)
   // ? end all posts
+
+
   // ? post
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
@@ -89,8 +93,6 @@ const Streams = () => {
   });
 
   useEffect(() => {
-
-    setLoading(reduxPosts?.isLoading)
     setPosts(reduxPosts?.posts)
     setPostsCnt(reduxPosts?.totalPostsCount)
   }, [reduxPosts.posts]);
@@ -110,17 +112,17 @@ const Streams = () => {
       const rs = await postService.getReactionsByUsername(profile.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
-      Utils.updToastsNewEle (e.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
 
     }
   }
-    // ? END get all reactions of current user
+  // ? END get all reactions of current user
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">
         <div className="streams-post" ref={bodyRef}>
           <PostForm />
-          <Posts allPosts={posts} postsLoading={loading} loggedUserIdolsProp={loggedUserIdols} />
+          <Posts allPosts={posts} loggedUserIdolsProp={loggedUserIdols} />
           <div
             ref={bottomLineRef}
             style={{ marginBottom: "50px", height: "50px" }}
