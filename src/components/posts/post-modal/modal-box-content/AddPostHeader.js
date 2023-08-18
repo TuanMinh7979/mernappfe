@@ -7,15 +7,12 @@ import { FaGlobe } from "react-icons/fa";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-const AddPostHeader = () => {
+const AddPostHeader = ({ privacyObject }) => {
   const { profile } = useSelector((state) => state.user);
+
   const feeling = useSelector((state) => state.post.feelings);
   const privacyRef = useRef(null);
-  const [selectedPrivacy, setSelectedPrivacy] = useState({
-    topText: "Public",
-    subText: "Any",
-    icon: <FaGlobe className="globe-icon globe"></FaGlobe>,
-  });
+  const [selectedPrivacy, setSelectedPrivacy] = useState({ ...privacyObject });
   const [isPrivacySelectActive, setIsPrivacySelectActive] =
     useDetectOutsideClick(privacyRef, false);
 

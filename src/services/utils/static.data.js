@@ -188,7 +188,7 @@ export const emptyPostData = {
   feelings: '',
   gifUrl: '',
   profilePicture: '',// dont need to save in redux when add new
-  image: '',
+  image: '',// only use to preview image, not use in db
   userId: '',
   username: '',
   email: '',

@@ -22,8 +22,25 @@ import { FaArrowLeft } from "react-icons/fa";
 import Giphy from "@components/giphy/Giphy";
 import { Utils } from "@services/utils/utils.service";
 import Spinner from "@components/spinner/Spinner";
-import { feelingsList } from "@services/utils/static.data";
-const EditPost = ({ onPostImageInputChange }) => {
+
+import { privacyList } from "@services/utils/static.data";
+const EditPost = () => {
+
+    // ? image
+    const [globalChoosedPostImage, setGlobalChoosedPostImage] = useState(null);
+    const onPostImageInputChange = (event) => {
+        const file = event.target.files[0];
+        ImageUtils.checkFile(file);
+        setGlobalChoosedPostImage(file);
+        // ! TO REDUX
+        dispatch(
+            updatePost({
+                image: URL.createObjectURL(file),
+            })
+        );
+    };
+    // ? image
+
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const reduxModal = useSelector((state) => state.modal);
@@ -49,8 +66,9 @@ const EditPost = ({ onPostImageInputChange }) => {
         feelings: "",
 
         // for update
-        imgId: "",
-        imgVersion: ""
+        imgId: reduxPost.imgId,
+        imgVersion: reduxPost.imgVersion,
+
     });
     useEffect(() => {
         setDisabled(postData.post.length <= 0 && !reduxPost.image && !reduxPost.gifUrl);
@@ -116,7 +134,7 @@ const EditPost = ({ onPostImageInputChange }) => {
     };
     // ?
 
-    const createPost = async () => {
+    const updatePostToServer = async () => {
         setLoading(true);
 
         try {
@@ -124,20 +142,48 @@ const EditPost = ({ onPostImageInputChange }) => {
                 postData.feelings = reduxPost.feelings?.name;
             }
             postData.privacy = reduxPost.privacy || "Public";
-            postData.gifUrl = reduxPost.gifUrl;
             postData.profilePicture = profile?.profilePicture;
 
             if (reduxPost.image) {
-                // postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
+
+                postData.imgId = "";
+                postData.imgVersion = "";
+                postData.bgColor = "#ffffff"
+                postData.gifUrl = "";
+
+                postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
                 console.log(postData);
-                const response = await postService.createPostWithImage(postData);
+                const response = await postService.updatePostWithImage(reduxPost._id, postData);
 
                 setLoading(false);
                 dispatch(closeModal());
                 dispatch(emptyPost());
-            } else {
+            } else if (reduxPost.gifUrl) {
+                postData.imgId = "";
+                postData.imgVersion = "";
+                postData.bgColor = "#ffffff"
+
+                postData.gifUrl = reduxPost.gifUrl;
                 console.log(postData);
-                const response = await postService.createPost(postData);
+
+                const response = await postService.updatePost(reduxPost._id, postData);
+                setLoading(false);
+                dispatch(closeModal());
+                dispatch(emptyPost());
+            } else if (reduxPost.bgColor !== "#ffffff") {
+                postData.imgId = "";
+                postData.imgVersion = "";
+                postData.gifUrl = "";
+
+                postData.bgColor = reduxPost.bgColor
+                console.log(postData);
+
+                const response = await postService.updatePost(reduxPost._id, postData);
+                setLoading(false);
+                dispatch(closeModal());
+                dispatch(emptyPost());
+            } else {
+                const response = await postService.updatePost(reduxPost._id, postData);
                 setLoading(false);
                 dispatch(closeModal());
                 dispatch(emptyPost());
@@ -147,6 +193,15 @@ const EditPost = ({ onPostImageInputChange }) => {
             setLoading(false);
             Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
         }
+    };
+
+
+
+    // get privacy object from reduxPost
+    const getPrivacyObject = (type) => {
+        console.log(type);
+        let privacy = privacyList.find((data) => data.topText === type);
+        return privacy = privacy ? privacy : privacyList[0];
     };
 
 
@@ -181,9 +236,9 @@ const EditPost = ({ onPostImageInputChange }) => {
                         </button>
                     </div>
                     <hr />
-                    <AddPostHeader></AddPostHeader>
+                    <AddPostHeader privacyObject={getPrivacyObject(reduxPost.privacy)}></AddPostHeader>
 
-                    {!reduxPost.image && !reduxPost.gifUrl && (
+                    {!reduxPost.image && !reduxPost.gifUrl && !reduxPost.imgId && (
                         <>
                             <div
                                 className={`modal-box-form ${postData.bgColor}`}
@@ -223,7 +278,7 @@ const EditPost = ({ onPostImageInputChange }) => {
                         </>
                     )}
 
-                    {(reduxPost.image || reduxPost.gifUrl) && (
+                    {(reduxPost.image || reduxPost.gifUrl || reduxPost.imgId) && (
                         <>
                             <div className="modal-box-image-form">
                                 {/* //* content  */}
@@ -254,8 +309,10 @@ const EditPost = ({ onPostImageInputChange }) => {
                                     <img
                                         data-testid="post-image"
                                         className="post-image"
-                                        src={`${reduxPost.image ? reduxPost.image : reduxPost.gifUrl
-                                            }`}
+                                        src={reduxPost.image ? reduxPost.image :
+                                            reduxPost.gifUrl ? reduxPost.gifUrl :
+                                                Utils.getImage(reduxPost.imgId, reduxPost.imgVersion)
+                                        }
                                         alt=""
                                     />
                                 </div>
@@ -289,10 +346,10 @@ const EditPost = ({ onPostImageInputChange }) => {
 
                     <div className="modal-box-button" data-testid="post-button">
                         <Button
-                            label="Create Post"
+                            label="Update Post"
                             className="post-button"
                             disabled={disabled}
-                            handleClick={createPost}
+                            handleClick={updatePostToServer}
                         />
                     </div>
                 </div>

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./AddPost.scss";
 import AddPostHeader from "../modal-box-content/AddPostHeader";
 import { FaTimes } from "react-icons/fa";
-import { bgColors } from "@services/utils/static.data";
+import { bgColors, privacyList } from "@services/utils/static.data";
 import { ImageUtils } from "@services/utils/image-utils.service";
 import { postService } from "@services/api/post/post.service";
 import Button from "@components/button/Button";
@@ -169,7 +169,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
             </button>
           </div>
           <hr />
-          <AddPostHeader></AddPostHeader>
+          <AddPostHeader privacyObject={privacyList[0]}/>
 
           {!reduxPost.image && !reduxPost.gifUrl && (
             <>

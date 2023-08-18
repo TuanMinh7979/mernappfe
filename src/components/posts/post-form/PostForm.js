@@ -126,7 +126,7 @@ const PostForm = () => {
       )}
       {isOpen && type === "edit" && (
         <EditPost
-        onPostImageInputChange={onPostImageInputChange}
+     
         
         />
       )}
