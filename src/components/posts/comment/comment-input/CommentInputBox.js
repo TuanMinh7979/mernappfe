@@ -34,6 +34,7 @@ const CommentInputBox = ({ post }) => {
             await postService.createComment(commentBody);
             setComment('');
         } catch (error) {
+            console.log(error);
             Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
         }
     };

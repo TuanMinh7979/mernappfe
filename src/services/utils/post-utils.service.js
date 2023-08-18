@@ -61,20 +61,22 @@ export class PostUtils {
       }
     });
     socketService?.socket?.on("update comment", (commentData) => {
-      const oldPostData = posts.find(
+      const newPosts = [...posts]
+      const oldPostData = newPosts.find(
         (post) => post._id === commentData?.postId
       );
 
-      let newPostData = oldPostData;
+      if (!oldPostData) return
+      let newPostData = { ...oldPostData };
       newPostData.commentsCount = commentData.commentsCount;
-      // update state posts
-      const index = posts.findIndex((el) => el._id == newPostData?._id);
+      // update state newPosts
+      const index = newPosts.findIndex((el) => el._id == newPostData?._id);
       if (index > -1) {
-        posts.splice(index, 1, newPostData);
-        setPosts(posts);
+        newPosts.splice(index, 1, newPostData);
+        setPosts(newPosts);
       }
     });
   }
 
-  static updateAPost(posts, updatedPost, setPosts) {}
+  static updateAPost(posts, updatedPost, setPosts) { }
 }
