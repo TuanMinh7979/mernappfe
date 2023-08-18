@@ -20,6 +20,7 @@ const postsSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getPosts.fulfilled, (state, action) => {
+      console.log( action.payload);
       state.isLoading = false;
       const { posts, totalPosts } = action.payload;
       state.posts = [...posts];

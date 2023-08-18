@@ -58,6 +58,12 @@ class PostService {
     return response;
   }
 
+  async getPostComments(postId) {
+    const response = await axios.get(`/post/comments/${postId}`);
+    return response;
+  }
+
+
 
 
 

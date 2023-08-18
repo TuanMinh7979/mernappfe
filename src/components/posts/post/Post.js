@@ -13,6 +13,7 @@ import ReactionModal from "../reactions/reactions-modal/ReactionModal";
 import CommentInputBox from "../comment/comment-input/CommentInputBox";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { useState } from "react";
+import CommentsModal from "../comment/comment-modal/CommentsModal";
 const Post = ({ post, showIcons }) => {
 
   // ?comment
@@ -29,7 +30,7 @@ const Post = ({ post, showIcons }) => {
     return privacy?.icon;
   };
 
-  const { isReactionsModalOpen } = useSelector(state => state.modal)
+  const { isReactionsModalOpen, isCommentsModalOpen } = useSelector(state => state.modal)
 
 
 
@@ -37,6 +38,7 @@ const Post = ({ post, showIcons }) => {
   return (
     <>
       {isReactionsModalOpen && <ReactionModal></ReactionModal>}
+      {isCommentsModalOpen && <CommentsModal></CommentsModal>}
       <div className="post-body" data-testid="post">
         <div className="user-post-data">
           <div className="user-post-data-wrap">

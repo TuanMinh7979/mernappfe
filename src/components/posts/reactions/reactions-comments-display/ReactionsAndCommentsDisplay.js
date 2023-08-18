@@ -9,7 +9,7 @@ import { postService } from '@services/api/post/post.service';
 import { reactionsMap } from '@services/utils/static.data';
 import { updatePost } from '@redux/reducers/post/post.reducer';
 import { useSelector } from 'react-redux';
-import { updateIsReactionsModalOpen } from '@redux/reducers/modal/modal.reducer';
+import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
 
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
@@ -39,9 +39,10 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   }, [post])
 
 
+  const { isReactionsModalOpen } = useSelector(state => state.modal)
   const openReactionsCom = () => {
     dispatch(updatePost(post))
-    dispatch(updateIsReactionsModalOpen(true))
+    dispatch(updateIsReactionsModalOpen(!isReactionsModalOpen))
   }
 
 
@@ -50,14 +51,24 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   // 1 person can comment multiple times so we need to use Set
   const getPostCommentNames = async () => {
     try {
-      const response = await postService.getPostCommentNames(post._id)
-      setPostCommentNames([...new Set(response.data.comments.name)])
+      const response = await postService.getPostCommentsNames(post._id)
+      setPostCommentNames([...new Set(response.data.comments.names)])
     } catch (e) {
       Utils.updToastsNewEle(e?.response?.data?.message, 'error', dispatch);
 
     }
   }
   // ? end comment names
+
+
+  // ? open comment details
+  const { isCommentsModalOpen } = useSelector(state => state.modal)
+  const openCommentsComponent = () => {
+    dispatch(updatePost(post));
+    dispatch(updateModalIsCommentsModalOpen(!isCommentsModalOpen));
+  };
+
+  // ? end comment details
 
   // console.log("PROPS", reactionsOfCurPost);
   // console.log("after format raw object", reactionsProp);
@@ -150,7 +161,9 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
           {/* end number of reaction */}
         </div>
       </div>
-      <div className="comment tooltip-container" data-testid="comment-container">
+      <div className="comment tooltip-container" data-testid="comment-container"
+      onClick={openCommentsComponent}
+      >
         <span data-testid="comment-count">
 
           {post?.commentsCount > 0 && (
