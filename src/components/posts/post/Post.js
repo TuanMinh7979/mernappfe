@@ -8,14 +8,18 @@ import { timeAgo } from "@services/utils/time.ago.utils";
 import PropTypes from "prop-types";
 import { Utils } from "@services/utils/utils.service";
 import ReactionAndCommentSection from "../post-react-comment-section/ReactionAndCommentSection";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ReactionModal from "../reactions/reactions-modal/ReactionModal";
 import CommentInputBox from "../comment/comment-input/CommentInputBox";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { useState } from "react";
 import CommentsModal from "../comment/comment-modal/CommentsModal";
+import ImageModal from "@components/image-modal/ImageModal";
+import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reducer";
+import { updatePost } from "@redux/reducers/post/post.reducer";
+import { openModal } from "@redux/reducers/modal/modal.reducer";
 const Post = ({ post, showIcons }) => {
-
+  const dispatch = useDispatch()
   // ?comment
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
   const { _id } = useSelector(state => state.post)
@@ -33,12 +37,37 @@ const Post = ({ post, showIcons }) => {
   const { isReactionsModalOpen, isCommentsModalOpen } = useSelector(state => state.modal)
 
 
+  // ? show image modal
+  const [imageUrl, setImageUrl] = useState('');
+  const [showImageModal, setShowImageModal] = useState(false);
+  // ? END  show image modal
 
 
+  // ? edit and delete post
+  const openEditModal = () => {
+
+    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
+    dispatch(openModal({ type: "edit" }));
+  };
+
+  const reduxModal = useSelector(state => state.modal)
+  const openDeleteDialog = () => {
+    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
+    dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen))
+
+  }
+
+  // ? END edit and delete post
   return (
     <>
       {isReactionsModalOpen && <ReactionModal></ReactionModal>}
       {isCommentsModalOpen && <CommentsModal></CommentsModal>}
+
+      {showImageModal && <ImageModal
+
+        image={imageUrl}
+        onCancel={() => setShowImageModal(!showImageModal)}
+      />}
       <div className="post-body" data-testid="post">
         <div className="user-post-data">
           <div className="user-post-data-wrap">
@@ -64,8 +93,8 @@ const Post = ({ post, showIcons }) => {
                 </h5>
                 {showIcons && (
                   <div className="post-icons" data-testid="post-icons">
-                    <FaPencilAlt className="pencil" />
-                    <FaRegTrashAlt className="trash" />
+                    <FaPencilAlt className="pencil" onClick={openEditModal} />
+                    <FaRegTrashAlt className="trash" onClick={openDeleteDialog} />
                   </div>
                 )}
               </div>
@@ -97,14 +126,30 @@ const Post = ({ post, showIcons }) => {
               )}
 
               {post?.imgId && !post?.gifUrl && post.bgColor === "#ffffff" && (
-                <div data-testid="post-image" className="image-display-flex">
+                <div data-testid="post-image" className="image-display-flex"
+
+                  onClick={() => {
+
+                    setShowImageModal(!showImageModal)
+                    setImageUrl(Utils.getImage(post.imgId, post.imgVersion))
+                  }
+                  }
+                >
                   <img className="post-image" src={`${Utils.getImage(post.imgId, post.imgVersion)}`} alt="" />
 
                 </div>
               )}
 
               {post?.gifUrl && post.bgColor === "#ffffff" && (
-                <div className="image-display-flex">
+                <div className="image-display-flex"
+
+
+                  onClick={() => {
+
+                    setShowImageModal(!showImageModal)
+                    setImageUrl(post?.gifUrl)
+                  }}
+                >
                   <img className="post-image" src={`${post?.gifUrl}`} alt="" />
                 </div>
               )}
@@ -112,7 +157,7 @@ const Post = ({ post, showIcons }) => {
               <ReactionAndCommentSection post={post}></ReactionAndCommentSection>
             </div>
           </div>
-          {_id === post?._id && <CommentInputBox post={post}></CommentInputBox>
+          {_id === post?._id && !reduxModal.type && <CommentInputBox post={post}></CommentInputBox>
           }
         </div>
       </div>

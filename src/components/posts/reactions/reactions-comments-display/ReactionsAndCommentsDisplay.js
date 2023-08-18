@@ -9,6 +9,7 @@ import { postService } from '@services/api/post/post.service';
 import { reactionsMap } from '@services/utils/static.data';
 import { updatePost } from '@redux/reducers/post/post.reducer';
 import { useSelector } from 'react-redux';
+import { feelingsList } from '@services/utils/static.data';
 import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
 
@@ -41,7 +42,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
   const { isReactionsModalOpen } = useSelector(state => state.modal)
   const openReactionsCom = () => {
-    dispatch(updatePost(post))
+    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
     dispatch(updateIsReactionsModalOpen(!isReactionsModalOpen))
   }
 
@@ -64,7 +65,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   // ? open comment details
   const { isCommentsModalOpen } = useSelector(state => state.modal)
   const openCommentsComponent = () => {
-    dispatch(updatePost(post));
+    dispatch(updatePost({ ...post, feelings: feelingsList.find((data) => post.feelings === data.name) }))
     dispatch(updateModalIsCommentsModalOpen(!isCommentsModalOpen));
   };
 

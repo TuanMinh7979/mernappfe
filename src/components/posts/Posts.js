@@ -22,7 +22,7 @@ const Posts = ({ allPosts, loggedUserIdolsProp }) => {
               <>
                 {PostUtils.checkPrivacy(post, profile, loggedUserIdolsProp) && (
                   <>
-                    <Post post={post} showIcons={false} />
+                    <Post post={post} showIcons={true} />
                   </>
                 )}
               </>

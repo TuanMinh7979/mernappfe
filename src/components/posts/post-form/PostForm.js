@@ -19,6 +19,7 @@ import AddPost from "../post-modal/post-add/AddPost";
 import { useRef } from "react";
 
 import { useState } from "react";
+import EditPost from "../post-modal/post-edit/EditPost";
 const PostForm = () => {
   const [globalChoosedPostImage, setGlobalChoosedPostImage] = useState(null);
   const dispatch = useDispatch();
@@ -120,6 +121,12 @@ const PostForm = () => {
         <AddPost
         globalChoosedPostImage={globalChoosedPostImage}
         onPostImageInputChange ={onPostImageInputChange}
+        
+        />
+      )}
+      {isOpen && type === "edit" && (
+        <EditPost
+        onPostImageInputChange={onPostImageInputChange}
         
         />
       )}

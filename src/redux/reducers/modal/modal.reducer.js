@@ -4,8 +4,7 @@ import { FaSleigh } from "react-icons/fa"
 const initialState = {
     type: '',
     isOpen: false,
-    feeling: '',
-    image: '',
+
     data: null,
     isFeelingOpen: false,
     isFileDialogOpen: false,
@@ -70,9 +69,8 @@ const modalSlice = createSlice({
 export const {
     openModal,
     closeModal,
-    updateModalFeeling,
-    updateModalIsFileDialogOpen,
 
+    updateModalIsFileDialogOpen,
     updateModalIsFeelingOpen,
     updateModalIsGifModalOpen,
     updateIsReactionsModalOpen,
