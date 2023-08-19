@@ -6,6 +6,11 @@ class FollowerService {
     return response;
   }
 
+  async unFollowUser(followeeId, followerId) {
+    const response = await axios.put(`/user/unfollow/${followeeId}/${followerId}`);
+    return response;
+  }
+
   async getLoggedUserIdols() {
     // get my idols
     const response = await axios.get('/user/following');
