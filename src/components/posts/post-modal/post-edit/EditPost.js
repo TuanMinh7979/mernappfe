@@ -137,11 +137,11 @@ const EditPost = () => {
 
     const updatePostToServer = async () => {
         setLoading(true);
-        console.log(">>>>>>>>>>>>redux", reduxPost, "postData", postData);
+
         try {
             //  postData.post is always newest and reduxPost.post is not change
             //   new feeling
-            console.log(">>>>>>>>>>>>111redux", reduxPost, "postData", postData);
+
             if (Object.keys(reduxPost.feelings).length) {
                 postData.feelings = reduxPost.feelings?.name;
             }
@@ -149,7 +149,7 @@ const EditPost = () => {
             postData.privacy = reduxPost.privacy || "Public";
             //   new imgId, imgVersion
             if (postData.image !== reduxPost.image) {
-               
+
                 // must do
                 postData.imgId = "";
                 postData.imgVersion = "";
@@ -158,7 +158,7 @@ const EditPost = () => {
 
                 // additional
                 if (reduxPost.image) {
-                 
+
                     postData.bgColor = "#ffffff"
                     postData.gifUrl = "";
                 }
@@ -167,12 +167,12 @@ const EditPost = () => {
             }
 
             if (postData.gifUrl !== reduxPost.gifUrl) {
-             
+
                 // must do
                 postData.gifUrl = reduxPost.gifUrl;
                 // additional
                 if (reduxPost.gifUrl) {
-                
+
                     postData.imgId = "";
                     postData.imgVersion = "";
                     postData.bgColor = "#ffffff"
@@ -183,7 +183,7 @@ const EditPost = () => {
             if (reduxPost.bgColor !== postData.bgColor) {
                 // additional
                 if (postData.bgColor !== "#ffffff") {
-                   
+
                     postData.imgId = "";
                     postData.imgVersion = "";
                     postData.gifUrl = "";

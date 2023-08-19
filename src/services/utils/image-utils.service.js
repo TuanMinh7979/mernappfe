@@ -11,13 +11,13 @@ export class ImageUtils {
   }
   static checkFile(file) {
     if (!file) {
-      return window.alert("File can not be empty");
+      return "File can not be empty"
     }
     if (!ImageUtils.isValidFormat(file)) {
-      return window.alert("File type not accepted");
+      return "File type not accepted";
     }
     if (!ImageUtils.isValidSize(file)) {
-      return window.alert("File size too large");
+      return "File size too large";
     }
   }
 
