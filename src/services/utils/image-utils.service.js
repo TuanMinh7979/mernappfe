@@ -19,6 +19,7 @@ export class ImageUtils {
     if (!ImageUtils.isValidSize(file)) {
       return "File size too large";
     }
+    return ""
   }
 
   static readAsBase64(file) {

@@ -30,7 +30,11 @@ const EditPost = () => {
     const [globalChoosedPostImage, setGlobalChoosedPostImage] = useState(null);
     const onPostImageInputChange = (event) => {
         const file = event.target.files[0];
-        ImageUtils.checkFile(file);
+        const errMessage = ImageUtils.checkFile(file);
+        if (errMessage) {
+            alert(errMessage)
+            return
+        }
         setGlobalChoosedPostImage(file);
         // ! TO REDUX
         console.log("updateeeeeredux",);

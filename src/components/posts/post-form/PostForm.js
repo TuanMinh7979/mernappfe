@@ -40,9 +40,13 @@ const PostForm = () => {
   const onPostImageInputChange = (event) => {
     const file = event.target.files[0];
     const errMessage=ImageUtils.checkFile(file);
+
     if(errMessage){
-      return alert(errMessage)
+       alert(errMessage)
+    
+       return
     }
+
     setGlobalChoosedPostImage(file);
     // ! TO REDUX
     dispatch(
