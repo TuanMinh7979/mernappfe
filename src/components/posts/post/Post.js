@@ -16,13 +16,16 @@ import { useState } from "react";
 import CommentsModal from "../comment/comment-modal/CommentsModal";
 import ImageModal from "@components/image-modal/ImageModal";
 import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reducer";
-import { updatePost } from "@redux/reducers/post/post.reducer";
+import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 import { openModal } from "@redux/reducers/modal/modal.reducer";
+import Dialog from "@components/dialog/Dialog";
+import { postService } from "@services/api/post/post.service";
 const Post = ({ post, showIcons }) => {
   const dispatch = useDispatch()
   // ?comment
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
   const { _id } = useSelector(state => state.post)
+  const reduxPost = useSelector(state => state.post)
   // ? end comment
 
   const getFeeling = (name) => {
@@ -33,9 +36,6 @@ const Post = ({ post, showIcons }) => {
     const privacy = privacyList.find((data) => data.topText === type);
     return privacy?.icon;
   };
-
-  const { isReactionsModalOpen, isCommentsModalOpen } = useSelector(state => state.modal)
-
 
   // ? show image modal
   const [imageUrl, setImageUrl] = useState('');
@@ -65,17 +65,43 @@ const Post = ({ post, showIcons }) => {
 
   }
 
+
+  const deletePost = async () => {
+    try {
+      const response = await postService.deletePost(reduxPost._id);
+      if (response) {
+        Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+        dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));
+        dispatch(emptyPost());
+      }
+    } catch (error) {
+      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+    }
+  };
+
   // ? END edit and delete post
   return (
     <>
-      {isReactionsModalOpen && <ReactionModal></ReactionModal>}
-      {isCommentsModalOpen && <CommentsModal></CommentsModal>}
+      {reduxModal.isReactionsModalOpen && <ReactionModal></ReactionModal>}
+      {reduxModal.isCommentsModalOpen && <CommentsModal></CommentsModal>}
 
       {showImageModal && <ImageModal
 
         image={imageUrl}
         onCancel={() => setShowImageModal(!showImageModal)}
       />}
+      {reduxModal.isDeleteDialogOpen && (
+        <Dialog
+          title="Are you sure you want to delete this post?"
+          firstButtonText="Delete"
+          secondButtonText="Cancel"
+          firstBtnHandler={() => deletePost()}
+          secondBtnHandler={() => {
+            dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));
+            dispatch(emptyPost());
+          }}
+        />
+      )}
       <div className="post-body" data-testid="post">
         <div className="user-post-data">
           <div className="user-post-data-wrap">
@@ -165,7 +191,7 @@ const Post = ({ post, showIcons }) => {
               <ReactionAndCommentSection post={post}></ReactionAndCommentSection>
             </div>
           </div>
-          {_id === post?._id && !reduxModal.type && <CommentInputBox post={post}></CommentInputBox>
+          {reduxPost._id === post?._id && !reduxModal.type && !reduxModal.isDeleteDialogOpen && <CommentInputBox post={post}></CommentInputBox>
           }
         </div>
       </div>

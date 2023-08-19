@@ -58,9 +58,9 @@ const modalSlice = createSlice({
             state.isCommentsModalOpen = action.payload;
         },
         updateModalIsDeleteDialogOpen: (state, action) => {
-            const { data, toggle } = action.payload;
-            state.isDeleteDialogOpen = toggle;
-            state.data = data;
+       
+            state.isDeleteDialogOpen = action.payload;
+         
         }
     }
 })

@@ -28,9 +28,9 @@ export class PostUtils {
     });
 
     socketService?.socket?.on("update post", (updatedPosts) => {
-      const updatedPost= updatedPosts[0]
+      const updatedPost = updatedPosts[0]
       let newPosts = [...posts]
-      console.log("yesssssssssssssss", updatedPost);
+
       const index = posts.findIndex((el) => el._id == updatedPost._id);
       if (index > -1) {
         newPosts.splice(index, 1, updatedPost);
@@ -38,7 +38,9 @@ export class PostUtils {
       }
     });
     socketService?.socket?.on("delete post", (postId) => {
-      setPosts(posts.filter((item) => item._id === postId));
+  
+      let newPosts = [...posts]
+      setPosts([...newPosts.filter((item) => item._id !== postId)]);
     });
 
     // from post.socket.ts in server after sending emit('reaction') in client at ReactionAndCommentArea
@@ -51,15 +53,12 @@ export class PostUtils {
 
       newPostData.reactions = { ...reactionData.postReactions };
 
-      // // update state posts
+
       let newPosts = [...posts];
       const index = newPosts.findIndex((el) => el._id == newPostData?._id);
-      console.log("AO GIAC ROI", reactionData);
-      if (index > -1) {
-        console.log("IDXXXXXXXXXXXXXXXX", index);
-        newPosts.splice(index, 1, newPostData);
 
-        console.log("NNNNNNNNNNNNNNNNEWWWWWWWWWWWWWWWWWWW POST", newPostData, newPosts);
+      if (index > -1) {
+        newPosts.splice(index, 1, newPostData);
         setPosts([...newPosts]);
       }
     });
@@ -72,7 +71,7 @@ export class PostUtils {
       if (!oldPostData) return
       let newPostData = { ...oldPostData };
       newPostData.commentsCount = commentData.commentsCount;
-      // update state newPosts
+
       const index = newPosts.findIndex((el) => el._id == newPostData?._id);
       if (index > -1) {
         newPosts.splice(index, 1, newPostData);

@@ -76,7 +76,10 @@ class PostService {
 
 
 
-
+  async deletePost(postId) {
+    const response = await axios.delete(`/post/${postId}`);
+    return response;
+  }
 
 
 }
