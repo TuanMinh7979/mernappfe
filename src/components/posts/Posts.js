@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
 import { useEffect } from "react";
 import { PostUtils } from "@services/utils/post-utils.service";
-import PostSkeleton from "./post/PostSkeleton";
+
 const Posts = ({ allPosts, loggedUserIdolsProp }) => {
   const { profile } = useSelector((state) => state.user);
   return (

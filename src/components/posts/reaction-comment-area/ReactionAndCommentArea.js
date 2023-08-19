@@ -21,7 +21,7 @@ const ReactionAndCommentArea = ({ post }) => {
 
   const toggleCommentInput = () => {
     if (!_id || _id !== post?._id) {
-      dispatch(updatePost(post))
+      dispatch(updatePost({...post}))
     } else {
       dispatch(emptyPost())
     }
@@ -116,12 +116,8 @@ const ReactionAndCommentArea = ({ post }) => {
     existOldReactionFromDB,
     previousReactionText
   ) => {
-    console.log(
-      "GETOUTNOF HERE",
-      newReactionText,
-      existOldReactionFromDB,
-      previousReactionText
-    );
+   
+
     let newPost = { ...post };
 
     if (!existOldReactionFromDB) {

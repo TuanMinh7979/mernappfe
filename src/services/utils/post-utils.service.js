@@ -27,18 +27,19 @@ export class PostUtils {
       setPosts(posts);
     });
 
-    socketService?.socket?.on("update post", (updatedPosts) => {
-      const updatedPost = updatedPosts[0]
+    socketService?.socket?.on("update post", (updatedPost) => {
+      console.log("------------from server",updatedPost);
       let newPosts = [...posts]
 
       const index = posts.findIndex((el) => el._id == updatedPost._id);
       if (index > -1) {
         newPosts.splice(index, 1, updatedPost);
+        console.log("------------NEW POSTS", newPosts);
         setPosts([...newPosts]);
       }
     });
     socketService?.socket?.on("delete post", (postId) => {
-  
+
       let newPosts = [...posts]
       setPosts([...newPosts.filter((item) => item._id !== postId)]);
     });

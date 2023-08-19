@@ -12,7 +12,7 @@ export default class NotificationUtils {
     type,
     setNotificationsCount
   ) {
-    console.log(notifications);
+
     socketService?.socket?.on("insert notification", (data, userToData) => {
       // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {

@@ -29,7 +29,7 @@ const Streams = () => {
   let appPosts = useRef([])
   const fetchPostData = () => {
     let pageNum = currentPage
-    console.log(currentPage, Math.round(reduxPosts.totalPostsCount / 3));
+
     if (currentPage <= Math.round(reduxPosts.totalPostsCount / 3)) {
       pageNum += 1
       setCurrentPage(pageNum)
@@ -117,6 +117,8 @@ const Streams = () => {
     }
   }
   // ? END get all reactions of current user
+
+  console.log("----", posts);
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">

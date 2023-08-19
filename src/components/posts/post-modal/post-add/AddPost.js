@@ -123,26 +123,26 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
 
       if (reduxPost.image) {
         postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
-        console.log(postData);
+ 
         const response = await postService.createPostWithImage(postData);
 
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());
       } else {
-        console.log(postData);
+  
         const response = await postService.createPost(postData);
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());
       }
-      console.log(postData);
+  
     } catch (error) {
       setLoading(false);
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
-  console.log("STATE:PostData", postData);
+
   return (
     <PostWrapper>
       <div></div>

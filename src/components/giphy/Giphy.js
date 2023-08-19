@@ -14,7 +14,7 @@ const Giphy = () => {
     const [gifs, setGifs] = useState([]);
     const [loading, setLoading] = useState(false);
     const updPostGifUrl = (gifUrl) => {
-        console.log("12121212");
+   
         dispatch(updatePost({ gifUrl: gifUrl, image: '' }))
         dispatch(updateModalIsGifModalOpen(false))
     }

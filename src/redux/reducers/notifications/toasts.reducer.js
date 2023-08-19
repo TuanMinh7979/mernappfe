@@ -23,7 +23,7 @@ const toastsSlice = createSlice({
     updateToastsNewEle: (state, action) => {
       const { message, type } = action.payload;
       const toastIconObject = toastIcons.find((item) => item[type]);
-      console.log(toastIconObject);
+      
       const toastItem = {
         id: state.length,
         description: message,

@@ -37,7 +37,7 @@ const EditPost = () => {
         }
         setGlobalChoosedPostImage(file);
         // ! TO REDUX
-        console.log("updateeeeeredux",);
+      
         dispatch(
             updatePost({
                 image: URL.createObjectURL(file),
@@ -146,7 +146,7 @@ const EditPost = () => {
             //  postData.post is always newest and reduxPost.post is not change
             //   new feeling
 
-            if (Object.keys(reduxPost.feelings).length) {
+            if (reduxPost.feelings && Object.keys(reduxPost.feelings).length) {
                 postData.feelings = reduxPost.feelings?.name;
             }
             //   new privacy
@@ -195,22 +195,23 @@ const EditPost = () => {
 
             }
             console.log(postData);
-
+            let response = ""
             if (postData.image) {
-                await postService.updatePostWithImage(reduxPost._id, postData);
+                response = await postService.updatePostWithImage(reduxPost._id, postData);
             } else {
-                await postService.updatePost(reduxPost._id, postData);
+                response = await postService.updatePost(reduxPost._id, postData);
             }
 
             setLoading(false);
             dispatch(closeModal());
             dispatch(emptyPost());
+            Utils.updToastsNewEle(response.data.message, 'success', dispatch);
 
 
 
         } catch (error) {
             setLoading(false);
-            console.log(error);
+      
             Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
         }
     };
@@ -219,7 +220,7 @@ const EditPost = () => {
 
     // get privacy object from reduxPost
     const getPrivacyObject = (type) => {
-        console.log(type);
+      
         let privacy = privacyList.find((data) => data.topText === type);
         return privacy = privacy ? privacy : privacyList[0];
     };
