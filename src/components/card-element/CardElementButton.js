@@ -12,7 +12,8 @@ const CardElementButtons = ({
   return (
     <div className="card-element-buttons" data-testid="card-element-buttons">
       <Fragment>
-        {!isChecked && (
+        {!
+        isChecked && (
           <Button label={btnTextOne} className="card-element-buttons-btn button" handleClick={onClickBtnOne} />
         )}
         {isChecked && (

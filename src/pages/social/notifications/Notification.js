@@ -28,7 +28,7 @@ const Notification = () => {
     try {
       const rs = await notificationService.getUserNotifications()
       setNotifications(rs.data.notifications)
-      console.log("set to data", rs.data.notifications);
+
     } catch (error) {
 
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);

@@ -46,11 +46,6 @@ const Follower = () => {
   // ? new user data when scroll 
 
 
-
-
-
-
-
   useEffect(() => {
     getMyFans();
     setMyBlockedUsers(profile.blocked)

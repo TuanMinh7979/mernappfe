@@ -28,23 +28,45 @@ export class FollowersUtils {
   }
 
 
-  static socketIOFollowAndUnfollow(users, followers, setFollowers, setUsers) {
+  // use in People page, user is user state list in page
+  static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
+    console.log("--------------init socket follow and unfollow");
     // in follow-user
-    socketService?.socket?.on('add follow', (data) => {
-      const userData = users.find((user) => user._id === data?._id);
-      if (userData) {
-        const updatedFollowers = [...followers, data];
-        setFollowers(updatedFollowers);
-        FollowersUtils.updateSingleUser(users, userData, data, setUsers);
+    socketService?.socket?.on('add follow', (newIdolData) => {
+      console.log("ADDDDDDDDDDDDDDDDDDDFOLLOWWWWWWWWWWWW");
+      const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
+      if (idolIndex != -1) {
+        console.log("HEEEEEEEEEEEREEE-------------------------");
+        // update idol state
+        setMyIdols([...myIdols, newIdolData]);
+        // update users state
+        let newUser = { ...users[idolIndex] }
+        newUser.followersCount = newIdolData.followersCount;
+        newUser.followingCount = newIdolData.followingCount;
+        newUser.postsCount = newIdolData.postsCount;
+        let newUsers = [...users]
+        newUsers.splice(idolIndex, 1, newUser);
+        setUsers([...newUsers])
+
       }
     });
 
-    socketService?.socket?.on('remove follow', (data) => {
-      const userData = users.find((user) => user._id === data?._id);
-      if (userData) {
-        const updatedFollowers = followers.filter((follower) => follower._id !== data?._id);
-        setFollowers(updatedFollowers);
-        FollowersUtils.updateSingleUser(users, userData, data, setUsers);
+    socketService?.socket?.on('remove follow', (newIdolData) => {
+      console.log("REMOVEEEEEEEEEEE FOLLOWWWWWWWWWWWWW");
+      const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
+      if (idolIndex) {
+        // update idol state
+        let newMyIdols = myIdols.filter((idol) => idol._id !== newIdolData?._id);
+        setMyIdols([...newMyIdols])
+        // update users state
+        let newUser = { ...users[idolIndex] }
+        newUser.followersCount = newIdolData.followersCount;
+        newUser.followingCount = newIdolData.followingCount;
+        newUser.postsCount = newIdolData.postsCount;
+        let newUsers = [...users]
+        newUsers.splice(idolIndex, 1, newUser);
+        setUsers([...newUsers])
+
       }
     });
   }
@@ -57,17 +79,6 @@ export class FollowersUtils {
     });
   }
 
-  static updateSingleUser(users, userData, followerData, setUsers) {
-    let newUsers = { ...users };
-    userData.followersCount = followerData.followersCount;
-    userData.followingCount = followerData.followingCount;
-    userData.postsCount = followerData.postsCount;
-    const index = users.findIndex((item) => item._id === userData?._id);
-    if (index > -1) {
-      newUsers.splice(index, 1, userData);
-      setUsers({ ...newUsers });
-    }
-  }
 
 
   // block and unblock

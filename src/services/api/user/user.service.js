@@ -19,9 +19,6 @@ class UserService {
     return response;
   }
 
-
-
-
 }
 
 export const userService = new UserService();

@@ -104,8 +104,8 @@ export class Utils {
     return myBlockedByArray && myBlockedByArray.length >= 0 && myBlockedByArray.some((id) => id === postAuthorUserId);
   }
 
-  static checkIfUserIsFollowed(userFollowers, postCreatorId, loggedUserId) {
-    return userFollowers.some(
+  static checkIfUserIsFollowed(idols, postCreatorId, loggedUserId) {
+    return idols.some(
       (user) => user._id === postCreatorId || postCreatorId === loggedUserId
     );
   }

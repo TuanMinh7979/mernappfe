@@ -194,7 +194,7 @@ const EditPost = () => {
                 }
 
             }
-            console.log(postData);
+
             let response = ""
             if (postData.image) {
                 response = await postService.updatePostWithImage(reduxPost._id, postData);

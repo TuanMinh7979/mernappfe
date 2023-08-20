@@ -41,7 +41,7 @@ const Streams = () => {
     try {
       setLoading(true)
       const response = await postService.getAllPosts(currentPage);
-      console.log("FETCH NEW", currentPage, response.data.posts);
+
       if (response.data.posts.length > 0) {
         appPosts = [...posts, ...response.data.posts];
         const allPosts = uniqBy(appPosts, '_id');
@@ -108,7 +108,7 @@ const Streams = () => {
 
   const getReactionsByUsername = async () => {
     try {
-      console.log("USERNAME: ", profile.username);
+
       const rs = await postService.getReactionsByUsername(profile.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
@@ -118,7 +118,7 @@ const Streams = () => {
   }
   // ? END get all reactions of current user
 
-  console.log("----", posts);
+
   return (
     <div className="streams" data-testid="streams">
       <div className="streams-content">

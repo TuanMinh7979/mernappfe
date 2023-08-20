@@ -28,13 +28,13 @@ export class PostUtils {
     });
 
     socketService?.socket?.on("update post", (updatedPost) => {
-      console.log("------------from server",updatedPost);
+
       let newPosts = [...posts]
 
       const index = posts.findIndex((el) => el._id == updatedPost._id);
       if (index > -1) {
         newPosts.splice(index, 1, updatedPost);
-        console.log("------------NEW POSTS", newPosts);
+ 
         setPosts([...newPosts]);
       }
     });
@@ -46,7 +46,7 @@ export class PostUtils {
 
     // from post.socket.ts in server after sending emit('reaction') in client at ReactionAndCommentArea
     socketService?.socket?.on("update reaction", (reactionData) => {
-      console.log("--------------------------------ON UPDATE REACTION");
+    
       const oldPostData = posts.find(
         (post) => post._id === reactionData?.postId
       );

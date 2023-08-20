@@ -17,11 +17,13 @@ import useEffectOnce from '@hooks/useEffectOnce'
 import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
-
+import { useEffect } from 'react'
 const People = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { profile } = useSelector((state) => state.user);
+
+
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -31,7 +33,10 @@ const People = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
 
+  const [myIdols, setMyIdols] = useState([]);
 
+  console.log("USEEEEERR", users);
+  console.log("idolsssssss", myIdols);
   // ? init users
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {
@@ -45,6 +50,7 @@ const People = () => {
         });
       }
       setTotalUserCnt(response.data.totalUsers);
+      setMyIdols(response.data.followees)
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -58,7 +64,7 @@ const People = () => {
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
   useInfiniteScroll(bodyRef, bottomLineRef, fetchData);
-  const PAGE_SIZE = 3;
+  const PAGE_SIZE = 12;
 
   function fetchData() {
     let pageNum = currentPage;
@@ -87,17 +93,23 @@ const People = () => {
     }
   };
 
-  const unFollowUser = async (user) => {
+  const unFollowUser = async (idol) => {
     try {
-      const userData = user;
+      const userData = {...idol};
       userData.followersCount -= 1;
       socketService?.socket?.emit('unfollow user', userData);
-      FollowersUtils.unFollowUser(user, profile, dispatch);
+      FollowersUtils.unFollowUser(idol, profile, dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
   // ? END follow and unfollow
+
+
+  useEffect(() => {
+    FollowersUtils.socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers)
+  }, [myIdols, users])
+
   return (
     <div className="card-container" ref={bodyRef}>
       <div className="people">People</div>
@@ -130,7 +142,7 @@ const People = () => {
                 followingCount={data?.followingCount}
               />
               <CardElementButtons
-                isChecked={Utils.checkIfUserIsFollowed([], data?._id)}
+                isChecked={Utils.checkIfUserIsFollowed(myIdols, data?._id)}
                 btnTextOne="Follow"
                 btnTextTwo="Unfollow"
                 onClickBtnOne={() => followUser(data)}
