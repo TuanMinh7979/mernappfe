@@ -75,15 +75,19 @@ export class FollowersUtils {
   // update profile in redux
   static socketIOBlockAndUnblock(profile, token, setBlockedUsers, dispatch) {
     socketService?.socket?.on('blocked user id', (data) => {
+      // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
+      // update blockedUsers State in Follower Component
       setBlockedUsers(newProfile?.blocked);
       dispatch(updateLoggedUser({ token, profile: newProfile }));
     });
 
     socketService?.socket?.on('unblocked user id', (data) => {
-      const user = FollowersUtils.updateProfileWhenUnBlock(profile, data);
-      setBlockedUsers(user?.blocked);
-      dispatch(updateLoggedUser({ token, profile: user }));
+      // updating reduxUser.profile
+      const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
+      // update blockedUsers State in Follower Component
+      setBlockedUsers(newProfile?.blocked);
+      dispatch(updateLoggedUser({ token, profile: newProfile }));
     });
   }
 
