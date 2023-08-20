@@ -46,6 +46,7 @@ export class PostUtils {
 
     // from post.socket.ts in server after sending emit('reaction') in client at ReactionAndCommentArea
     socketService?.socket?.on("update reaction", (reactionData) => {
+      console.log("--------------------------------ON UPDATE REACTION");
       const oldPostData = posts.find(
         (post) => post._id === reactionData?.postId
       );
