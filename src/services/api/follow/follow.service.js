@@ -6,8 +6,8 @@ class FollowerService {
     return response;
   }
 
-  async unFollowUser(followeeId, followerId) {
-    const response = await axios.put(`/user/unfollow/${followeeId}/${followerId}`);
+  async unFollowUser(idolId, fanId) {
+    const response = await axios.put(`/user/unfollow/${idolId}/${fanId}`);
     return response;
   }
 
@@ -16,6 +16,24 @@ class FollowerService {
     const response = await axios.get('/user/following');
     return response;
   }
+
+  async getLoggedUserFans(userId) {
+    // get my fans
+    const response = await axios.get(`/user/followers/${userId}`);
+    return response;
+  }
+
+
+  async blockUser(targetId) {
+    const response = await axios.put(`/user/block/${targetId}`);
+    return response;
+  }
+
+  async unblockUser(targetId) {
+    const response = await axios.put(`/user/unblock/${targetId}`);
+    return response;
+  }
+
 
 }
 

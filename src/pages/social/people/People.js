@@ -83,7 +83,7 @@ const People = () => {
     try {
       FollowersUtils.followUser(user, dispatch);
     } catch (error) {
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 
@@ -94,7 +94,7 @@ const People = () => {
       socketService?.socket?.emit('unfollow user', userData);
       FollowersUtils.unFollowUser(user, profile, dispatch);
     } catch (error) {
-      Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
   // ? END follow and unfollow
@@ -130,7 +130,7 @@ const People = () => {
                 followingCount={data?.followingCount}
               />
               <CardElementButtons
-                // isChecked={Utils.checkIfUserIsFollowed(following, data?._id)}
+                isChecked={Utils.checkIfUserIsFollowed([], data?._id)}
                 btnTextOne="Follow"
                 btnTextTwo="Unfollow"
                 onClickBtnOne={() => followUser(data)}
