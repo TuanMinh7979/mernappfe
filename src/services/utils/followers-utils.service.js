@@ -89,7 +89,7 @@ export class FollowersUtils {
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
     socketService?.socket?.on('blocked user id', (data) => {
-      alert(123)
+      
       console.log("-------------BLOCK idols: ", data.blockedBy, "Fans: ", data.blockedUser);
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
