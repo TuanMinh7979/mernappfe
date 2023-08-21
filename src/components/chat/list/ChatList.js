@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import SearchList from './search-list/SearchList';
+import { useEffect, useState } from 'react';
 const ChatList = () => {
 
     const dispatch = useDispatch();
@@ -20,6 +21,24 @@ const ChatList = () => {
     //   
     const { profile } = useSelector((state) => state.user);
     const { chatList } = useSelector((state) => state.chat);
+
+    // ? for SearchListComponent
+    const [search, setSearch] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [componentType, setComponentType] = useState('chatList');
+
+    // ? END for SearchListComponent
+    let [chatMessageList, setChatMessageList] = useState([]);
+
+
+    // 
+
+    useEffect(() => {
+        console.log(selectedUser, componentType, chatMessageList);
+        setChatMessageList([...chatList])
+    }, [chatList])
 
 
 
@@ -71,7 +90,14 @@ const ChatList = () => {
 
                     {/* search list */}
                     <SearchList
-
+                        searchTerm={search}
+                        result={searchResult}
+                        isSearching={isSearching}
+                        setSearchResult={setSearchResult}
+                        setIsSearching={setIsSearching}
+                        setSearch={setSearch}
+                        setSelectedUser={setSelectedUser}
+                        setComponentType={setComponentType}
                     />
                 </div>
             </div>
