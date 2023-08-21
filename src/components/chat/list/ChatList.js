@@ -12,6 +12,9 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import SearchList from './search-list/SearchList';
 import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { userService } from '@services/api/user/user.service';
+import useDebounce from '@hooks/useDebounce';
 const ChatList = () => {
 
     const dispatch = useDispatch();
@@ -24,6 +27,7 @@ const ChatList = () => {
 
     // ? for SearchListComponent
     const [search, setSearch] = useState('');
+    const debouncedValue = useDebounce(search, 1000);
     const [searchResult, setSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -40,6 +44,37 @@ const ChatList = () => {
         setChatMessageList([...chatList])
     }, [chatList])
 
+    useEffect(() => {
+        if (debouncedValue) {
+            // search very 1000s
+            initUserList(debouncedValue)
+        }
+    }, [debouncedValue])
+
+    // ? init user list
+
+    //  * use in useEffect => use useCallback
+    const initUserList = useCallback(
+        async (query) => {
+
+            try {
+                setSearch(query);
+                if (query) {
+                    setIsSearching(true);
+                    const response = await userService.searchUsers(query);
+                    setSearchResult(response.data.search);
+                    setIsSearching(false);
+                }
+            } catch (error) {
+                setIsSearching(false);
+                Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+            }
+        },
+        [dispatch]
+    );
+
+    // ? END init user list
+
 
 
     return (
@@ -55,8 +90,29 @@ const ChatList = () => {
 
                 <div className="conversation-container-search" data-testid="search-container">
                     <FaSearch className="search" />
-                    <Input id="message" name="message" type="text" className="search-input" labelText="" placeholder="Search" />
-                    <FaTimes className="times" />
+                    <Input id="message"
+                        value={search}
+                        name="message"
+                        type="text"
+                        className="search-input"
+                        labelText=""
+                        placeholder="Search"
+
+                        handleChange={(event) => {
+                            setIsSearching(true);
+                            setSearch(event.target.value);
+                        }}
+                    />
+                    {search && (
+                        <FaTimes
+                            className="times"
+                            onClick={() => {
+                                setSearch('');
+                                setIsSearching(false);
+                                setSearchResult([]);
+                            }}
+                        />
+                    )}
                 </div>
 
                 <div className="conversation-container-body">
