@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { getConversationList } from '@redux/api/chat';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -25,14 +26,14 @@ const ProtectedRoute = ({ children }) => {
   const checkUser = useCallback(async () => {
     try {
       const response = await userService.checkCurrentUser();
-
+      dispatch(getConversationList())
       setUserData(response.data.user);
       setTokenIsValid(true);
       dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
     } catch (error) {
       setTokenIsValid(false);
       setTimeout(async () => {
-        Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload,setLoggedin : setLoggedIn });
+        Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
         await userService.logoutUser();
         navigate('/');
       }, 1000);
