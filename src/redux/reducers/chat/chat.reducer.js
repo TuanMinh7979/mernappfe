@@ -25,9 +25,11 @@ const chatSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getConversationList.pending, (state) => {
+            
             state.isLoading = true;
         });
         builder.addCase(getConversationList.fulfilled, (state, action) => {
+            console.log(action.payload);
             const { list } = action.payload;
             state.isLoading = false;
             const sortedList = orderBy(list, ['createdAt'], ['desc']);

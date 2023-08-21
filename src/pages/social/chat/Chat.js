@@ -1,6 +1,7 @@
 import React from 'react'
 import "./Chat.scss"
 import { useSelector } from 'react-redux'
+import ChatList from '@components/chat/list/ChatList'
 const Chat = () => {
 
     const reduxChat = useSelector(state => state.chat)
@@ -8,7 +9,7 @@ const Chat = () => {
         <div className="private-chat-wrapper">
             <div className="private-chat-wrapper-content">
                 <div className="private-chat-wrapper-content-side">
-                    {/* <ChatList /> */}
+                    <ChatList />
                 </div>
                 <div className="private-chat-wrapper-content-conversation">
                     {/* {(reduxChat.selectedChatUser || reduxChat.chatList.length > 0) && <ChatWindow />} */}
