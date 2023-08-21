@@ -19,6 +19,12 @@ class UserService {
     return response;
   }
 
+  // search user for chat
+  async searchUsers(query) {
+    const response = await axios.get(`/user/profile/search/${query}`);
+    return response;
+  }
+
 }
 
 export const userService = new UserService();

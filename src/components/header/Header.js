@@ -267,7 +267,7 @@ const Header = () => {
                     bgColor={profile?.avatarColor}
                     textColor="#ffffff"
                     size={40}
-                    avatarSrc=""
+                    avatarSrc={profile?.profilePicture}
                   ></Avatar>
                 </span>
                 <span className="header-list-name profile-name">

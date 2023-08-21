@@ -6,6 +6,7 @@ import modalReducer from './reducers/modal/modal.reducer';
 import postReducer from './reducers/post/post.reducer';
 import postsReducer from './reducers/post/posts.reducer';
 import userPostReaction from './reducers/post/user-post-reaction';
+import chatReducer from './reducers/chat/chat.reducer';
 export const store = configureStore({
   reducer: {
     user: userReducer,
@@ -14,6 +15,7 @@ export const store = configureStore({
     modal: modalReducer,
     post: postReducer,
     posts: postsReducer,
-    userPostReaction: userPostReaction
+    userPostReaction: userPostReaction,
+    chat: chatReducer
   }
 });
