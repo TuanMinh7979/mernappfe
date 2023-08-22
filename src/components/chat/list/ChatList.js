@@ -15,6 +15,13 @@ import { useEffect, useState } from 'react';
 import { useCallback } from 'react';
 import { userService } from '@services/api/user/user.service';
 import useDebounce from '@hooks/useDebounce';
+import { chatService } from '@services/api/chat/chat.service';
+import { ChatUtils } from '@services/utils/chat-utils.service.';
+import { cloneDeep, find, findIndex } from 'lodash';
+import { updateChatSelectedUser } from '@redux/reducers/chat/chat.reducer';
+import { timeAgo } from '@services/utils/time.ago.utils';
+import ChatListBody from './ChatListBody';
+import { createSearchParams } from 'react-router-dom';
 const ChatList = () => {
 
     const dispatch = useDispatch();
@@ -26,9 +33,9 @@ const ChatList = () => {
     const { chatList } = useSelector((state) => state.chat);
 
     // ? for SearchListComponent
-    const [search, setSearch] = useState('');
-    const debouncedValue = useDebounce(search, 1000);
-    const [searchResult, setSearchResult] = useState([]);
+    const [userSearchText, setUserSearchText] = useState('');
+    const debouncedValue = useDebounce(userSearchText, 1000);
+    const [userSearchResult, setUserSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [componentType, setComponentType] = useState('chatList');
@@ -37,7 +44,8 @@ const ChatList = () => {
     let [chatMessageList, setChatMessageList] = useState([]);
 
 
-    // 
+
+
 
     useEffect(() => {
         console.log(selectedUser, componentType, chatMessageList);
@@ -46,7 +54,7 @@ const ChatList = () => {
 
     useEffect(() => {
         if (debouncedValue) {
-            // search very 1000s
+            // userSearchText very 1000s
             initUserList(debouncedValue)
         }
     }, [debouncedValue])
@@ -58,16 +66,16 @@ const ChatList = () => {
         async (query) => {
 
             try {
-                setSearch(query);
+                setUserSearchText(query);
                 if (query) {
                     setIsSearching(true);
                     const response = await userService.searchUsers(query);
-                    setSearchResult(response.data.search);
+                    setUserSearchResult(response.data.search);
                     setIsSearching(false);
                 }
             } catch (error) {
                 setIsSearching(false);
-                Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+                Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
             }
         },
         [dispatch]
@@ -76,11 +84,112 @@ const ChatList = () => {
     // ? END init user list
 
 
+    // ? add user to chat list(conversationlist)
+    // api /chat/message/add-chat-users
+    // trigger when searchList component item onclick
+    const addSelectedUserToList = useCallback(
+        (user) => {
+            const newUser = {
+                receiverId: user?._id,
+                receiverUsername: user?.username,
+                receiverAvatarColor: user?.avatarColor,
+                receiverProfilePicture: user?.profilePicture,
+                senderUsername: profile?.username,
+                senderId: profile?._id,
+                senderAvatarColor: profile?.avatarColor,
+                senderProfilePicture: profile?.profilePicture,
+                body: ''
+            };
+            ChatUtils.joinRoomEvent(user, profile);
+            ChatUtils.privateChatMessages = [];
+            const findUser = find(
+                chatMessageList,
+                (chat) => chat.receiverId === searchParams.get('id') || chat.senderId === searchParams.get('id')
+            );
+            if (!findUser) {
+                const newChatList = [newUser, ...chatMessageList];
+                setChatMessageList(newChatList);
+                if (!chatList.length) {
+                    dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
+                    const userTwoName =
+                        newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
+                    // ! Service:
+                    chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+                }
+            }
+        },
+        [chatList, chatMessageList, dispatch, searchParams, profile]
+    );
+    // ? END add user to chat list(conversationlist)
 
+    // 
+    useEffect(() => {
+        if (selectedUser && componentType === 'searchList') {
+            // * navigate to new url
+            addSelectedUserToList(selectedUser);
+
+        }
+    }, [addSelectedUserToList, componentType, selectedUser]);
+
+
+    const updateQueryParams = (user) => {
+        setSelectedUser(user);
+        const params = ChatUtils.chatUrlParams(user, profile);
+        ChatUtils.joinRoomEvent(user, profile);
+        ChatUtils.privateChatMessages = [];
+        return params;
+      };
+    const removeSelectedUserFromList = (event) => {
+        event.stopPropagation();
+        chatMessageList = cloneDeep(chatMessageList);
+        const userIndex = findIndex(chatMessageList, ['receiverId', searchParams.get('id')]);
+        if (userIndex > -1) {
+            chatMessageList.splice(userIndex, 1);
+            setSelectedUser(null);
+            setChatMessageList(chatMessageList);
+            ChatUtils.updatedSelectedChatUser({
+                chatMessageList,
+                profile,
+                username: searchParams.get('username'),
+                setSelectedChatUser: updateChatSelectedUser,
+                params: chatMessageList.length ? updateQueryParams(chatMessageList[0]) : null,
+                pathname: location.pathname,
+                navigate,
+                dispatch
+            });
+        }
+    }
+
+    console.log(chatMessageList);
+
+
+    // this is for when a user already exist in the chat list
+  const addUsernameToUrlQuery = async (user) => {
+    try {
+      const sender = find(
+        ChatUtils.chatUsers,
+        (userData) =>
+          userData.userOne === profile?.username && userData.userTwo.toLowerCase() === searchParams.get('username')
+      );
+      const params = updateQueryParams(user);
+      const userTwoName = user?.receiverUsername !== profile?.username ? user?.receiverUsername : user?.senderUsername;
+      const receiverId = user?.receiverUsername !== profile?.username ? user?.receiverId : user?.senderId;
+      navigate(`${location.pathname}?${createSearchParams(params)}`);
+      if (sender) {
+        chatService.removeChatUsers(sender);
+      }
+      chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+      if (user?.receiverUsername === profile?.username && !user.isRead) {
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
+      }
+    } catch (error) {
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+    }
+  };
     return (
-        <div data-testid="chatList">
+        <div data-testid="chatList" style={{ backgroundColor: "grey" }}>
             <div className="conversation-container">
-                <div className="conversation-container-header">
+                <div className="conversation-container-header" style={{ border: "1px solid red" }}>
                     <div className="header-img">
                         <Avatar name={profile?.username} bgColor={profile?.avatarColor} textColor="#ffffff" size={40}
                             avatarSrc={profile?.profilePicture} />
@@ -91,7 +200,7 @@ const ChatList = () => {
                 <div className="conversation-container-search" data-testid="search-container">
                     <FaSearch className="search" />
                     <Input id="message"
-                        value={search}
+                        value={userSearchText}
                         name="message"
                         type="text"
                         className="search-input"
@@ -100,58 +209,99 @@ const ChatList = () => {
 
                         handleChange={(event) => {
                             setIsSearching(true);
-                            setSearch(event.target.value);
+                            setUserSearchText(event.target.value);
                         }}
                     />
-                    {search && (
+                    {userSearchText && (
                         <FaTimes
                             className="times"
                             onClick={() => {
-                                setSearch('');
+                                setUserSearchText('');
                                 setIsSearching(false);
-                                setSearchResult([]);
+                                setUserSearchResult([]);
                             }}
                         />
                     )}
                 </div>
 
-                <div className="conversation-container-body">
-                    <div className="conversation">
-                        {[].map((data) => (
-                            <div key={Utils.generateString(10)} data-testid="conversation-item" className="conversation-item">
-                                <div className="avatar">
-                                    <Avatar name="placeholder" bgColor="red" textColor="#ffffff" size={40} avatarSrc="" />
-                                </div>
-                                <div className="title-text">
-                                    Danny
-                                </div>
-                                <div className="created-date">1 hr ago</div>
-                                <div className="created-date" >
-                                    <FaTimes />
-                                </div>
+                <div className="conversation-container-body" style={{ border: "1px solid red" }}>
+                    {!userSearchText && (
+                        <div className="conversation">
+                            {chatMessageList.map((data) => (
+                                <div key={Utils.generateString(10)} data-testid="conversation-item"
 
-                                <div className="conversation-message">
-                                    <span className="message-deleted">message deleted</span>
-                                </div>
-                                <div className="conversation-message">
-                                    <span className="message-deleted">message deleted</span>
-                                </div>
 
-                            </div>
-                        ))}
-                    </div>
+                                    className={`conversation-item ${searchParams.get('username') === data?.receiverUsername.toLowerCase() ||
+                                        searchParams.get('username') === data?.senderUsername.toLowerCase()
+                                        ? 'active'
+                                        : ''
+                                        }`}
+
+                                >
+
+                                    <div className="avatar">
+                                        <Avatar
+                                            name={data.receiverUsername === profile?.username ? profile?.username : data?.senderUsername}
+                                            bgColor={
+                                                data.receiverUsername === profile?.username ? data.receiverAvatarColor : data?.senderAvatarColor
+                                            }
+                                            textColor="#ffffff"
+                                            size={40}
+                                            avatarSrc={
+                                                data.receiverUsername !== profile?.username
+                                                    ? data?.receiver?.ProfilePicture
+                                                    : data?.sender?.ProfilePicture
+                                            }
+
+                                        />
+                                    </div>
+                                    <div className={`title-text ${selectedUser && !data.body ? 'selected-user-text' : ''}`}>
+                                        {data.receiverUsername !== profile?.username ? data.receiverUsername : data?.senderUsername}
+                                    </div>
+                                    {data?.createdAt && <div className="created-date">{timeAgo.transform(data?.createdAt)}</div>}
+                                    {!data?.body && (
+                                        <div className="created-date" onClick={removeSelectedUserFromList}>
+                                            <FaTimes />
+                                        </div>
+                                    )}
+                                    {data?.body && !data?.deleteForMe && !data.deleteForEveryone && (
+
+                                        <ChatListBody data={data} profile={profile} />
+                                    )}
+                                    {data?.deleteForMe && data?.deleteForEveryone && (
+                                        <div className="conversation-message">
+                                            <span className="message-deleted">message deleted</span>
+                                        </div>
+                                    )}
+                                    {data?.deleteForMe && !data.deleteForEveryone && data.senderUsername !== profile?.username && (
+                                        <div className="conversation-message">
+                                            <span className="message-deleted">message deleted</span>
+                                        </div>
+                                    )}
+                                    {data?.deleteForMe && !data.deleteForEveryone && data.receiverUsername !== profile?.username && (
+                                        <ChatListBody data={data} profile={profile} />
+
+                                    )}
+
+                                </div>
+                            ))}
+                        </div>)}
 
 
 
 
                     {/* search list */}
                     <SearchList
-                        searchTerm={search}
-                        result={searchResult}
+                        userSearchText={userSearchText}
+                        setUserSearchText={setUserSearchText}
+
+                        userSearchResult={userSearchResult}
+                        setUserSearchResult={setUserSearchResult}
+
                         isSearching={isSearching}
-                        setSearchResult={setSearchResult}
                         setIsSearching={setIsSearching}
-                        setSearch={setSearch}
+
+
                         setSelectedUser={setSelectedUser}
                         setComponentType={setComponentType}
                     />
