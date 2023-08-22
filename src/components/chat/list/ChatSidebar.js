@@ -3,8 +3,8 @@ import Input from '@components/input/Input';
 import { Utils } from '@services/utils/utils.service';
 import { FaSearch, FaTimes } from 'react-icons/fa';
 
-import '@components/chat/list/ChatList.scss';
-import "./ChatList.scss"
+import '@components/chat/list/ChatSidebar.scss';
+import "./ChatSidebar.scss"
 import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ import { updateChatSelectedUser } from '@redux/reducers/chat/chat.reducer';
 import { timeAgo } from '@services/utils/time.ago.utils';
 import ChatListBody from './ChatListBody';
 import { createSearchParams } from 'react-router-dom';
-const ChatList = () => {
+const ChatSidebar = () => {
 
     const dispatch = useDispatch();
     const location = useLocation();
@@ -55,14 +55,14 @@ const ChatList = () => {
     useEffect(() => {
         if (debouncedValue) {
             // userSearchText very 1000s
-            initUserList(debouncedValue)
+            searchUser(debouncedValue)
         }
     }, [debouncedValue])
 
     // ? init user list
 
     //  * use in useEffect => use useCallback
-    const initUserList = useCallback(
+    const searchUser = useCallback(
         async (query) => {
 
             try {
@@ -138,7 +138,7 @@ const ChatList = () => {
         ChatUtils.joinRoomEvent(user, profile);
         ChatUtils.privateChatMessages = [];
         return params;
-      };
+    };
     const removeSelectedUserFromList = (event) => {
         event.stopPropagation();
         chatMessageList = cloneDeep(chatMessageList);
@@ -164,30 +164,30 @@ const ChatList = () => {
 
 
     // this is for when a user already exist in the chat list
-  const addUsernameToUrlQuery = async (user) => {
-    try {
-      const sender = find(
-        ChatUtils.chatUsers,
-        (userData) =>
-          userData.userOne === profile?.username && userData.userTwo.toLowerCase() === searchParams.get('username')
-      );
-      const params = updateQueryParams(user);
-      const userTwoName = user?.receiverUsername !== profile?.username ? user?.receiverUsername : user?.senderUsername;
-      const receiverId = user?.receiverUsername !== profile?.username ? user?.receiverId : user?.senderId;
-      navigate(`${location.pathname}?${createSearchParams(params)}`);
-      if (sender) {
-        chatService.removeChatUsers(sender);
-      }
-      chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-      if (user?.receiverUsername === profile?.username && !user.isRead) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId);
-      }
-    } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
-    }
-  };
+    const addUsernameToUrlQuery = async (user) => {
+        try {
+            const sender = find(
+                ChatUtils.chatUsers,
+                (userData) =>
+                    userData.userOne === profile?.username && userData.userTwo.toLowerCase() === searchParams.get('username')
+            );
+            const params = updateQueryParams(user);
+            const userTwoName = user?.receiverUsername !== profile?.username ? user?.receiverUsername : user?.senderUsername;
+            const receiverId = user?.receiverUsername !== profile?.username ? user?.receiverId : user?.senderId;
+            navigate(`${location.pathname}?${createSearchParams(params)}`);
+            if (sender) {
+                chatService.removeChatUsers(sender);
+            }
+            chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+            if (user?.receiverUsername === profile?.username && !user.isRead) {
+                await chatService.markMessagesAsRead(profile?._id, receiverId);
+            }
+        } catch (error) {
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+        }
+    };
     return (
-        <div data-testid="chatList" style={{ backgroundColor: "grey" }}>
+        <div data-testid="chatList" >
             <div className="conversation-container">
                 <div className="conversation-container-header" style={{ border: "1px solid red" }}>
                     <div className="header-img">
@@ -196,7 +196,7 @@ const ChatList = () => {
                     </div>
                     <div className="title-text">{profile?.username}</div>
                 </div>
-
+                {/* search user box */}
                 <div className="conversation-container-search" data-testid="search-container">
                     <FaSearch className="search" />
                     <Input id="message"
@@ -223,7 +223,8 @@ const ChatList = () => {
                         />
                     )}
                 </div>
-
+                {/* END search user box */}
+                {/* search result list  */}
                 <div className="conversation-container-body" style={{ border: "1px solid red" }}>
                     {!userSearchText && (
                         <div className="conversation">
@@ -306,8 +307,9 @@ const ChatList = () => {
                         setComponentType={setComponentType}
                     />
                 </div>
+                {/* END search result list  */}
             </div>
         </div>
     );
 };
-export default ChatList;
+export default ChatSidebar;

@@ -15,7 +15,7 @@ const SearchList = ({
   isSearching,
   setIsSearching,
 
-  
+
   setSelectedUser,
   setComponentType
 }) => {
@@ -33,10 +33,10 @@ const SearchList = ({
   };
 
 
-  console.log(userSearchResult);
+  console.log(isSearching, userSearchText, userSearchResult);
   return (
     <div className="search-result">
-        SEARCH LIST
+
       <div className="search-result-container">
         {!isSearching && userSearchResult.length > 0 && (
           <>
@@ -60,7 +60,7 @@ const SearchList = ({
           </>
         )}
 
-        {userSearchText && isSearching && userSearchResult.length === 0 && (
+        {userSearchText && isSearching && (
           <div className="search-result-container-empty" data-testid="searching-text">
             <span>Searching...</span>
           </div>
@@ -69,7 +69,7 @@ const SearchList = ({
         {userSearchText && !isSearching && userSearchResult.length === 0 && (
           <div className="search-result-container-empty" data-testid="nothing-found">
             <span>Nothing found</span>
-            <p className="search-result-container-empty-msg">We couldn&apos;t find any match for {userSearchText}</p>
+            <p className="search-result-container-empty-msg">We could not find any match for {userSearchText}</p>
           </div>
         )}
       </div>
