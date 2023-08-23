@@ -49,7 +49,7 @@ const ChatSidebar = () => {
 
 
     useEffect(() => {
-        console.log(selectedUser, componentType, toShowConversationList);
+
         setToShowConversationList([...conversationList])
     }, [conversationList])
 
@@ -196,6 +196,15 @@ const ChatSidebar = () => {
             Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
         }
     };
+
+
+
+    useEffect(() => {
+
+        ChatUtils.socketIOChatList(profile, toShowConversationList, setToShowConversationList);
+
+
+    }, [toShowConversationList, profile]);
     return (
         <div data-testid="conversationList" >
             <div className="conversation-container">
@@ -244,9 +253,9 @@ const ChatSidebar = () => {
                                 console.log("---", data);
                                 return (<div key={Utils.generateString(10)} data-testid="conversation-item"
                                     className={`conversation-item ${searchParams.get('username') === data?.receiverUsername.toLowerCase() ||
-                                            searchParams.get('username') === data?.senderUsername.toLowerCase()
-                                            ? 'active'
-                                            : ''
+                                        searchParams.get('username') === data?.senderUsername.toLowerCase()
+                                        ? 'active'
+                                        : ''
                                         }`}
                                     onClick={() => addUsernameToUrlQuery(data)}
                                 >
