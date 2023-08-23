@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { orderBy } from 'lodash';
 import { getConversationList } from '@redux/api/chat';
 const initialState = {
-    chatList: [],
+    conversationList: [],
     selectedChatUser: null,
     isLoading: false
 };
@@ -13,8 +13,8 @@ const chatSlice = createSlice({
     initialState,
     reducers: {
         updateChatNewEle: (state, action) => {
-            const { isLoading, chatList } = action.payload;
-            state.chatList = [...chatList];
+            const { isLoading, conversationList } = action.payload;
+            state.conversationList = [...conversationList];
             state.isLoading = isLoading;
         },
         updateChatSelectedUser: (state, action) => {
@@ -33,7 +33,7 @@ const chatSlice = createSlice({
             const { list } = action.payload;
             state.isLoading = false;
             const sortedList = orderBy(list, ['createdAt'], ['desc']);
-            state.chatList = [...sortedList];
+            state.conversationList = [...sortedList];
         });
         builder.addCase(getConversationList.rejected, (state) => {
             state.isLoading = false;

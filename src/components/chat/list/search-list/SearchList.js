@@ -61,7 +61,7 @@ const SearchList = ({
         )}
 
         {userSearchText && isSearching && (
-          <div className="search-result-container-empty" data-testid="searching-text">
+          <div className="search-result-container-empty"  data-testid="searching-text">
             <span>Searching...</span>
           </div>
         )}

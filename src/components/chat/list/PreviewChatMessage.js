@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { FaCheck, FaCircle } from 'react-icons/fa';
 import doubleCheckmark from '@assets/images/double-checkmark.png';
 
-const ChatListBody = ({ data, profile }) => {
+const PreviewChatMessage = ({ data, profile }) => {
   return (
     <div className="conversation-message">
       <span>{data.body}</span>
@@ -21,9 +21,9 @@ const ChatListBody = ({ data, profile }) => {
   );
 };
 
-ChatListBody.propTypes = {
+PreviewChatMessage.propTypes = {
   data: PropTypes.object,
   profile: PropTypes.object
 };
 
-export default ChatListBody;
+export default PreviewChatMessage;

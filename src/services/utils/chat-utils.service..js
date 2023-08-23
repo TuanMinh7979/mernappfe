@@ -33,7 +33,7 @@ export class ChatUtils {
         socketService?.socket?.emit(event, data);
     }
 
-    static chatUrlParams(user, profile) {
+    static makeDetailConversationUrlParam(user, profile) {
         const params = { username: '', id: '' };
         if (user.receiverUsername === profile?.username) {
             params.username = user.senderUsername.toLowerCase();

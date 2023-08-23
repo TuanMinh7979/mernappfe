@@ -20,7 +20,7 @@ import { ChatUtils } from '@services/utils/chat-utils.service.';
 import { cloneDeep, find, findIndex } from 'lodash';
 import { updateChatSelectedUser } from '@redux/reducers/chat/chat.reducer';
 import { timeAgo } from '@services/utils/time.ago.utils';
-import ChatListBody from './ChatListBody';
+import PreviewChatMessage from './PreviewChatMessage';
 import { createSearchParams } from 'react-router-dom';
 const ChatSidebar = () => {
 
@@ -30,34 +30,39 @@ const ChatSidebar = () => {
     const [searchParams] = useSearchParams();
     //   
     const { profile } = useSelector((state) => state.user);
-    const { chatList } = useSelector((state) => state.chat);
+    const { conversationList } = useSelector((state) => state.chat);
 
     // ? for SearchListComponent
     const [userSearchText, setUserSearchText] = useState('');
-    const debouncedValue = useDebounce(userSearchText, 1000);
+
+
     const [userSearchResult, setUserSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [componentType, setComponentType] = useState('chatList');
+    const [componentType, setComponentType] = useState('conversationList');
 
     // ? END for SearchListComponent
-    let [chatMessageList, setChatMessageList] = useState([]);
+    let [toShowConversationList, setToShowConversationList] = useState([]);
 
 
 
 
 
     useEffect(() => {
-        console.log(selectedUser, componentType, chatMessageList);
-        setChatMessageList([...chatList])
-    }, [chatList])
+        console.log(selectedUser, componentType, toShowConversationList);
+        setToShowConversationList([...conversationList])
+    }, [conversationList])
 
     useEffect(() => {
-        if (debouncedValue) {
-            // userSearchText very 1000s
-            searchUser(debouncedValue)
+        if (userSearchText) {
+            const timer = setTimeout(() =>
+                searchUser(userSearchText), 500
+            );
+            return () => {
+                clearTimeout(timer);
+            };
         }
-    }, [debouncedValue])
+    }, [userSearchText])
 
     // ? init user list
 
@@ -66,9 +71,9 @@ const ChatSidebar = () => {
         async (query) => {
 
             try {
-                setUserSearchText(query);
+                setIsSearching(true);
                 if (query) {
-                    setIsSearching(true);
+
                     const response = await userService.searchUsers(query);
                     setUserSearchResult(response.data.search);
                     setIsSearching(false);
@@ -103,13 +108,13 @@ const ChatSidebar = () => {
             ChatUtils.joinRoomEvent(user, profile);
             ChatUtils.privateChatMessages = [];
             const findUser = find(
-                chatMessageList,
+                toShowConversationList,
                 (chat) => chat.receiverId === searchParams.get('id') || chat.senderId === searchParams.get('id')
             );
             if (!findUser) {
-                const newChatList = [newUser, ...chatMessageList];
-                setChatMessageList(newChatList);
-                if (!chatList.length) {
+                const newChatList = [newUser, ...toShowConversationList];
+                setToShowConversationList(newChatList);
+                if (!conversationList.length) {
                     dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
                     const userTwoName =
                         newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
@@ -118,7 +123,7 @@ const ChatSidebar = () => {
                 }
             }
         },
-        [chatList, chatMessageList, dispatch, searchParams, profile]
+        [conversationList, toShowConversationList, dispatch, searchParams, profile]
     );
     // ? END add user to chat list(conversationlist)
 
@@ -134,25 +139,25 @@ const ChatSidebar = () => {
 
     const updateQueryParams = (user) => {
         setSelectedUser(user);
-        const params = ChatUtils.chatUrlParams(user, profile);
+        const params = ChatUtils.makeDetailConversationUrlParam(user, profile);
         ChatUtils.joinRoomEvent(user, profile);
         ChatUtils.privateChatMessages = [];
         return params;
     };
     const removeSelectedUserFromList = (event) => {
         event.stopPropagation();
-        chatMessageList = cloneDeep(chatMessageList);
-        const userIndex = findIndex(chatMessageList, ['receiverId', searchParams.get('id')]);
+        toShowConversationList = cloneDeep(toShowConversationList);
+        const userIndex = findIndex(toShowConversationList, ['receiverId', searchParams.get('id')]);
         if (userIndex > -1) {
-            chatMessageList.splice(userIndex, 1);
+            toShowConversationList.splice(userIndex, 1);
             setSelectedUser(null);
-            setChatMessageList(chatMessageList);
+            setToShowConversationList(toShowConversationList);
             ChatUtils.updatedSelectedChatUser({
-                chatMessageList,
+                toShowConversationList,
                 profile,
                 username: searchParams.get('username'),
                 setSelectedChatUser: updateChatSelectedUser,
-                params: chatMessageList.length ? updateQueryParams(chatMessageList[0]) : null,
+                params: toShowConversationList.length ? updateQueryParams(toShowConversationList[0]) : null,
                 pathname: location.pathname,
                 navigate,
                 dispatch
@@ -160,34 +165,39 @@ const ChatSidebar = () => {
         }
     }
 
-    console.log(chatMessageList);
+    console.log(toShowConversationList);
 
 
     // this is for when a user already exist in the chat list
-    const addUsernameToUrlQuery = async (user) => {
+    const addUsernameToUrlQuery = async (newestMessageCvsData) => {
         try {
+            // TODO
             const sender = find(
                 ChatUtils.chatUsers,
                 (userData) =>
-                    userData.userOne === profile?.username && userData.userTwo.toLowerCase() === searchParams.get('username')
+                    userData.userOne === profile?.username && userData.userTwo === searchParams.get('username')
             );
-            const params = updateQueryParams(user);
-            const userTwoName = user?.receiverUsername !== profile?.username ? user?.receiverUsername : user?.senderUsername;
-            const receiverId = user?.receiverUsername !== profile?.username ? user?.receiverId : user?.senderId;
+            const params = updateQueryParams(newestMessageCvsData);
+            const userTwoName = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverUsername : newestMessageCvsData?.senderUsername;
+            const targetUserId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
+            console.log("PARAMS FOR DETAIL CONVERSATION URL", params);
+
             navigate(`${location.pathname}?${createSearchParams(params)}`);
             if (sender) {
                 chatService.removeChatUsers(sender);
             }
+            // TODO
             chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-            if (user?.receiverUsername === profile?.username && !user.isRead) {
-                await chatService.markMessagesAsRead(profile?._id, receiverId);
+            if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
+                await chatService.markMessagesAsRead(profile?._id, targetUserId);
             }
         } catch (error) {
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+            console.log(error);
+            Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
         }
     };
     return (
-        <div data-testid="chatList" >
+        <div data-testid="conversationList" >
             <div className="conversation-container">
                 <div className="conversation-container-header" style={{ border: "1px solid red" }}>
                     <div className="header-img">
@@ -208,11 +218,13 @@ const ChatSidebar = () => {
                         placeholder="Search"
 
                         handleChange={(event) => {
-                            setIsSearching(true);
+                            setIsSearching(true)
                             setUserSearchText(event.target.value);
+
                         }}
                     />
                     {userSearchText && (
+                        // close search input 
                         <FaTimes
                             className="times"
                             onClick={() => {
@@ -228,30 +240,29 @@ const ChatSidebar = () => {
                 <div className="conversation-container-body" style={{ border: "1px solid red" }}>
                     {!userSearchText && (
                         <div className="conversation">
-                            {chatMessageList.map((data) => (
-                                <div key={Utils.generateString(10)} data-testid="conversation-item"
-
-
+                            {toShowConversationList.map((data) => {
+                                console.log("---", data);
+                                return (<div key={Utils.generateString(10)} data-testid="conversation-item"
                                     className={`conversation-item ${searchParams.get('username') === data?.receiverUsername.toLowerCase() ||
-                                        searchParams.get('username') === data?.senderUsername.toLowerCase()
-                                        ? 'active'
-                                        : ''
+                                            searchParams.get('username') === data?.senderUsername.toLowerCase()
+                                            ? 'active'
+                                            : ''
                                         }`}
-
+                                    onClick={() => addUsernameToUrlQuery(data)}
                                 >
 
                                     <div className="avatar">
                                         <Avatar
-                                            name={data.receiverUsername === profile?.username ? profile?.username : data?.senderUsername}
+                                            name={data.receiverUsername !== profile?.username ? data.receiverUsername : data?.senderUsername}
                                             bgColor={
                                                 data.receiverUsername === profile?.username ? data.receiverAvatarColor : data?.senderAvatarColor
                                             }
                                             textColor="#ffffff"
                                             size={40}
                                             avatarSrc={
-                                                data.receiverUsername !== profile?.username
-                                                    ? data?.receiver?.ProfilePicture
-                                                    : data?.sender?.ProfilePicture
+                                                data.senderProfilePicture !== profile?.username
+                                                    ? data?.senderProfilePicture
+                                                    : data?.sended
                                             }
 
                                         />
@@ -259,15 +270,17 @@ const ChatSidebar = () => {
                                     <div className={`title-text ${selectedUser && !data.body ? 'selected-user-text' : ''}`}>
                                         {data.receiverUsername !== profile?.username ? data.receiverUsername : data?.senderUsername}
                                     </div>
-                                    {data?.createdAt && <div className="created-date">{timeAgo.transform(data?.createdAt)}</div>}
+                                    {data.body && data?.createdAt && <div className="created-date">{timeAgo.transform(data?.createdAt)}</div>}
                                     {!data?.body && (
                                         <div className="created-date" onClick={removeSelectedUserFromList}>
+
+
                                             <FaTimes />
                                         </div>
                                     )}
                                     {data?.body && !data?.deleteForMe && !data.deleteForEveryone && (
 
-                                        <ChatListBody data={data} profile={profile} />
+                                        <PreviewChatMessage data={data} profile={profile} />
                                     )}
                                     {data?.deleteForMe && data?.deleteForEveryone && (
                                         <div className="conversation-message">
@@ -280,12 +293,14 @@ const ChatSidebar = () => {
                                         </div>
                                     )}
                                     {data?.deleteForMe && !data.deleteForEveryone && data.receiverUsername !== profile?.username && (
-                                        <ChatListBody data={data} profile={profile} />
+                                        <PreviewChatMessage data={data} profile={profile} />
 
                                     )}
 
-                                </div>
-                            ))}
+                                </div>)
+                            }
+
+                            )}
                         </div>)}
 
 
