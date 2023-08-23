@@ -7,10 +7,13 @@ import photo from '@assets/images/photo.png';
 import feeling from '@assets/images/feeling.png';
 
 import './MessageInput.scss';
+import { FaPaperPlane } from 'react-icons/fa';
+import loadable from '@loadable/component';
 
-
-
-
+const EmojiPickerComponent = loadable(() => import('./EmojiPicker'), {
+    fallback: <p id="loading">Loading...</p>
+  });
+  
 const MessageInput = ({ setChatMessage }) => {
 //   let [message, setMessage] = useState('');
 //   const [showEmojiContainer, setShowEmojiContainer] = useState(false);
@@ -72,6 +75,8 @@ const MessageInput = ({ setChatMessage }) => {
             placeholder="Enter your message..."
          
           />
+           <Button label={<FaPaperPlane />} className="paper"  />
+
         </form>
        
       </div>
