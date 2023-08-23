@@ -10,34 +10,52 @@ import './MessageInput.scss';
 import { FaPaperPlane } from 'react-icons/fa';
 import loadable from '@loadable/component';
 import { useState } from 'react';
+import { useRef } from 'react';
+import ImagePreview from '@components/chat/image-preview/ImagePreview';
 import GiphyContainer from '@components/chat/giphy-container/GiphyContainer';
+import { ImageUtils } from '@services/utils/image-utils.service';
 const EmojiPickerComponent = loadable(() => import('./EmojiPicker'), {
     fallback: <p id="loading">Loading...</p>
 });
 
 const MessageInput = ({ setChatMessage }) => {
-    //   let [message, setMessage] = useState('');
+      let [message, setMessage] = useState('');
     const [showEmojiContainer, setShowEmojiContainer] = useState(false);
     const [showGifContainer, setShowGifContainer] = useState(false);
-    //   const [showImagePreview, setShowImagePreview] = useState(false);
-    //   const [file, setFile] = useState();
+    const [showImagePreview, setShowImagePreview] = useState(false);
+    //   const [file, setImageUrl] = useState();
     //   const [base64File, setBase64File] = useState('');
     //   const [hasFocus, setHasFocus] = useState(false);
-    //   const fileInputRef = useRef();
+    const fileInputRef = useRef();
+    const onfileInputClicked = () => {
+        fileInputRef.current.click();
+      };
     //   const messageInputRef = useRef();
 
-    const handleGiphyClick=()=>{
-        
+    const handleGiphyClick = () => {
+        fileInputRef.current.clicked();
     }
-
+    const [imageUrl, setImageUrl] = useState();
+    const [base64File, setBase64File] = useState('');
+    //  
+    const onImageInputChange = async (file) => {
+        ImageUtils.checkFile(file);
+        setImageUrl(URL.createObjectURL(file));
+        const result = await ImageUtils.readAsBase64(file);
+        setBase64File(result);
+        setShowImagePreview(!showImagePreview);
+        setShowEmojiContainer(false);
+        setShowGifContainer(false);
+    };
+console.log("-------------------------",showEmojiContainer);
     return (
         <>
 
             {showEmojiContainer && (
                 <EmojiPickerComponent
                     onEmojiClick={(event, eventObject) => {
-                        console.log("set mesage");
-                        // setMessage((text) => (text += ` ${eventObject.emoji}`));
+                        console.log("set mesage111111111111111111111111111111111111111");
+                        setMessage((text) => (text += ` ${eventObject.emoji}`));
                     }}
                     pickerStyle={{ width: '352px', height: '447px' }}
                 />
@@ -46,7 +64,16 @@ const MessageInput = ({ setChatMessage }) => {
             {showGifContainer && <GiphyContainer handleGiphyClick={handleGiphyClick} />}
 
             <div className="chat-inputarea" data-testid="chat-inputarea">
-
+                {showImagePreview && (
+                    <ImagePreview
+                        image={imageUrl}
+                        onRemoveImage={() => {
+                            setImageUrl('');
+                            setBase64File('');
+                            setShowImagePreview(!showImagePreview);
+                        }}
+                    />
+                )} 
                 <form >
                     <ul className="chat-list"
                     >
@@ -54,17 +81,28 @@ const MessageInput = ({ setChatMessage }) => {
                             className="chat-list-item"
                             onClick={() => {
 
-                                setShowEmojiContainer(false);
+                                onfileInputClicked()
+                                setShowImagePreview(!showImagePreview)
+                                setShowEmojiContainer(false)
+                                setShowGifContainer(false)
 
                             }}
                         >
                             <Input
+
+                                ref={fileInputRef}
 
                                 id="image"
                                 name="image"
                                 type="file"
                                 className="file-input"
                                 placeholder="Select file"
+                                onClick={() => {
+                                    if (fileInputRef.current) {
+                                        fileInputRef.current.value = null;
+                                    }
+                                }}
+                                handleChange={(event) => onImageInputChange(event.target.files[0])}
 
                             />
                             <img src={photo} alt="" />
@@ -75,6 +113,7 @@ const MessageInput = ({ setChatMessage }) => {
                             onClick={() => {
                                 setShowGifContainer(!showGifContainer)
                                 setShowEmojiContainer(false);
+                                setShowImagePreview(false)
                             }}
                         >
                             <img src={gif} alt="" />
@@ -83,7 +122,10 @@ const MessageInput = ({ setChatMessage }) => {
                         <li
                             className="chat-list-item"
                             onClick={() => {
+                        
                                 setShowEmojiContainer(!showEmojiContainer);
+                                setShowGifContainer(false);
+                                setShowImagePreview(false)
                             }}
 
                         >
