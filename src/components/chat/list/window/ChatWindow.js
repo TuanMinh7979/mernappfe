@@ -14,6 +14,9 @@ import { chatService } from '@services/api/chat/chat.service';
 import { useEffect } from 'react';
 
 const ChatWindow = () => {
+
+    const [rendered, setRendered] = useState(false)
+
     const dispatch = useDispatch()
     const { profile } = useSelector((state) => state.user);
     const { isLoading } = useSelector((state) => state.chat);
@@ -29,6 +32,7 @@ const ChatWindow = () => {
                 ChatUtils.privateChatMessages = [...response.data.messages];
 
                 setChatMessages([...ChatUtils.privateChatMessages]);
+                console.log("call api messages");
             } catch (error) {
                 Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
             }
@@ -62,12 +66,17 @@ const ChatWindow = () => {
 
 
     useEffect(() => {
-        if (searchParams.get('id')) {
+        if (!rendered) setRendered(true)
+
+        if (
+            rendered && 
+            searchParams.get('id')) {
             getUserProfileByUserId()
             getChatMessageCallback()
         }
+     
+    }, [getUserProfileByUserId, getChatMessageCallback, searchParams, rendered])
 
-    }, [searchParams])
 
 
     useEffect(() => {

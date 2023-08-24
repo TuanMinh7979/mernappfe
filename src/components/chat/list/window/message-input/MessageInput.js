@@ -20,6 +20,9 @@ const EmojiPickerComponent = loadable(() => import('./EmojiPicker'), {
 });
 
 const MessageInput = ({ sendChatMessage }) => {
+
+  
+
     let [message, setMessage] = useState('');
     const [showEmojiContainer, setShowEmojiContainer] = useState(false);
     const [showGifContainer, setShowGifContainer] = useState(false);
