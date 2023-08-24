@@ -19,7 +19,7 @@ const EmojiPickerComponent = loadable(() => import('./EmojiPicker'), {
     fallback: <p id="loading">Loading...</p>
 });
 
-const MessageInput = ({ setChatMessage }) => {
+const MessageInput = ({ sendChatMessage }) => {
     let [message, setMessage] = useState('');
     const [showEmojiContainer, setShowEmojiContainer] = useState(false);
     const [showGifContainer, setShowGifContainer] = useState(false);
@@ -35,8 +35,7 @@ const MessageInput = ({ setChatMessage }) => {
 
 
     const handleGiphyClick = (url) => {
-
-        setChatMessage("Sent a GIF", url, "")
+        sendChatMessage("Sent a GIF", url, "")
         reset()
     }
     const [imageUrl, setImageUrl] = useState();
@@ -56,14 +55,15 @@ const MessageInput = ({ setChatMessage }) => {
     const handleClick = (event) => {
         event.preventDefault();
         message = message || 'Sent an Image';
-        setChatMessage(message.replace(/ +(?= )/g, ''), '',);
+        sendChatMessage(message.replace(/ +(?= )/g, ''), '',);
         setMessage('');
         reset();
     };
 
     const handleImageClick = () => {
         message = message || 'Sent an Image';
-        setChatMessage(message.replace(/ +(?= )/g, ''), '', base64File);
+        sendChatMessage(message.replace(/ +(?= )/g, ''), '', message ? message : base64File);
+        setMessage('');
         reset();
     };
 
@@ -75,8 +75,7 @@ const MessageInput = ({ setChatMessage }) => {
         setImageUrl('');
     };
 
-    console.log("-------------------------", showImagePreview, showGifContainer, showEmojiContainer);
-    console.log("message", message);
+  
     return (
         <>
 
@@ -185,7 +184,7 @@ const MessageInput = ({ setChatMessage }) => {
 };
 
 MessageInput.propTypes = {
-    setChatMessage: PropTypes.func
+    sendChatMessage: PropTypes.func
 };
 
 export default MessageInput;

@@ -24,6 +24,11 @@ class UserService {
     const response = await axios.get(`/user/profile/search/${query}`);
     return response;
   }
+  
+  async getUserProfileByUserId(userId) {
+    const response = await axios.get(`/user/profile/${userId}`);
+    return response;
+  }
 
 }
 

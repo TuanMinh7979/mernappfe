@@ -25,6 +25,18 @@ class ChatService {
     return response;
   }
 
+  // get chat messages
+  async getChatMessages(receiverId) {
+    const response = await axios.get(`/chat/message/user/${receiverId}`);
+    return response;
+  }
+
+  // 
+  async saveChatMessage(body) {
+    const response = await axios.post('/chat/message', body);
+    return response;
+  }
+
 }
 
 export const chatService = new ChatService();
