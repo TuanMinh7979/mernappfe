@@ -6,8 +6,8 @@ import MessageInput from './message-input/MessageInput';
 const ChatWindow = () => {
     const { profile } = useSelector((state) => state.user);
     const { isLoading } = useSelector((state) => state.chat);
-    const setChatMessage = () => {
-
+    const setChatMessage = (message) => {
+        console.log("MESSAGEEEEE", message);
     }
     return (
         <div className="chat-window-container" data-testid="chatWindowContainer">
