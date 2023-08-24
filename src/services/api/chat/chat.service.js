@@ -37,6 +37,15 @@ class ChatService {
     return response;
   }
 
+  async updateMessageReaction(body) {
+    const response = await axios.put('/chat/message/reaction', body);
+    return response;
+  }
+  async markMessageAsDelete(messageId, senderId, receiverId, type) {
+    const response = await axios.delete(`/chat/message/mark-as-deleted/${messageId}/${senderId}/${receiverId}/${type}`);
+    return response;
+  }
+
 }
 
 export const chatService = new ChatService();

@@ -75,7 +75,7 @@ const ChatWindow = () => {
             getChatMessageCallback()
         }
      
-    }, [getUserProfileByUserId, getChatMessageCallback, searchParams, rendered])
+    }, [ searchParams, rendered])
 
 
 
