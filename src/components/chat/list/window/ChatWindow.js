@@ -13,7 +13,7 @@ import useEffectOnce from '@hooks/useEffectOnce';
 import { chatService } from '@services/api/chat/chat.service';
 import { useEffect } from 'react';
 import MessageDisplay from './message-display/MessageDisplay';
-
+import sumBy from "lodash"
 const ChatWindow = () => {
 
     const [rendered, setRendered] = useState(false)
@@ -88,7 +88,7 @@ const ChatWindow = () => {
         ChatUtils.usersOnline(setOnlineUsers);
         ChatUtils.usersOnChatPage();
 
-    }, [ searchParams]);
+    }, [searchParams]);
 
     const sendChatMessage = async (message, gifUrl, selectedImage) => {
         try {
@@ -135,6 +135,8 @@ const ChatWindow = () => {
         }
     };
     // ? END func for message:
+
+
 
     return (
         <div className="chat-window-container" data-testid="chatWindowContainer">

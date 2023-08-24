@@ -11,7 +11,7 @@ import MessageSidebar from "@components/message-sidebar/MessageSidebar";
 import "@components/header/Header.scss";
 import Avatar from "@components/avatar/Avatar";
 import { Utils } from "@services/utils/utils.service";
-import  NotificationUtils  from "@services/utils/notification-utils.service";
+import NotificationUtils from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { sumBy } from "lodash";
@@ -29,6 +29,10 @@ import { notificationService } from "@services/api/notification/notification.ser
 
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
+import { ChatUtils } from "@services/utils/chat-utils.service.";
+import { chatService } from "@services/api/chat/chat.service";
+import { createSearchParams } from "react-router-dom";
+import { getConversationList } from "@redux/api/chat";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -50,7 +54,7 @@ const Header = () => {
     reaction: '',
     senderName: ''
   })
-  
+
   const dispatch = useDispatch();
   const location = useLocation();
   const backgroundColor = `${environment === "DEV" || environment === "LOCAL"
@@ -82,7 +86,7 @@ const Header = () => {
       NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
     } catch (error) {
 
-       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -90,9 +94,9 @@ const Header = () => {
 
     try {
       const response = await notificationService.deleteNotification(notificationId);
-       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
-       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
 
@@ -113,8 +117,29 @@ const Header = () => {
   }, [notifications, profile])
 
   const openChatPage = async (notification) => {
-    console.log("OPEN CHAT PAGE");
+    try {
+      const params = ChatUtils.makeDetailConversationUrlParam(notification, profile);
+      ChatUtils.joinRoomEvent(notification, profile);
+      ChatUtils.privateChatMessages = [];
+      const receiverId =
+        notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
+      if (notification?.receiverUsername === profile?.username && !notification.isRead) {
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
+      }
+      const userTwoName =
+        notification?.receiverUsername !== profile?.username
+          ? notification?.receiverUsername
+          : notification?.senderUsername;
+      await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+      navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
+      setIsMessageActive(false);
+      dispatch(getConversationList());
+    } catch (error) {
+      console.log(error);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+    }
   };
+
 
   const onLogout = async () => {
     try {
@@ -124,9 +149,24 @@ const Header = () => {
       navigate('/');
     } catch (error) {
       console.log(error);
-       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
+
+
+  //  ? FOR MESSAGES SIDEBAR
+
+  const [messageNotifications, setMessageNotifications] = useState([]);
+  const { conversationList } = useSelector((state) => state.chat);
+  //  ? END FOR MESSAGES SIDEBAR
+  useEffect(() => {
+
+    const count = sumBy(conversationList, (notification) => {
+      return !notification.isRead && notification.receiverUsername === profile?.username ? 1 : 0;
+    });
+    setMessageCount(count);
+    setMessageNotifications(conversationList);
+  }, [conversationList, profile]);
 
   return (
 
@@ -140,7 +180,7 @@ const Header = () => {
                 <MessageSidebar
                   profile={profile}
                   messageCount={messageCount}
-                  messageNotifications={[]}
+                  messageNotifications={messageNotifications}
                   openChatPage={openChatPage}
                 />
               </div>
