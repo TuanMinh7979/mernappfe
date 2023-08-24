@@ -12,6 +12,7 @@ import { userService } from '@services/api/user/user.service';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { chatService } from '@services/api/chat/chat.service';
 import { useEffect } from 'react';
+import MessageDisplay from './message-display/MessageDisplay';
 
 const ChatWindow = () => {
 
@@ -69,13 +70,13 @@ const ChatWindow = () => {
         if (!rendered) setRendered(true)
 
         if (
-            rendered && 
+            rendered &&
             searchParams.get('id')) {
             getUserProfileByUserId()
             getChatMessageCallback()
         }
-     
-    }, [ searchParams, rendered])
+
+    }, [searchParams, rendered])
 
 
 
@@ -116,6 +117,25 @@ const ChatWindow = () => {
         }
     };
     console.log(chatMessages);
+
+    // ? func for message:
+    const updateMessageReaction = async (body) => {
+        try {
+            await chatService.updateMessageReaction(body);
+        } catch (error) {
+            Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+        }
+    };
+
+    const deleteChatMessage = async (senderId, receiverId, messageId, type) => {
+        try {
+            await chatService.markMessageAsDelete(messageId, senderId, receiverId, type);
+        } catch (error) {
+            Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+        }
+    };
+    // ? END func for message:
+
     return (
         <div className="chat-window-container" data-testid="chatWindowContainer">
             {isLoading ? (
@@ -150,7 +170,14 @@ const ChatWindow = () => {
                     </div>
                     <div className="chat-window">
                         <div className="chat-window-message">
-                            Message display component
+                            <MessageDisplay
+
+                                chatMessages={chatMessages}
+                                profile={profile}
+                                updateMessageReaction={updateMessageReaction}
+                                deleteChatMessage={deleteChatMessage}
+
+                            ></MessageDisplay>
                         </div>
                         <div className="chat-window-input">
                             <MessageInput sendChatMessage={sendChatMessage}></MessageInput>
