@@ -114,6 +114,17 @@ const Header = () => {
       "header",
       setNotificationCount
     )
+
+    NotificationUtils.socketIOMessageNotification(
+      profile,
+      messageNotifications,
+      setMessageNotifications,
+      setMessageCount,
+      dispatch,
+      location
+    );
+
+
   }, [notifications, profile])
 
   const openChatPage = async (notification) => {

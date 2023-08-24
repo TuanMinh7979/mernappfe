@@ -18,6 +18,7 @@ import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
 import { useEffect } from 'react'
+import { ChatUtils } from '@services/utils/chat-utils.service.'
 const People = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ const People = () => {
 
   useEffectOnce(() => {
     getAllUsers();
+    ChatUtils.usersOnline(setOnlineUsers)
 
   });
 

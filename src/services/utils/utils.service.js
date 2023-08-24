@@ -156,11 +156,8 @@ export class Utils {
     return onlineUsers.some((user) => user === username?.toLowerCase());
   }
 
-
-
-
-
-
-
+  static checkUrl(url, word) {
+    return url.includes(word);
+  }
 
 }

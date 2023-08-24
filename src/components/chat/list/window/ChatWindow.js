@@ -107,7 +107,7 @@ const ChatWindow = () => {
                 searchParamsId: searchParams.get('id'),
                 chatMessages,
                 gifUrl,
-                file: selectedImage,
+               selectedImage,
                 isRead: checkUserOne && checkUserTwo
             });
             await chatService.saveChatMessage(messageData);
