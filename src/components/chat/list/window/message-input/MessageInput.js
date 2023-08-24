@@ -21,7 +21,7 @@ const EmojiPickerComponent = loadable(() => import('./EmojiPicker'), {
 
 const MessageInput = ({ sendChatMessage }) => {
 
-  
+
 
     let [message, setMessage] = useState('');
     const [showEmojiContainer, setShowEmojiContainer] = useState(false);
@@ -58,17 +58,18 @@ const MessageInput = ({ sendChatMessage }) => {
     const handleClick = (event) => {
         event.preventDefault();
         message = message || 'Sent an Image';
-        sendChatMessage(message.replace(/ +(?= )/g, ''), '',);
+        sendChatMessage(message.replace(/ +(?= )/g, ''), '', base64File);
         setMessage('');
         reset();
     };
 
     const handleImageClick = () => {
         message = message || 'Sent an Image';
-        sendChatMessage(message.replace(/ +(?= )/g, ''), '', message ? message : base64File);
+        sendChatMessage(message.replace(/ +(?= )/g, ''), '', base64File);
         setMessage('');
         reset();
     };
+
 
     const reset = () => {
         setBase64File('');
@@ -78,7 +79,7 @@ const MessageInput = ({ sendChatMessage }) => {
         setImageUrl('');
     };
 
-  
+
     return (
         <>
 
@@ -105,7 +106,7 @@ const MessageInput = ({ sendChatMessage }) => {
                         }}
                     />
                 )}
-                <form >
+                <form onSubmit={handleClick}>
                     <ul className="chat-list" style={{ borderColor: `${hasFocus ? '#50b5ff' : '#f1f0f0'}` }}>
 
 

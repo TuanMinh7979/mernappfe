@@ -88,7 +88,7 @@ const ChatWindow = () => {
         ChatUtils.usersOnline(setOnlineUsers);
         ChatUtils.usersOnChatPage();
 
-    }, [chatMessages, searchParams]);
+    }, [ searchParams]);
 
     const sendChatMessage = async (message, gifUrl, selectedImage) => {
         try {
@@ -107,7 +107,7 @@ const ChatWindow = () => {
                 searchParamsId: searchParams.get('id'),
                 chatMessages,
                 gifUrl,
-                selectedImage,
+                file: selectedImage,
                 isRead: checkUserOne && checkUserTwo
             });
             await chatService.saveChatMessage(messageData);
