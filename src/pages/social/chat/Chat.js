@@ -6,10 +6,11 @@ import ChatWindow from '@components/chat/list/window/ChatWindow'
 const Chat = () => {
 
     const reduxChat = useSelector(state => state.chat)
+
     return (
         <div className="private-chat-wrapper">
             <div className="private-chat-wrapper-content">
-                <div className="private-chat-wrapper-content-side" style={{border: "1px solid blue"}}>
+                <div className="private-chat-wrapper-content-side" style={{ border: "1px solid blue" }}>
                     <ChatSidebar />
                 </div>
                 <div className="private-chat-wrapper-content-conversation">

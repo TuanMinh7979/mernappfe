@@ -105,7 +105,7 @@ const ChatSidebar = () => {
                 senderProfilePicture: profile?.profilePicture,
                 body: ''
             };
-            // ChatUtils.joinRoomEvent(user, profile);
+            ChatUtils.joinRoomEvent(user, profile);
             ChatUtils.privateChatMessages = [];
             console.log(user, toShowConversationList);
             const findUser = toShowConversationList.find(
@@ -114,16 +114,16 @@ const ChatSidebar = () => {
 
             );
             if (!findUser) {
-        
+
                 const newConversationList = [newUser, ...toShowConversationList];
                 setToShowConversationList(newConversationList);
-                // if (!newConversationList.length) {
-                //     dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
-                //     const userTwoName =
-                //         newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
-                //     // ! Service:
-                //     // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-                // }
+
+                dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
+                // const userTwoName =
+                //     newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
+                // ! Service:
+                // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+
             }
         },
         [searchParams]
@@ -140,7 +140,7 @@ const ChatSidebar = () => {
     }, [componentType, selectedUser]);
 
 
-  
+
     const removeSelectedUserFromList = (event) => {
         // event.stopPropagation();
         // toShowConversationList = cloneDeep(toShowConversationList);
@@ -174,6 +174,9 @@ const ChatSidebar = () => {
             //     (userData) =>
             //         userData.userOne === profile?.username && userData.userTwo === searchParams.get('username')
             // );
+
+            dispatch(updateChatSelectedUser({ isLoading: false, user: newestMessageCvsData }));
+
             const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
             ChatUtils.joinRoomEvent(newestMessageCvsData, profile);
             ChatUtils.privateChatMessages = [];
@@ -320,7 +323,7 @@ const ChatSidebar = () => {
 
 
                     {/* search list */}
-            
+
                     <SearchList
                         userSearchText={userSearchText}
                         setUserSearchText={setUserSearchText}

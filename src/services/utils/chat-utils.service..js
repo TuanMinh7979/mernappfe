@@ -122,7 +122,19 @@ export class ChatUtils {
                     newToShowConversationList = newToShowConversationList.filter((el) => el.conversationId !== data.conversationId);
                     newToShowConversationList = [data, ...newToShowConversationList];
                 } else {
-                    newToShowConversationList = newToShowConversationList.filter((el) => el.receiverUsername !== data.receiverUsername);
+                    console.log("------------------->>>>>>> comehere", data, newToShowConversationList);
+                    newToShowConversationList = newToShowConversationList.filter((el) =>
+                        el.receiverUsername !== data.receiverUsername )
+          
+                    // newToShowConversationList = newToShowConversationList.filter((el) =>
+                    // el.senderUsername !== data.receiverUsername )
+
+                        
+                    
+                  
+                      
+                    
+
                     newToShowConversationList = [data, ...newToShowConversationList];
                 }
 
