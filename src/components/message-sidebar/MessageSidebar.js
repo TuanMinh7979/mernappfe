@@ -20,7 +20,7 @@ const MessageSidebar = ({ profile, messageCount, messageNotifications, openChatP
 
           <div className="message-card-body-info">
             <div data-testid="info-container" className="message-card-body-info-container">
-              {messageNotifications.map((notification) => (
+              {messageNotifications?.map((notification) => (
                 <div
                   className="message-sub-card"
                   key={Utils.generateString(10)}

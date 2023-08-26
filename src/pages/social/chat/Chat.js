@@ -1,29 +1,34 @@
-import React from 'react'
-import "./Chat.scss"
-import { useSelector } from 'react-redux'
-import ChatSidebar from '@components/chat/list/ChatSidebar'
-import ChatWindow from '@components/chat/list/window/ChatWindow'
+import ChatSidebar from '@components/chat/list/ChatSidebar';
+import ChatWindow from '@components/chat/list/window/ChatWindow';
+import useEffectOnce from '@hooks/useEffectOnce';
+import '@pages/social/chat/Chat.scss';
+import { getConversationList } from '@redux/api/chat';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Chat = () => {
+  const { selectedChatUser, chatList } = useSelector((state) => state.chat);
+  const dispatch = useDispatch();
 
-    const reduxChat = useSelector(state => state.chat)
+  useEffectOnce(() => {
+    dispatch(getConversationList());
+  });
 
-    return (
-        <div className="private-chat-wrapper">
-            <div className="private-chat-wrapper-content">
-                <div className="private-chat-wrapper-content-side" style={{ border: "1px solid blue" }}>
-                    <ChatSidebar />
-                </div>
-                <div className="private-chat-wrapper-content-conversation">
-                    {(reduxChat.selectedChatUser || reduxChat.conversationList.length > 0) && <ChatWindow />}
-                    {!reduxChat.selectedChatUser && !reduxChat.conversationList.length && (
-                        <div className="no-chat" data-testid="no-chat">
-                            Select or Search for users to chat with
-                        </div>
-                    )}
-                </div>
-            </div>
+  return (
+    <div className="private-chat-wrapper">
+      <div className="private-chat-wrapper-content">
+        <div className="private-chat-wrapper-content-side">
+          <ChatSidebar />
         </div>
-    )
-}
-
-export default Chat
+        <div className="private-chat-wrapper-content-conversation">
+          {(selectedChatUser || chatList.length > 0) && <ChatWindow />}
+          {!selectedChatUser && !chatList.length && (
+            <div className="no-chat" data-testid="no-chat">
+              Select or Search for users to chat with
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default Chat;

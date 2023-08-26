@@ -34,6 +34,7 @@ import { chatService } from "@services/api/chat/chat.service";
 import { createSearchParams } from "react-router-dom";
 import { getConversationList } from "@redux/api/chat";
 const Header = () => {
+  const [messageNotifications, setMessageNotifications] = useState([]);
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
@@ -125,7 +126,10 @@ const Header = () => {
     );
 
 
-  }, [notifications, profile])
+  }, [notifications, profile,  dispatch, location, messageNotifications])
+
+
+
 
   const openChatPage = async (notification) => {
     try {
@@ -167,7 +171,7 @@ const Header = () => {
 
   //  ? FOR MESSAGES SIDEBAR
 
-  const [messageNotifications, setMessageNotifications] = useState([]);
+
   const { conversationList } = useSelector((state) => state.chat);
   //  ? END FOR MESSAGES SIDEBAR
   useEffect(() => {

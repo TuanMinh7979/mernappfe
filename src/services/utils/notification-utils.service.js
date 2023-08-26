@@ -14,16 +14,16 @@ export default class NotificationUtils {
   ) {
 
     socketService?.socket?.on("insert notification", (data, userToData) => {
-   
+
       // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
 
         if (type === "notificationPage") {
-      
+
           setNotifications([...data]);
         } else {
           const mappedNotifications = NotificationUtils.mapNotificationDropdownItems([...data], setNotificationsCount)
-       
+
           setNotifications(mappedNotifications);
         }
       }
@@ -138,7 +138,11 @@ export default class NotificationUtils {
     location
   ) {
     socketService?.socket?.on('chat list', (data) => {
+      if (!messageNotifications) return
+      console.log("-1", messageNotifications);
+
       messageNotifications = cloneDeep(messageNotifications);
+      console.log("0", messageNotifications);
       if (data?.receiverUsername === profile?.username) {
         const notificationData = {
           senderId: data.senderId,
@@ -162,15 +166,18 @@ export default class NotificationUtils {
           remove(messageNotifications, (notification) => notification.conversationId === data.conversationId);
           messageNotifications = [notificationData, ...messageNotifications];
         } else {
+          console.log("1", messageNotifications);
           messageNotifications = [notificationData, ...messageNotifications];
         }
         const count = sumBy(messageNotifications, (notification) => {
           return !notification.isRead ? 1 : 0;
         });
+        console.log("2", messageNotifications);
         if (!Utils.checkUrl(location.pathname, 'chat')) {
           Utils.updToastsNewEle('You have a new message', 'success', dispatch);
         }
         setMessageCount(count);
+        console.log("3", messageNotifications);
         setMessageNotifications(messageNotifications);
       }
     });

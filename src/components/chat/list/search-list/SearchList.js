@@ -1,51 +1,42 @@
 import PropTypes from 'prop-types';
-import './SearchList.scss';
+import '@components/chat/list/search-list/SearchList.scss';
 import Avatar from '@components/avatar/Avatar';
 import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
 
 const SearchList = ({
-
-  userSearchText,
-  setUserSearchText,
-
-
-  userSearchResult,
-  setUserSearchResult,
-
+  result,
   isSearching,
-  setIsSearching,
-
-
+  searchTerm,
   setSelectedUser,
+  setSearch,
+  setIsSearching,
+  setSearchResult,
   setComponentType
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const onSearchedUserClick = (user) => {
+  const addUsernameToUrlQuery = (user) => {
     setComponentType('searchList');
     setSelectedUser(user);
     const url = `${location.pathname}?${createSearchParams({ username: user.username.toLowerCase(), id: user._id })}`;
     navigate(url);
-    setUserSearchText('');
+    setSearch('');
     setIsSearching(false);
-    setUserSearchResult([]);
+    setSearchResult([]);
   };
-
 
   return (
     <div className="search-result">
-
       <div className="search-result-container">
-        {!isSearching && userSearchResult.length > 0 && (
+        {!isSearching && result.length > 0 && (
           <>
-            {userSearchResult.map((user) => (
+            {result.map((user) => (
               <div
                 data-testid="search-result-item"
                 className="search-result-container-item"
                 key={user._id}
-                onClick={() => onSearchedUserClick(user)}
-                style={{background: "cyan"}}
+                onClick={() => addUsernameToUrlQuery(user)}
               >
                 <Avatar
                   name={user.username}
@@ -60,16 +51,16 @@ const SearchList = ({
           </>
         )}
 
-        {userSearchText && isSearching && (
-          <div className="search-result-container-empty"  data-testid="searching-text">
+        {searchTerm && isSearching && result.length === 0 && (
+          <div className="search-result-container-empty" data-testid="searching-text">
             <span>Searching...</span>
           </div>
         )}
 
-        {userSearchText && !isSearching && userSearchResult.length === 0 && (
+        {searchTerm && !isSearching && result.length === 0 && (
           <div className="search-result-container-empty" data-testid="nothing-found">
             <span>Nothing found</span>
-            <p className="search-result-container-empty-msg">We could not find any match for {userSearchText}</p>
+            <p className="search-result-container-empty-msg">We couldn&apos;t find any match for {searchTerm}</p>
           </div>
         )}
       </div>
@@ -78,13 +69,13 @@ const SearchList = ({
 };
 
 SearchList.propTypes = {
-  userSearchResult: PropTypes.array,
+  result: PropTypes.array,
   isSearching: PropTypes.bool,
-  userSearchText: PropTypes.string,
+  searchTerm: PropTypes.string,
   setSelectedUser: PropTypes.func,
-  setUserSearchText: PropTypes.func,
+  setSearch: PropTypes.func,
   setIsSearching: PropTypes.func,
-  setUserSearchResult: PropTypes.func,
+  setSearchResult: PropTypes.func,
   setComponentType: PropTypes.func
 };
 
