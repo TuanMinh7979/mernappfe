@@ -12,18 +12,18 @@ export default class NotificationUtils {
     type,
     setNotificationsCount
   ) {
-    console.log("INIT NOTI SOCKET");
+
     socketService?.socket?.on("insert notification", (data, userToData) => {
-      console.log("NEW NOTI", userToData);
+   
       // data(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
 
         if (type === "notificationPage") {
-          console.log("NEW NOTI STATE", [...data]);
+      
           setNotifications([...data]);
         } else {
           const mappedNotifications = NotificationUtils.mapNotificationDropdownItems([...data], setNotificationsCount)
-          console.log("NEW NOTI STATE", mappedNotifications);
+       
           setNotifications(mappedNotifications);
         }
       }

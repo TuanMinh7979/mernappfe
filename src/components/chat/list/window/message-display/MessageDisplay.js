@@ -10,6 +10,7 @@ import useChatScrollToBottom from '@hooks/useChatScrollToBottom';
 import RightMessageBubble from './right-message-display/RightMessageBubble';
 import LeftMessageDisplay from './left-message-display/LeftMessageDisplay';
 const MessageDisplay = ({ chatMessages, profile, updateMessageReaction, deleteChatMessage }) => {
+   
     const [imageUrl, setImageUrl] = useState('');
     const [showReactionIcon, setShowReactionIcon] = useState(false);
     const [showImageModal, setShowImageModal] = useState(false);

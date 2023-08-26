@@ -30,13 +30,13 @@ export class FollowersUtils {
 
   // use in People page, user is user state list in page
   static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
-    console.log("--------------init socket follow and unfollow");
+
     // in follow-user
     socketService?.socket?.on('add follow', (newIdolData) => {
-      console.log("ADDDDDDDDDDDDDDDDDDDFOLLOWWWWWWWWWWWW");
+    
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
       if (idolIndex != -1) {
-        console.log("HEEEEEEEEEEEREEE-------------------------");
+        
         // update idol state
         setMyIdols([...myIdols, newIdolData]);
         // update users state
@@ -52,7 +52,7 @@ export class FollowersUtils {
     });
 
     socketService?.socket?.on('remove follow', (newIdolData) => {
-      console.log("REMOVEEEEEEEEEEE FOLLOWWWWWWWWWWWWW");
+     
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
       if (idolIndex) {
         // update idol state
@@ -85,12 +85,12 @@ export class FollowersUtils {
   // in socket/user.ts
   // update profile in redux
   static socketIOBlockAndUnblock(profile, token, setBlockedUsers, dispatch) {
-    console.log("-=----------------init socket block");
+
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
     socketService?.socket?.on('blocked user id', (data) => {
       
-      console.log("-------------BLOCK idols: ", data.blockedBy, "Fans: ", data.blockedUser);
+
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
       // update blockedUsers State in Follower Component
@@ -99,7 +99,7 @@ export class FollowersUtils {
     });
 
     socketService?.socket?.on('unblocked user id', (data) => {
-      console.log("-------------UNBLOCK idols: ", data.blockedBy, "Fans: ", data.blockedUser);
+
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
@@ -124,9 +124,9 @@ export class FollowersUtils {
   static updateProfileWhenBlock(profile, data) {
 
     let newProfile = { ...profile };
-    console.log("MY PROFILE", newProfile, "DATA", data);
+
     if (newProfile?._id === data.blockedBy) {
-      console.log("I ", data.blockedBy, " MADE A BLOCK TO Fans: ", data.blockedUser);
+
       // if i give a block
       let newBlockeds = [...newProfile.blocked]
       newBlockeds.push(data.blockedUser)
@@ -135,7 +135,7 @@ export class FollowersUtils {
     }
     // if i receive a block
     if (newProfile?._id === data.blockedUser) {
-      console.log("I ", data.blockedUser, " RECEIVER A BLOCK FROM ", data.blockedBy);
+
       let newBlockedBys = [...newProfile.blockedBy]
       newBlockedBys.push(data.blockedBy)
       newProfile.blockedBy = [...newBlockedBys];
@@ -147,17 +147,17 @@ export class FollowersUtils {
   static updateProfileWhenUnBlock(profile, data) {
 
     let newProfile = { ...profile };
-    console.log("MY PROFILE", newProfile, "DATA", data);
+
     // if i get back a block
     if (newProfile?._id === data.blockedBy) {
-      console.log("I ", data.blockedBy, " MADE A UNBLOCK TO Fans: ", data.blockedUser);
+
       let newBlockeds = [...newProfile.blocked]
       newBlockeds = newBlockeds.filter(el => el !== data.blockedUser)
       newProfile.blocked = [...newBlockeds];
     }
     // if someone get back my block
     if (newProfile?._id === data.blockedUser) {
-      console.log("I (aka)", data.blockedUser, " was detached A BLOCK FROM ", data.blockedBy);
+
       let newBlockedBys = [...newProfile.blockedBy]
       newBlockedBys = newBlockedBys.filter(el => el !== data.blockedBy)
       newProfile.blockedBy = [...newBlockedBys];

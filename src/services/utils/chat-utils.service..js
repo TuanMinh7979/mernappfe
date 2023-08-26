@@ -45,7 +45,7 @@ export class ChatUtils {
         return params;
     }
 
-    static messageData({
+    static buildMessageData({
         receiver,
         message,
         searchParamsId,
@@ -55,6 +55,18 @@ export class ChatUtils {
         gifUrl,
         selectedImage
     }) {
+        // const chatConversationId = chatMessages.find(
+
+        //     (chat) => chat.receiverId === searchParamsId || chat.senderId === searchParamsId
+        // );
+
+        // conversationId only setted when created new message, but at the begining, no conversationId setted
+        // => so if it was unset, get it from  chatMessages
+
+        // 
+        // if (!conversationId && chatMessages.length) {
+        //     conversationId = chatMessages[0].conversationId
+        // }
         const chatConversationId = chatMessages.find(
 
             (chat) => chat.receiverId === searchParamsId || chat.senderId === searchParamsId
@@ -62,6 +74,7 @@ export class ChatUtils {
 
         const messageData = {
             conversationId: chatConversationId ? chatConversationId.conversationId : conversationId,
+
             receiverId: receiver?._id,
             receiverUsername: receiver?.username,
             receiverAvatarColor: receiver?.avatarColor,
@@ -99,38 +112,50 @@ export class ChatUtils {
         }
     }
 
-    static socketIOChatList(profile, chatMessageList, setChatMessageList) {
+    static socketIOConversations(profile, toShowConversationList, setToShowConversationList) {
         socketService?.socket?.on('chat list', (data) => {
             if (data.senderUsername === profile?.username || data.receiverUsername === profile?.username) {
-                const messageIndex = findIndex(chatMessageList, ['conversationId', data.conversationId]);
-                chatMessageList = cloneDeep(chatMessageList);
+                console.log("-----------conversations----------data", data);
+                const messageIndex = toShowConversationList.findIndex(el => el.conversationId == data.conversationId);
+                let newToShowConversationList = [...toShowConversationList];
                 if (messageIndex > -1) {
-                    remove(chatMessageList, (chat) => chat.conversationId === data.conversationId);
-                    chatMessageList = [data, ...chatMessageList];
+                    newToShowConversationList = newToShowConversationList.filter((el) => el.conversationId !== data.conversationId);
+                    newToShowConversationList = [data, ...newToShowConversationList];
                 } else {
-                    remove(chatMessageList, (chat) => chat.receiverUsername === data.receiverUsername);
-                    chatMessageList = [data, ...chatMessageList];
+                    newToShowConversationList = newToShowConversationList.filter((el) => el.receiverUsername !== data.receiverUsername);
+                    newToShowConversationList = [data, ...newToShowConversationList];
                 }
-                setChatMessageList(chatMessageList);
+
+                console.log("-----------conversations", newToShowConversationList);
+                setToShowConversationList(newToShowConversationList);
             }
         });
     }
 
     // like above
-    static socketIOMessageReceived(chatMessages, username, setConversationId, setChatMessages) {
-        chatMessages = cloneDeep(chatMessages);
+    static socketIOMessageReceived(chatMessages, targetUserName, setConversationId, setChatMessages) {
+        let newChatMessages = [...chatMessages];
         socketService?.socket?.on('message received', (data) => {
-            if (data.senderUsername.toLowerCase() === username || data.receiverUsername.toLowerCase() === username) {
+            if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
+
                 setConversationId(data.conversationId);
-                ChatUtils.privateChatMessages.push(data);
-                chatMessages = [...ChatUtils.privateChatMessages];
-                setChatMessages(chatMessages);
+                console.log("oldddddddddddddd", ChatUtils.privateChatMessages);
+                let oldIdx = ChatUtils.privateChatMessages.findIndex(el => el.conversationId === data.conversationId)
+                if (!oldIdx) {
+                    ChatUtils.privateChatMessages.push(data);
+                } else {
+                    ChatUtils.privateChatMessages.splice(oldIdx, 1, data);
+                }
+
+                newChatMessages = [...ChatUtils.privateChatMessages];
+                console.log("socketio:receive", data, newChatMessages);
+                setChatMessages([...newChatMessages]);
             }
         });
 
         socketService?.socket?.on('message read', (data) => {
-            if (data.senderUsername.toLowerCase() === username || data.receiverUsername.toLowerCase() === username) {
-                const findMessageIndex = findIndex(ChatUtils.privateChatMessages, ['_id', data._id]);
+            if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
+                const findMessageIndex = ChatUtils.privateChatMessages.findIndex(el => el._id === data._id)
                 if (findMessageIndex > -1) {
                     ChatUtils.privateChatMessages.splice(findMessageIndex, 1, data);
                     chatMessages = [...ChatUtils.privateChatMessages];

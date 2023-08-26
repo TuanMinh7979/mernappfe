@@ -48,7 +48,7 @@ const MessageInput = ({ sendChatMessage }) => {
         ImageUtils.checkFile(file);
         setImageUrl(URL.createObjectURL(file));
         const result = await ImageUtils.readAsBase64(file);
-        console.log("BASSSSSSSSSSSSSE 64 ", result);
+
         setBase64File(result);
         setShowImagePreview(true);
         setShowEmojiContainer(false);
@@ -86,7 +86,7 @@ const MessageInput = ({ sendChatMessage }) => {
             {showEmojiContainer && (
                 <EmojiPickerComponent
                     onEmojiClick={(event, eventObject) => {
-                        console.log("event", event, eventObject);
+           
                         setMessage((text) => (text += ` ${event.emoji}`));
                     }}
                     pickerStyle={{ width: '352px', height: '447px' }}

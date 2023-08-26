@@ -21,19 +21,19 @@ const ChatWindow = () => {
     const dispatch = useDispatch()
     const { profile } = useSelector((state) => state.user);
     const { isLoading } = useSelector((state) => state.chat);
-    const [receiver, setReceiver] = useState("")
+    const [receiver, setReceiver] = useState(null)
     const [conversationId, setConversationId] = useState("")
     const [chatMessages, setChatMessages] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
-
-    const searchChatMessages = useCallback(
+    // * use in cb
+    const getCurrentConversationMessages = useCallback(
         async (receiverId) => {
             try {
                 const response = await chatService.getChatMessages(receiverId);
                 ChatUtils.privateChatMessages = [...response.data.messages];
 
                 setChatMessages([...ChatUtils.privateChatMessages]);
-                console.log("call api messages");
+                // console.log("call api messages");
             } catch (error) {
                 Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
             }
@@ -43,17 +43,18 @@ const ChatWindow = () => {
 
 
     const [searchParams] = useSearchParams();
-    const getChatMessageCallback = useCallback(() => {
+    // * usefor: get all messages of current conversation 
+    const getCurrentConversationMessagesCb = useCallback(() => {
         if (searchParams.get('id') && searchParams.get('username')) {
             setConversationId('');
             setChatMessages([]);
 
-            searchChatMessages(searchParams.get('id'));
+            getCurrentConversationMessages(searchParams.get('id'));
         }
-    }, [searchChatMessages, searchParams]);
+    }, [getCurrentConversationMessages, searchParams]);
 
-
-    const getUserProfileByUserId = useCallback(async () => {
+    //  * userfor: get target user profile
+    const getTargetUserProfileById = useCallback(async () => {
         try {
 
             const response = await userService.getUserProfileByUserId(searchParams.get('id'));
@@ -72,8 +73,8 @@ const ChatWindow = () => {
         if (
             rendered &&
             searchParams.get('id')) {
-            getUserProfileByUserId()
-            getChatMessageCallback()
+            getTargetUserProfileById()
+            getCurrentConversationMessagesCb()
         }
 
     }, [searchParams, rendered])
@@ -82,15 +83,19 @@ const ChatWindow = () => {
 
     useEffect(() => {
 
+        if (!rendered) setRendered(true);
+        if (rendered) {
         ChatUtils.socketIOMessageReceived(chatMessages, searchParams.get('username'), setConversationId, setChatMessages);
-
-
+        }
+   
         ChatUtils.usersOnline(setOnlineUsers);
         ChatUtils.usersOnChatPage();
 
-    }, [searchParams]);
+    }, [ receiver]);
 
-    const sendChatMessage = async (message, gifUrl, selectedImage) => {
+
+
+    const createChatMessage = async (message, gifUrl, selectedImage) => {
         try {
             const checkUserOne = ChatUtils.chatUsers.some(
 
@@ -100,14 +105,15 @@ const ChatWindow = () => {
 
                 (user) => user?.userOne === receiver?.username && user?.userTwo === profile?.username
             );
-            const messageData = ChatUtils.messageData({
+            // if !conversationId=>create new conversation
+            const messageData = ChatUtils.buildMessageData({
                 receiver,
                 conversationId,
                 message,
                 searchParamsId: searchParams.get('id'),
                 chatMessages,
                 gifUrl,
-               selectedImage,
+                selectedImage,
                 isRead: checkUserOne && checkUserTwo
             });
             await chatService.saveChatMessage(messageData);
@@ -116,22 +122,22 @@ const ChatWindow = () => {
             Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
     };
-    console.log(chatMessages);
+   
 
-    // ? func for message:
+    // * usefor : update message.reaction in DB
     const updateMessageReaction = async (body) => {
         try {
             await chatService.updateMessageReaction(body);
         } catch (error) {
-            Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
     };
-
+    // * usefor : delete message.reaction in DB
     const deleteChatMessage = async (senderId, receiverId, messageId, type) => {
         try {
             await chatService.markMessageAsDelete(messageId, senderId, receiverId, type);
         } catch (error) {
-            Utils.dispatchNotification(error.response.data.message, 'error', dispatch);
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
     };
     // ? END func for message:
@@ -182,7 +188,7 @@ const ChatWindow = () => {
                             ></MessageDisplay>
                         </div>
                         <div className="chat-window-input">
-                            <MessageInput sendChatMessage={sendChatMessage}></MessageInput>
+                            <MessageInput sendChatMessage={createChatMessage}></MessageInput>
                         </div>
                     </div>
                 </div>

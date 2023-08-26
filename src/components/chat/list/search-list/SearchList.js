@@ -22,7 +22,7 @@ const SearchList = ({
   const location = useLocation();
   const navigate = useNavigate();
 
-  const buildQueryUrl = (user) => {
+  const onSearchedUserClick = (user) => {
     setComponentType('searchList');
     setSelectedUser(user);
     const url = `${location.pathname}?${createSearchParams({ username: user.username.toLowerCase(), id: user._id })}`;
@@ -33,7 +33,6 @@ const SearchList = ({
   };
 
 
-  console.log(isSearching, userSearchText, userSearchResult);
   return (
     <div className="search-result">
 
@@ -45,7 +44,8 @@ const SearchList = ({
                 data-testid="search-result-item"
                 className="search-result-container-item"
                 key={user._id}
-                onClick={() => buildQueryUrl(user)}
+                onClick={() => onSearchedUserClick(user)}
+                style={{background: "cyan"}}
               >
                 <Avatar
                   name={user.username}

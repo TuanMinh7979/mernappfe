@@ -36,8 +36,7 @@ const People = () => {
 
   const [myIdols, setMyIdols] = useState([]);
 
-  console.log("USEEEEERR", users);
-  console.log("idolsssssss", myIdols);
+
   // ? init users
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {

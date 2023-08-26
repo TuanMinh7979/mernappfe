@@ -16,7 +16,7 @@ class ChatService {
 
   async removeChatUsers(body) {
     // 
-    console.log("send to api remove chat user", body);
+    
     const response = await axios.post('/chat/message/remove-chat-users', body);
     return response;
   }

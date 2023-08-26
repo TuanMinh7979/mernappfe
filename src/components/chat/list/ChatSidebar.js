@@ -91,8 +91,8 @@ const ChatSidebar = () => {
 
     // ? add user to chat list(conversationlist)
     // api /chat/message/add-chat-users
-    // trigger when searchList component item onclick
-    const addSelectedUserToList = useCallback(
+    // trigger searchParasm change:
+    const updateToShowConversationsFromSelectedUser = useCallback(
         (user) => {
             const newUser = {
                 receiverId: user?._id,
@@ -105,25 +105,28 @@ const ChatSidebar = () => {
                 senderProfilePicture: profile?.profilePicture,
                 body: ''
             };
-            ChatUtils.joinRoomEvent(user, profile);
+            // ChatUtils.joinRoomEvent(user, profile);
             ChatUtils.privateChatMessages = [];
-            const findUser = find(
-                toShowConversationList,
-                (chat) => chat.receiverId === searchParams.get('id') || chat.senderId === searchParams.get('id')
+            console.log(user, toShowConversationList);
+            const findUser = toShowConversationList.find(
+
+                (chat) => chat.receiverId === user.receiverId || chat.senderId === user.receiverId
+
             );
             if (!findUser) {
-                const newChatList = [newUser, ...toShowConversationList];
-                setToShowConversationList(newChatList);
-                if (!conversationList.length) {
-                    dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
-                    const userTwoName =
-                        newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
-                    // ! Service:
-                    chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-                }
+        
+                const newConversationList = [newUser, ...toShowConversationList];
+                setToShowConversationList(newConversationList);
+                // if (!newConversationList.length) {
+                //     dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
+                //     const userTwoName =
+                //         newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
+                //     // ! Service:
+                //     // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+                // }
             }
         },
-        [conversationList, toShowConversationList, dispatch, searchParams, profile]
+        [searchParams]
     );
     // ? END add user to chat list(conversationlist)
 
@@ -131,66 +134,62 @@ const ChatSidebar = () => {
     useEffect(() => {
         if (selectedUser && componentType === 'searchList') {
             // * navigate to new url
-            addSelectedUserToList(selectedUser);
+            updateToShowConversationsFromSelectedUser(selectedUser);
 
         }
-    }, [addSelectedUserToList, componentType, selectedUser]);
+    }, [componentType, selectedUser]);
 
 
-    const updateQueryParams = (user) => {
-        setSelectedUser(user);
-        const params = ChatUtils.makeDetailConversationUrlParam(user, profile);
-        ChatUtils.joinRoomEvent(user, profile);
-        ChatUtils.privateChatMessages = [];
-        return params;
-    };
+  
     const removeSelectedUserFromList = (event) => {
-        event.stopPropagation();
-        toShowConversationList = cloneDeep(toShowConversationList);
-        const userIndex = findIndex(toShowConversationList, ['receiverId', searchParams.get('id')]);
-        if (userIndex > -1) {
-            toShowConversationList.splice(userIndex, 1);
-            setSelectedUser(null);
-            setToShowConversationList(toShowConversationList);
-            ChatUtils.updatedSelectedChatUser({
-                toShowConversationList,
-                profile,
-                username: searchParams.get('username'),
-                setSelectedChatUser: updateChatSelectedUser,
-                params: toShowConversationList.length ? updateQueryParams(toShowConversationList[0]) : null,
-                pathname: location.pathname,
-                navigate,
-                dispatch
-            });
-        }
+        // event.stopPropagation();
+        // toShowConversationList = cloneDeep(toShowConversationList);
+        // const userIndex = findIndex(toShowConversationList, ['receiverId', searchParams.get('id')]);
+        // if (userIndex > -1) {
+        //     toShowConversationList.splice(userIndex, 1);
+        //     setSelectedUser(null);
+        //     setToShowConversationList(toShowConversationList);
+        //     ChatUtils.updatedSelectedChatUser({
+        //         toShowConversationList,
+        //         profile,
+        //         username: searchParams.get('username'),
+        //         setSelectedChatUser: updateChatSelectedUser,
+        //         params: toShowConversationList.length ? updateQueryParams(toShowConversationList[0]) : null,
+        //         pathname: location.pathname,
+        //         navigate,
+        //         dispatch
+        //     });
+        // }
     }
 
-    console.log(toShowConversationList);
+
 
 
     // this is for when a user already exist in the chat list
-    const addUsernameToUrlQuery = async (newestMessageCvsData) => {
+    const onConversationClick = async (newestMessageCvsData) => {
         try {
             // TODO
-            const sender = find(
-                ChatUtils.chatUsers,
-                (userData) =>
-                    userData.userOne === profile?.username && userData.userTwo === searchParams.get('username')
-            );
-            const params = updateQueryParams(newestMessageCvsData);
-            const userTwoName = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverUsername : newestMessageCvsData?.senderUsername;
-            const targetUserId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
-            console.log("PARAMS FOR DETAIL CONVERSATION URL", params);
+            // const sender = find(
+            //     ChatUtils.chatUsers,
+            //     (userData) =>
+            //         userData.userOne === profile?.username && userData.userTwo === searchParams.get('username')
+            // );
+            const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
+            ChatUtils.joinRoomEvent(newestMessageCvsData, profile);
+            ChatUtils.privateChatMessages = [];
+            // const userTwoName = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverUsername : newestMessageCvsData?.senderUsername;
+            // const targetUserId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
+            // console.log("PARAMS FOR DETAIL CONVERSATION URL", params);
 
             navigate(`${location.pathname}?${createSearchParams(params)}`);
-            if (sender) {
-                chatService.removeChatUsers(sender);
-            }
+            // if (sender) {
+            //     chatService.removeChatUsers(sender);
+            // }
             // TODO
-            chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-            if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
-                await chatService.markMessagesAsRead(profile?._id, targetUserId);
-            }
+            // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+            // if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
+            //     await chatService.markMessagesAsRead(profile?._id, targetUserId);
+            // }
         } catch (error) {
             console.log(error);
             Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -201,10 +200,12 @@ const ChatSidebar = () => {
 
     useEffect(() => {
 
-        ChatUtils.socketIOChatList(profile, toShowConversationList, setToShowConversationList);
+        ChatUtils.socketIOConversations(profile, toShowConversationList, setToShowConversationList);
 
 
-    }, [toShowConversationList, profile]);
+    }, [toShowConversationList]);
+
+    console.log("toShowConversationList", toShowConversationList);
     return (
         <div data-testid="conversationList" >
             <div className="conversation-container">
@@ -250,14 +251,17 @@ const ChatSidebar = () => {
                     {!userSearchText && (
                         <div className="conversation">
                             {toShowConversationList.map((data) => {
-                                console.log("---", data);
+
                                 return (<div key={Utils.generateString(10)} data-testid="conversation-item"
                                     className={`conversation-item ${searchParams.get('username') === data?.receiverUsername.toLowerCase() ||
                                         searchParams.get('username') === data?.senderUsername.toLowerCase()
                                         ? 'active'
                                         : ''
                                         }`}
-                                    onClick={() => addUsernameToUrlQuery(data)}
+                                    onClick={() => {
+                                        console.log("}}}}}}}}}}}}}}}}}");
+                                        onConversationClick(data)
+                                    }}
                                 >
 
                                     <div className="avatar">
@@ -269,9 +273,9 @@ const ChatSidebar = () => {
                                             textColor="#ffffff"
                                             size={40}
                                             avatarSrc={
-                                                data.senderProfilePicture !== profile?.username
-                                                    ? data?.senderProfilePicture
-                                                    : data?.sended
+                                                data.receiverUsername !== profile?.username
+                                                    ? data?.receiverProfilePicture
+                                                    : data?.senderProfilePicture
                                             }
 
                                         />
@@ -316,6 +320,7 @@ const ChatSidebar = () => {
 
 
                     {/* search list */}
+            
                     <SearchList
                         userSearchText={userSearchText}
                         setUserSearchText={setUserSearchText}
