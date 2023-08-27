@@ -129,22 +129,22 @@ const Header = () => {
 
   const openChatPage = async (notification) => {
     try {
-      const params = ChatUtils.makeDetailConversationUrlParam(notification, profile);
-      ChatUtils.joinRoomEvent(notification, profile);
-      ChatUtils.privateChatMessages = [];
-      const receiverId =
-        notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
-      if (notification?.receiverUsername === profile?.username && !notification.isRead) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId);
-      }
-      const userTwoName =
-        notification?.receiverUsername !== profile?.username
-          ? notification?.receiverUsername
-          : notification?.senderUsername;
-      await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-      navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
-      setIsMessageActive(false);
-      dispatch(getConversationList());
+      // const params = ChatUtils.makeDetailConversationUrlParam(notification, profile);
+      // ChatUtils.joinRoomEvent(notification, profile);
+
+      // const receiverId =
+      //   notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
+      // if (notification?.receiverUsername === profile?.username && !notification.isRead) {
+      //   await chatService.markMessagesAsRead(profile?._id, receiverId);
+      // }
+      // const userTwoName =
+      //   notification?.receiverUsername !== profile?.username
+      //     ? notification?.receiverUsername
+      //     : notification?.senderUsername;
+      // await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
+      // navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
+      // setIsMessageActive(false);
+      // dispatch(getConversationList());
     } catch (error) {
       console.log(error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -178,7 +178,9 @@ const Header = () => {
     setMessageCount(count);
     setMessageNotifications(conversationList);
   }, [conversationList, profile]);
-
+  useEffect(() => {
+    ChatUtils.joinRoomEvent(profile)
+  }, [])
   return (
 
     <>

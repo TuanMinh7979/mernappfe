@@ -14,7 +14,7 @@ const Chat = () => {
                     <ChatSidebar />
                 </div>
                 <div className="private-chat-wrapper-content-conversation">
-                    {(reduxChat.selectedChatUser || reduxChat.conversationList.length > 0) && <ChatWindow />}
+                    {reduxChat.selectedChatUser  && <ChatWindow />}
                     {!reduxChat.selectedChatUser && !reduxChat.conversationList.length && (
                         <div className="no-chat" data-testid="no-chat">
                             Select or Search for users to chat with

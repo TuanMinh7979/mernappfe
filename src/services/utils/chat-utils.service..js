@@ -4,8 +4,9 @@ import { createSearchParams } from 'react-router-dom';
 import { cloneDeep, find, findIndex, remove } from 'lodash';
 
 export class ChatUtils {
-    static privateChatMessages = [];
+
     static chatUsers = [];
+
 
     static usersOnline(setOnlineUsers) {
         socketService?.socket?.on('user online', (data) => {
@@ -19,14 +20,18 @@ export class ChatUtils {
         });
     }
 
-    static joinRoomEvent(user, profile) {
-        const users = {
-            receiverId: user.receiverId,
-            receiverName: user.receiverUsername,
-            senderId: profile?._id,
-            senderName: profile?.username
-        };
-        socketService?.socket?.emit('join room', users);
+    // static joinRoomEvent(user, profile) {
+    //     const users = {
+    //         receiverId: user.receiverId,
+    //         receiverName: user.receiverUsername,
+    //         senderId: profile?._id,
+    //         senderName: profile?.username
+    //     };
+    //     socketService?.socket?.emit('join room', users);
+    // }
+    static joinRoomEvent(profile) {
+
+        socketService?.socket?.emit('join room', profile);
     }
 
     static emitChatPageEvent(event, data) {
@@ -115,66 +120,126 @@ export class ChatUtils {
     static socketIOConversations(profile, toShowConversationList, setToShowConversationList) {
         socketService?.socket?.on('chat list', (data) => {
             if (data.senderUsername === profile?.username || data.receiverUsername === profile?.username) {
-                console.log("-----------conversations----------data", data);
+
                 const messageIndex = toShowConversationList.findIndex(el => el.conversationId == data.conversationId);
                 let newToShowConversationList = [...toShowConversationList];
                 if (messageIndex > -1) {
                     newToShowConversationList = newToShowConversationList.filter((el) => el.conversationId !== data.conversationId);
                     newToShowConversationList = [data, ...newToShowConversationList];
                 } else {
-                    console.log("------------------->>>>>>> comehere", data, newToShowConversationList);
+
                     newToShowConversationList = newToShowConversationList.filter((el) =>
-                        el.receiverUsername !== data.receiverUsername )
-          
+                        el?.conversationId)
+
                     // newToShowConversationList = newToShowConversationList.filter((el) =>
                     // el.senderUsername !== data.receiverUsername )
 
-                        
-                    
-                  
-                      
-                    
+
+
+
+
+
 
                     newToShowConversationList = [data, ...newToShowConversationList];
                 }
 
-                console.log("-----------conversations", newToShowConversationList);
+
                 setToShowConversationList(newToShowConversationList);
             }
         });
     }
 
+    static chatMessages = []
+    static targetUserName = ''
+    static setChatMessages = () => { }
+    static link = ''
+
     // like above
-    static socketIOMessageReceived(chatMessages, targetUserName, setConversationId, setChatMessages) {
-        let newChatMessages = [...chatMessages];
+    static setupSocketIOMessageReceived(chatMessages, targetUserName, setChatMessages, link) {
+        this.chatMessages = [...chatMessages]
+        this.targetUserName = targetUserName
+        this.setChatMessages = setChatMessages
+        this.link=link
+        this.socketIOMessageReceived1()
+
+    }
+
+    static socketIOMessageReceived1() {
+
+        console.log("1111111111111111 LEN SOCKET", this.chatMessages[0]?.receiverUsername, this.chatMessages[0]?.senderUsername, this.targetUserName);
         socketService?.socket?.on('message received', (data) => {
+            console.log(this.link);
+            console.log("2222222222222222222, LEN SOCKET", this.chatMessages, this.targetUserName
+
+            );
+            if (data.senderUsername.toLowerCase() === this.targetUserName || data.receiverUsername.toLowerCase() === this.targetUserName) {
+
+
+
+                console.log("======------------conditionok", this.chatMessages, this.targetUserName)
+
+
+                let newChatMessages = [...this.chatMessages];
+                console.log("ADD")
+
+                console.log(newChatMessages[0], "------", data);
+                newChatMessages.push(data);
+
+                console.log("socketio:receive", data, newChatMessages);
+                this.chatMessages=[...newChatMessages]
+                this.setChatMessages([...newChatMessages]);
+
+
+
+
+
+
+            }
+        });
+    }
+    static socketIOMessageReceived(chatMessages, targetUserName, setChatMessages, link) {
+
+        console.log("1111111111111111 LEN SOCKET", chatMessages[0]?.receiverUsername, chatMessages[0]?.senderUsername, targetUserName);
+        socketService?.socket?.on('message received', (data) => {
+            console.log(link);
+            console.log("2222222222222222222, LEN SOCKET", chatMessages, targetUserName
+
+            );
             if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
 
-                setConversationId(data.conversationId);
-                console.log("oldddddddddddddd", ChatUtils.privateChatMessages);
-                let oldIdx = ChatUtils.privateChatMessages.findIndex(el => el.conversationId === data.conversationId)
-                if (!oldIdx) {
-                    ChatUtils.privateChatMessages.push(data);
-                } else {
-                    ChatUtils.privateChatMessages.splice(oldIdx, 1, data);
-                }
 
-                newChatMessages = [...ChatUtils.privateChatMessages];
+
+                console.log("======------------conditionok", chatMessages, targetUserName)
+
+
+                let newChatMessages = [...chatMessages];
+                console.log("ADD")
+
+                console.log(newChatMessages[0], "------", data);
+                newChatMessages.push(data);
+
                 console.log("socketio:receive", data, newChatMessages);
                 setChatMessages([...newChatMessages]);
+
+
+
+
+
+
             }
         });
 
-        socketService?.socket?.on('message read', (data) => {
-            if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
-                const findMessageIndex = ChatUtils.privateChatMessages.findIndex(el => el._id === data._id)
-                if (findMessageIndex > -1) {
-                    ChatUtils.privateChatMessages.splice(findMessageIndex, 1, data);
-                    chatMessages = [...ChatUtils.privateChatMessages];
-                    setChatMessages(chatMessages);
-                }
-            }
-        });
+        // socketService?.socket?.on('message read', (data) => {
+        //     let newChatMessages = [...chatMessages];
+        //     if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
+        //         const findMessageIndex = newChatMessages.findIndex(el => el._id === data._id)
+        //         if (findMessageIndex > -1) {
+        //             newChatMessages.splice(findMessageIndex, 1, data);
+
+        //             setChatMessages(chatMessages);
+        //         }
+        //     }
+        // });
     }
 
     static socketIOMessageReaction(chatMessages, username, setConversationId, setChatMessages) {

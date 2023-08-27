@@ -16,25 +16,30 @@ import MessageDisplay from './message-display/MessageDisplay';
 import sumBy from "lodash"
 const ChatWindow = () => {
 
-    const [rendered, setRendered] = useState(false)
 
+    const [rendered, setRendered] = useState(false)
+    const reduxChat = useSelector(state => state.chat)
     const dispatch = useDispatch()
     const { profile } = useSelector((state) => state.user);
     const { isLoading } = useSelector((state) => state.chat);
     const [receiver, setReceiver] = useState(null)
-    const [conversationId, setConversationId] = useState("")
+
     const [chatMessages, setChatMessages] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
     // * use in cb
     const getCurrentConversationMessages = useCallback(
         async (receiverId) => {
             try {
+                console.log("CALLLLLLLLLLLLLLLLLLLLLLLLLLLL");
                 const response = await chatService.getChatMessages(receiverId);
-                ChatUtils.privateChatMessages = [...response.data.messages];
 
-                setChatMessages([...ChatUtils.privateChatMessages]);
+
+                setChatMessages([...response.data.messages]);
+
+
                 // console.log("call api messages");
             } catch (error) {
+                console.log(error);
                 Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
             }
         },
@@ -46,9 +51,10 @@ const ChatWindow = () => {
     // * usefor: get all messages of current conversation 
     const getCurrentConversationMessagesCb = useCallback(() => {
         if (searchParams.get('id') && searchParams.get('username')) {
-            setConversationId('');
+
             setChatMessages([]);
 
+            console.log("CALLLLLLLLLLLLLLLLLLLLLLLLLLLL");
             getCurrentConversationMessages(searchParams.get('id'));
         }
     }, [getCurrentConversationMessages, searchParams]);
@@ -59,7 +65,7 @@ const ChatWindow = () => {
 
             const response = await userService.getUserProfileByUserId(searchParams.get('id'));
             setReceiver(response.data.user);
-            ChatUtils.joinRoomEvent(response.data.user, profile);
+            // ChatUtils.joinRoomEvent(response.data.user, profile);
         } catch (error) {
             Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
@@ -84,14 +90,20 @@ const ChatWindow = () => {
     useEffect(() => {
 
         if (!rendered) setRendered(true);
-        if (rendered) {
-        ChatUtils.socketIOMessageReceived(chatMessages, searchParams.get('username'), setConversationId, setChatMessages);
-        }
-   
-        ChatUtils.usersOnline(setOnlineUsers);
-        ChatUtils.usersOnChatPage();
+        if (rendered && chatMessages.length) {
 
-    }, [ receiver]);
+            console.log("--------run init socket", chatMessages.length, chatMessages[0]?.senderUsername, chatMessages[0]?.receiverUsername);
+            ChatUtils.setupSocketIOMessageReceived(chatMessages, searchParams.get('username'), setChatMessages, window.location.href);
+        }
+
+        // ChatUtils.usersOnline(setOnlineUsers);
+        // ChatUtils.usersOnChatPage();
+
+    }, [chatMessages, rendered]);
+
+
+
+
 
 
 
@@ -108,7 +120,7 @@ const ChatWindow = () => {
             // if !conversationId=>create new conversation
             const messageData = ChatUtils.buildMessageData({
                 receiver,
-                conversationId,
+                conversationId: reduxChat?.selectedChatUser?.conversationId ? reduxChat?.selectedChatUser?.conversationId : "",
                 message,
                 searchParamsId: searchParams.get('id'),
                 chatMessages,
@@ -122,7 +134,7 @@ const ChatWindow = () => {
             Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
     };
-   
+
 
     // * usefor : update message.reaction in DB
     const updateMessageReaction = async (body) => {
@@ -143,7 +155,7 @@ const ChatWindow = () => {
     // ? END func for message:
 
 
-
+    console.log("Conversation id", reduxChat?.selectedChatUser?.conversationId);
     return (
         <div className="chat-window-container" data-testid="chatWindowContainer">
             {isLoading ? (

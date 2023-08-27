@@ -105,9 +105,9 @@ const ChatSidebar = () => {
                 senderProfilePicture: profile?.profilePicture,
                 body: ''
             };
-            ChatUtils.joinRoomEvent(user, profile);
-            ChatUtils.privateChatMessages = [];
-            console.log(user, toShowConversationList);
+            // ChatUtils.joinRoomEvent(user, profile);
+
+    
             const findUser = toShowConversationList.find(
 
                 (chat) => chat.receiverId === user.receiverId || chat.senderId === user.receiverId
@@ -117,6 +117,7 @@ const ChatSidebar = () => {
 
                 const newConversationList = [newUser, ...toShowConversationList];
                 setToShowConversationList(newConversationList);
+       
 
                 dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
                 // const userTwoName =
@@ -178,8 +179,8 @@ const ChatSidebar = () => {
             dispatch(updateChatSelectedUser({ isLoading: false, user: newestMessageCvsData }));
 
             const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
-            ChatUtils.joinRoomEvent(newestMessageCvsData, profile);
-            ChatUtils.privateChatMessages = [];
+            // ChatUtils.joinRoomEvent(newestMessageCvsData, profile);
+
             // const userTwoName = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverUsername : newestMessageCvsData?.senderUsername;
             // const targetUserId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
             // console.log("PARAMS FOR DETAIL CONVERSATION URL", params);
@@ -208,7 +209,7 @@ const ChatSidebar = () => {
 
     }, [toShowConversationList]);
 
-    console.log("toShowConversationList", toShowConversationList);
+
     return (
         <div data-testid="conversationList" >
             <div className="conversation-container">
