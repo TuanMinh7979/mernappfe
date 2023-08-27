@@ -156,13 +156,14 @@ export class ChatUtils {
 
     // like above
     static setupSocketIOMessageReceived(chatMessages, targetUserName, setChatMessages, link) {
-        this.chatMessages = [...chatMessages]
+        this.chatMessages = new Set([...chatMessages])
         this.targetUserName = targetUserName
         this.setChatMessages = setChatMessages
-        this.link=link
+        this.link = link
         this.socketIOMessageReceived1()
 
     }
+ 
 
     static socketIOMessageReceived1() {
 
@@ -172,6 +173,7 @@ export class ChatUtils {
             console.log("2222222222222222222, LEN SOCKET", this.chatMessages, this.targetUserName
 
             );
+         
             if (data.senderUsername.toLowerCase() === this.targetUserName || data.receiverUsername.toLowerCase() === this.targetUserName) {
 
 
@@ -179,68 +181,63 @@ export class ChatUtils {
                 console.log("======------------conditionok", this.chatMessages, this.targetUserName)
 
 
-                let newChatMessages = [...this.chatMessages];
+         
                 console.log("ADD")
 
-                console.log(newChatMessages[0], "------", data);
-                newChatMessages.push(data);
+            
+                this.chatMessages.add(data);
 
-                console.log("socketio:receive", data, newChatMessages);
-                this.chatMessages=[...newChatMessages]
-                this.setChatMessages([...newChatMessages]);
-
-
-
-
-
+                console.log("socketio:receive", data);
+      
+                this.setChatMessages([...this.chatMessages]);
 
             }
         });
     }
-    static socketIOMessageReceived(chatMessages, targetUserName, setChatMessages, link) {
+    // static socketIOMessageReceived(chatMessages, targetUserName, setChatMessages, link) {
 
-        console.log("1111111111111111 LEN SOCKET", chatMessages[0]?.receiverUsername, chatMessages[0]?.senderUsername, targetUserName);
-        socketService?.socket?.on('message received', (data) => {
-            console.log(link);
-            console.log("2222222222222222222, LEN SOCKET", chatMessages, targetUserName
+    //     console.log("1111111111111111 LEN SOCKET", chatMessages[0]?.receiverUsername, chatMessages[0]?.senderUsername, targetUserName);
+    //     socketService?.socket?.on('message received', (data) => {
+    //         console.log(link);
+    //         console.log("2222222222222222222, LEN SOCKET", chatMessages, targetUserName
 
-            );
-            if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
-
-
-
-                console.log("======------------conditionok", chatMessages, targetUserName)
+    //         );
+    //         if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
 
 
-                let newChatMessages = [...chatMessages];
-                console.log("ADD")
 
-                console.log(newChatMessages[0], "------", data);
-                newChatMessages.push(data);
-
-                console.log("socketio:receive", data, newChatMessages);
-                setChatMessages([...newChatMessages]);
+    //             console.log("======------------conditionok", chatMessages, targetUserName)
 
 
+    //             let newChatMessages = [...chatMessages];
+    //             console.log("ADD")
+
+    //             console.log(newChatMessages[0], "------", data);
+    //             newChatMessages.push(data);
+
+    //             console.log("socketio:receive", data, newChatMessages);
+    //             setChatMessages([...newChatMessages]);
 
 
 
 
-            }
-        });
 
-        // socketService?.socket?.on('message read', (data) => {
-        //     let newChatMessages = [...chatMessages];
-        //     if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
-        //         const findMessageIndex = newChatMessages.findIndex(el => el._id === data._id)
-        //         if (findMessageIndex > -1) {
-        //             newChatMessages.splice(findMessageIndex, 1, data);
 
-        //             setChatMessages(chatMessages);
-        //         }
-        //     }
-        // });
-    }
+    //         }
+    //     });
+
+    //     // socketService?.socket?.on('message read', (data) => {
+    //     //     let newChatMessages = [...chatMessages];
+    //     //     if (data.senderUsername.toLowerCase() === targetUserName || data.receiverUsername.toLowerCase() === targetUserName) {
+    //     //         const findMessageIndex = newChatMessages.findIndex(el => el._id === data._id)
+    //     //         if (findMessageIndex > -1) {
+    //     //             newChatMessages.splice(findMessageIndex, 1, data);
+
+    //     //             setChatMessages(chatMessages);
+    //     //         }
+    //     //     }
+    //     // });
+    // }
 
     static socketIOMessageReaction(chatMessages, username, setConversationId, setChatMessages) {
         socketService?.socket?.on('message reaction', (data) => {
