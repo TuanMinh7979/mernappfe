@@ -163,7 +163,7 @@ export class ChatUtils {
         this.socketIOMessageReceived1()
 
     }
- 
+
 
     static socketIOMessageReceived1() {
 
@@ -173,7 +173,7 @@ export class ChatUtils {
             console.log("2222222222222222222, LEN SOCKET", this.chatMessages, this.targetUserName
 
             );
-         
+
             if (data.senderUsername.toLowerCase() === this.targetUserName || data.receiverUsername.toLowerCase() === this.targetUserName) {
 
 
@@ -181,14 +181,14 @@ export class ChatUtils {
                 console.log("======------------conditionok", this.chatMessages, this.targetUserName)
 
 
-         
+
                 console.log("ADD")
 
-            
+
                 this.chatMessages.add(data);
 
                 console.log("socketio:receive", data);
-      
+
                 this.setChatMessages([...this.chatMessages]);
 
             }
