@@ -13,9 +13,15 @@ import TimeLine from '@components/timeline/TimeLine';
 import FollowerCard from '../follower/FollowerCard';
 import ChangePassword from '@components/change-password/ChangePassword';
 import NotificationSetting from '@components/notification-setting/NotificationSetting';
+import GalleryImage from '@components/gallery-image/GalleryImage';
+import { updateModalIsDeleteDialogOpen } from '@redux/reducers/modal/modal.reducer';
+import ImageModal from '@components/image-modal/ImageModal';
+import "./Profile.scss"
+import Dialog from '@components/dialog/Dialog';
 const Profile = () => {
 
   const { profile } = useSelector((state) => state.user);
+  const { isDeleteDialogOpen } = useSelector((state) => state.modal);
   const [user, setUser] = useState()
   const dispatch = useDispatch()
   const { username } = useParams()
@@ -31,7 +37,7 @@ const Profile = () => {
       )
       setLoading(false)
       setFromDbBackgroundUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
-      // setUserProfileData(res.data)
+      setUserProfileData(res.data)
       setUser(res.data.user)
     } catch (error) {
       console.log(error);
@@ -70,7 +76,7 @@ const Profile = () => {
 
 
   const [loading, setLoading] = useState(true)
-  // const [userProfileData, setUserProfileData] = useState(null)
+  const [userProfileData, setUserProfileData] = useState(null)
 
 
 
@@ -160,8 +166,58 @@ const Profile = () => {
     }
 
   }, [rendered, getUserProfileAndPosts, getUserImages])
+
+
+  const getShowingImageUrlFromPost = (post) => {
+    return post?.gifUrl ? post?.gifUrl : Utils.getImage(post?.imgId, post?.imgVersion)
+
+  }
+
+
+  const [curImageUrl, setCurImageUrl] = useState('')
+  const [showImageModal, setShowImageModal] = useState(false)
+
+
+  const removeImageFromGallery = async (id) => {
+    try {
+
+      dispatch(updateModalIsDeleteDialogOpen(false))
+      const images = galleryImages.filter(el => el._id !== id)
+      await removeImage(`/images/background/${id}`)
+    } catch (error) {
+      console.log(error)
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
   return (
     <>
+
+      {
+        showImageModal &&
+        <ImageModal
+
+          image={curImageUrl}
+          onCancel={() => setShowImageModal(!showImageModal)}
+          showArrow={false}
+        />
+      }
+
+
+      {
+
+        isDeleteDialogOpen && (
+          <Dialog
+            title="Wanna delete it?"
+            showButtons={true}
+            firstButtonText='Remove'
+            secondButtonText='Cancel'
+            firstBtnHandler={() => { }}
+            secondBtnHandler={() => dispatch(updateModalIsDeleteDialogOpen(false))}
+
+          />
+        )
+
+      }
       <div className="profile-wrapper">
 
         <div className="profile-wrapper-container">
@@ -189,21 +245,40 @@ const Profile = () => {
 
 
           <div className="profile-content">
-            {displayContent === 'timeline' && <TimeLine />}
-            {displayContent === 'followers' && <FollowerCard />}
+            {displayContent === 'timeline' && <TimeLine userProfileData={setUserProfileData}  />}
+            {displayContent === 'followers' && <FollowerCard useData={user}/>}
             {displayContent === 'gallery' && <>
 
               {
                 galleryImages.length > 0 && (
                   <>
                     <div className="imageGrid-container">
-                      {
-                        galleryImages.map(el => <div key={el._id}>
 
-                          image
 
-                        </div>)
-                      }
+
+                      {galleryImages.map((el) =>
+                        <div className="" key={el._id}>
+                          <GalleryImage
+                            post={el}
+                            showCaption={true}
+                            showDelete={true}
+                            imgSrc={getShowingImageUrlFromPost(el)}
+                            onClick={() => {
+                              setCurImageUrl(getShowingImageUrlFromPost(el))
+                              setShowImageModal(!showImageModal)
+                            }}
+
+                            onRemoveImage={(e) => {
+                              e.stopPropagation()
+                              dispatch(updateModalIsDeleteDialogOpen(!isDeleteDialogOpen))
+                            }}
+                          >
+                          </GalleryImage>
+                        </div>
+                      )}
+
+
+
                     </div>
 
 

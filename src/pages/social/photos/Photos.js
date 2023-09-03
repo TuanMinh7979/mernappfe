@@ -52,14 +52,9 @@ const Photos = () => {
     );
   };
 
-  const [imageUrl, setImageUrl] = useState('')
+  const [curImageUrl, setCurImageUrl] = useState('')
   const [showImageModal, setShowImageModal] = useState(false)
-  const getPostImageUrl = (post) => {
 
-    const imgUrl = Utils.getImage(post?.imgId, post?.imgVersion)
-    console.log("----------", post, ">>>", imgUrl, "<<<<<<<<<");
-    return post?.gifUrl ? post?.gifUrl : imgUrl
-  }
 
   const getShowingImageUrlFromPost = (post) => {
     return post?.gifUrl ? post?.gifUrl : Utils.getImage(post?.imgId, post?.imgVersion)
@@ -68,11 +63,11 @@ const Photos = () => {
 
   const onClickRight = () => {
     setCurrentShowImageIdx(prev => prev + 1)
-    setImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
+    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
     setCurrentShowImageIdx(prev => prev - 1)
-    setImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
+    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
 
   const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
@@ -81,7 +76,7 @@ const Photos = () => {
       <div className="photos-container">
 
         {showImageModal && <ImageModal
-          image={imageUrl}
+          image={curImageUrl}
           showArrow={true}
           onClickRight={onClickRight}
           onClickLeft={onClickLeft}
@@ -109,11 +104,11 @@ const Photos = () => {
                               post={el}
                               showCaption={true}
                               showDelete={false}
-                              imgSrc={getPostImageUrl(el)}
+                              imgSrc={getShowingImageUrlFromPost(el)}
                               onClick={() => {
                                 setCurrentShowImageIdx(idx)
                                 setShowImageModal(!showImageModal)
-                                setImageUrl(getPostImageUrl(el))
+                                setCurImageUrl(getShowingImageUrlFromPost(el))
                               }}
 
                             />
