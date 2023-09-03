@@ -16,6 +16,7 @@ import useEffectOnce from '@hooks/useEffectOnce';
 import { useEffect } from 'react';
 import CountContainer from './CountContainer';
 import BasicInfo from './BasicInfo';
+import SocialLinks from './SocialLinks';
 const TimeLine = ({ userProfileData, loading }) => {
 
   const [editableInputs, setEditableInputs] = useState({
@@ -77,6 +78,9 @@ const TimeLine = ({ userProfileData, loading }) => {
 
 
 
+
+
+
   return (
     <div className='timeline-wrapper'>
 
@@ -95,12 +99,22 @@ const TimeLine = ({ userProfileData, loading }) => {
 
               <BasicInfo
 
-                setEditableInputs={ setEditableInputs}
-                editableInputs={editableInputs }
+                setEditableInputs={setEditableInputs}
+                editableInputs={editableInputs}
                 username={username}
                 profile={profile}
                 loading={loading}
               ></BasicInfo>
+            </div>
+
+            <div className="side-content social">
+              <SocialLinks
+                setEditableSocialInputs={setEditableSocialInputs}
+                editableSocialInputs={editableSocialInputs}
+                username={username}
+                profile={profile}
+                loading={loading}
+              />
             </div>
 
 
