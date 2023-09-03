@@ -16,17 +16,12 @@ import useEffectOnce from '@hooks/useEffectOnce';
 import { useEffect } from 'react';
 import CountContainer from './CountContainer';
 const TimeLine = ({ userProfileData, loading }) => {
-
   const dispatch = useDispatch()
   const { profile } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null)
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const { username } = useParams()
-
-
-
-
   useEffect(() => {
     if (userProfileData) {
       setPosts(userProfileData.posts)
