@@ -117,6 +117,7 @@ const Profile = () => {
       reader.readAsDataURL(Utils.renameFile(selectedProfileImage));
     } else {
 
+      // it can be a link url (image that user has posted before in their post)
       saveImageToDB(selectedBackgroundImage, type);
     }
   };

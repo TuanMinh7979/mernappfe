@@ -88,9 +88,9 @@ const BackgroundHeader = (
             <ImageGridModal
                 images={galleryImages}
                 closeModal={() => setShowImagesModal(false)}
-                onSelectImage={(e) => {
-                    setSelectedBackgroundUrl(e)
-                    onSelectFileImage(e, 'background')
+                onSelectImage={(url) => {
+                    setSelectedBackgroundUrl(url)
+                    onSelectFileImage(url, 'background')
                 }}
             />}
 
