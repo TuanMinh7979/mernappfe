@@ -24,7 +24,7 @@ class UserService {
     const response = await axios.get(`/user/profile/search/${query}`);
     return response;
   }
-  
+
   async getUserProfileByUserId(userId) {
     const response = await axios.get(`/user/profile/${userId}`);
     return response;
@@ -36,6 +36,26 @@ class UserService {
     return response;
   }
 
+  // update
+  async changePassword(body) {
+    const response = await axios.put('/user/profile/change-password', body);
+    return response;
+  }
+
+  async updateNotificationSettings(settings) {
+    const response = await axios.put('/user/profile/settings', settings);
+    return response;
+  }
+
+  async updateBasicInfo(info) {
+    const response = await axios.put('/user/profile/basic-info', info);
+    return response;
+  }
+
+  async updateSocialLinks(info) {
+    const response = await axios.put('/user/profile/social-links', info);
+    return response;
+  }
 
 
 }

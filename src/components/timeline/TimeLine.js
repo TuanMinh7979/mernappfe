@@ -15,7 +15,22 @@ import { useDispatch } from 'react-redux';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { useEffect } from 'react';
 import CountContainer from './CountContainer';
+import BasicInfo from './BasicInfo';
 const TimeLine = ({ userProfileData, loading }) => {
+
+  const [editableInputs, setEditableInputs] = useState({
+    quote: '',
+    work: '',
+    school: '',
+    location: ''
+  });
+  const [editableSocialInputs, setEditableSocialInputs] = useState({
+    instagram: '',
+    twitter: '',
+    facebook: '',
+    youtube: ''
+  });
+
   const dispatch = useDispatch()
   const { profile } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
@@ -26,7 +41,17 @@ const TimeLine = ({ userProfileData, loading }) => {
     if (userProfileData) {
       setPosts(userProfileData.posts)
       setUser(userProfileData.user)
+
+
+      setEditableInputs({
+        quote: userProfileData.user.quote,
+        work: userProfileData.user.work,
+        school: userProfileData.user.school,
+        location: userProfileData.user.location
+      });
+      setEditableSocialInputs(userProfileData.user?.social);
     }
+
 
   }, [userProfileData])
 
@@ -50,6 +75,8 @@ const TimeLine = ({ userProfileData, loading }) => {
     PostUtils.socketIOPost(posts, setPosts)
   }, [posts])
 
+
+
   return (
     <div className='timeline-wrapper'>
 
@@ -63,6 +90,18 @@ const TimeLine = ({ userProfileData, loading }) => {
               followersCount={user?.followersCount}
               loading={loading}
             />
+
+            <div className="side-content">
+
+              <BasicInfo
+
+                setEditableInputs={ setEditableInputs}
+                editableInputs={editableInputs }
+                username={username}
+                profile={profile}
+                loading={loading}
+              ></BasicInfo>
+            </div>
 
 
           </div>
