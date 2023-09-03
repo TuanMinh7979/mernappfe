@@ -79,6 +79,14 @@ class PostService {
     return response;
   }
 
+  async getPostsWithImages(page) {
+    const response = await axios.get(`/post/images/${page}`);
+    return response;
+  }
+
+
+
+
 
 }
 
