@@ -28,7 +28,9 @@ const Posts = ({ allPosts, loggedUserIdolsProp }) => {
               </>
             )}
           </div>
-        ))}
+        ))
+        
+        }
 
    
     </div>

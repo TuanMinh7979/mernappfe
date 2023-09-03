@@ -162,12 +162,12 @@ export class Utils {
 
   static renameFile(element) {
     // change to png image file
-    console.log("------RENAME FILE----" ,element);
+
     const fileName = element.name.split('.').slice(0, -1).join('.');
     const blob = element.slice(0, element.size, 'image/png');
-    console.log("BLOBBBBBBB", blob);
+
     const newFile = new File([blob], `${fileName}.png`, { type: 'image/png' });
-    console.log("--new file --", newFile);
+
     return newFile;
   }
 
