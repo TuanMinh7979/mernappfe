@@ -9,6 +9,10 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { tabItems } from '@services/utils/static.data';
 import { useEffect } from 'react';
 import { imageService } from '@services/api/image/image.service';
+import TimeLine from '@components/timeline/TimeLine';
+import FollowerCard from '../follower/FollowerCard';
+import ChangePassword from '@components/change-password/ChangePassword';
+import NotificationSetting from '@components/notification-setting/NotificationSetting';
 const Profile = () => {
 
   const { profile } = useSelector((state) => state.user);
@@ -94,7 +98,7 @@ const Profile = () => {
   const saveImageToDB = async (result, type) => {
     try {
       const url = type === 'background' ? '/images/background' : '/images/profile';
-    
+
       const response = await imageService.addImage(url, result);
       if (response) {
         Utils.updToastsNewEle(response.data.message, 'success', dispatch);
@@ -181,6 +185,37 @@ const Profile = () => {
               galleryImages={galleryImages}
 
             ></BackgroundHeader>
+          </div>
+
+
+          <div className="profile-content">
+            {displayContent === 'timeline' && <TimeLine />}
+            {displayContent === 'followers' && <FollowerCard />}
+            {displayContent === 'gallery' && <>
+
+              {
+                galleryImages.length > 0 && (
+                  <>
+                    <div className="imageGrid-container">
+                      {
+                        galleryImages.map(el => <div key={el._id}>
+
+                          image
+
+                        </div>)
+                      }
+                    </div>
+
+
+                  </>
+                )
+              }
+            </>}
+
+            {displayContent === 'change password' && <ChangePassword />}
+            {displayContent === 'notifications' && <NotificationSetting />}
+
+
           </div>
         </div>
 
