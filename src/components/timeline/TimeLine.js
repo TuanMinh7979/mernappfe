@@ -17,6 +17,8 @@ import { useEffect } from 'react';
 import CountContainer from './CountContainer';
 import BasicInfo from './BasicInfo';
 import SocialLinks from './SocialLinks';
+import { postService } from '@services/api/post/post.service';
+import { updateLoggedUserReactions } from '@redux/reducers/post/user-post-reaction';
 const TimeLine = ({ userProfileData, loading }) => {
 
   const [editableInputs, setEditableInputs] = useState({
@@ -70,11 +72,23 @@ const TimeLine = ({ userProfileData, loading }) => {
 
   useEffectOnce(() => {
     getMyIdols()
+    getReactionsByUsername();
   })
 
   useEffect(() => {
     PostUtils.socketIOPost(posts, setPosts)
   }, [posts])
+
+
+
+  const getReactionsByUsername = async () => {
+    try {
+      const reactionsResponse = await postService.getReactionsByUsername(username);
+      dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
+    } catch (error) {
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+    }
+  };
 
 
 
