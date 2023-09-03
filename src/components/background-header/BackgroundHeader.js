@@ -13,7 +13,7 @@ const BackgroundHeader = (
     {
         user,
         loading,
-        url,
+        fromDbBackgroundUrl,
         onClick,
         tab,
         hasImage,
@@ -28,29 +28,23 @@ const BackgroundHeader = (
 
     }) => {
 
-    const [selectedBackground, setSelectedBackground] = useState('');
-    const [selectedProfileImage, setSelectedProfileImage] = useState('');
+    const [selectedBackgroundUrl, setSelectedBackgroundUrl] = useState('');
+    const [selectedProfileImageUrl, setSelectedProfileImageUrl] = useState('');
     const [showSpinner, setShowSpinner] = useState(false);
-    const [isActive, setIsActive] = useState(false);
+    const [isOpenBackgroundDropdown, setIsOpenBackgroundDropdown] = useState(false);
     const [showImagesModal, setShowImagesModal] = useState(false);
     const backgroundFileRef = useRef();
     const profileImageRef = useRef();
-    const onBackgroundFileInputClicked = () => {
-        backgroundFileRef.current.click();
-    };
-    const profileFileInputClicked = () => {
-        profileImageRef.current.click();
-    };
+
+
 
     const hideSaveChangesContainer = () => {
-        setSelectedBackground('');
-        setSelectedProfileImage('');
+        setSelectedBackgroundUrl('');
+        setSelectedProfileImageUrl('');
         setShowSpinner(false);
     }
 
-    const onAddProfileClick = () => {
-        setIsActive(!isActive)
-    }
+
 
     useEffect(() => {
         if (!hasImage) {
@@ -60,12 +54,12 @@ const BackgroundHeader = (
 
     const BackgroundSelectDropdown = () => {
         return (
-            <nav className='menu'>
+            <nav className='menu' style={{ border: "1px solid red" }}>
                 <ul>
                     {galleryImages.length > 0 && (
                         <li onClick={() => {
                             setShowImagesModal(true)
-                            setIsActive(false)
+                            setIsOpenBackgroundDropdown(false)
                         }}>
 
                             <div className="item">Select</div>
@@ -74,8 +68,8 @@ const BackgroundHeader = (
 
                     )}
                     <li onClick={() => {
-                        onBackgroundFileInputClicked()
-                        setIsActive(false)
+                        backgroundFileRef.current.click();
+                        setIsOpenBackgroundDropdown(false)
                         setShowImagesModal(false)
                     }}>
 
@@ -95,7 +89,7 @@ const BackgroundHeader = (
                 images={galleryImages}
                 closeModal={() => setShowImagesModal(false)}
                 onSelectImage={(e) => {
-                    setSelectedBackground(e)
+                    setSelectedBackgroundUrl(e)
                     onSelectFileImage(e, 'background')
                 }}
             />}
@@ -136,7 +130,7 @@ const BackgroundHeader = (
                                         handleClick={
                                             () => {
                                                 setShowSpinner(true)
-                                                const type = selectedBackground ? 'background' : 'profile'
+                                                const type = selectedBackgroundUrl ? 'background' : 'profile'
                                                 onSaveImage(type)
 
                                             }
@@ -150,10 +144,11 @@ const BackgroundHeader = (
 
                 <div data-testid="profile-banner-image"
                     className="profile-banner-image"
-                    style={{ background: `${!selectedBackground ? user?.avatarColor : ''}` }}
+                    // style={{ background: `${!selectedBackgroundUrl ? user?.avatarColor : ''}` }}
+                    style={{ background: user?.avatarColor }}
 
                 >
-                    {url && hideSettings &&
+                    {/* {fromDbBackgroundUrl && hideSettings &&
                         <div className="delete-btn" data-testid="delete-btn">
                             <Button label="Remove"
                                 className="remove"
@@ -162,14 +157,18 @@ const BackgroundHeader = (
                                     removeBackgroundImage(user?.bgImageId)
                                 }} />
                         </div>
-                    }
+                    } */}
 
                     {
-                        !selectedBackground && !url && <h3>Add a background image</h3>
+                        !selectedBackgroundUrl && !fromDbBackgroundUrl && <h3>No background image</h3>
                     }
-                    {selectedBackground ?
-                        <img src={selectedBackground} alt="" /> :
-                        <img src={url} alt="" />
+                    {selectedBackgroundUrl ?
+                        // show new choosed image
+                        <img src={selectedBackgroundUrl} alt="" />
+
+                        :
+                        // show existing image
+                        <img src={fromDbBackgroundUrl} alt="" />
                     }
 
 
@@ -186,7 +185,7 @@ const BackgroundHeader = (
                             textColor="#ffffff"
                             size={180}
 
-                            avatarSrc={selectedProfileImage || user?.profilePicture} />
+                            avatarSrc={selectedProfileImageUrl || user?.profilePicture} />
 
                         {hideSettings && <div className="profile-pic-select" data-testid="profile-pic-select">
                             <Input
@@ -200,7 +199,7 @@ const BackgroundHeader = (
                                     }
                                 }}
                                 handleChange={(e) => {
-                                    setSelectedProfileImage(
+                                    setSelectedProfileImageUrl(
                                         URL.createObjectURL(e.target.files[0])
                                     )
 
@@ -209,7 +208,7 @@ const BackgroundHeader = (
 
 
                             />
-                            <label onClick={() => profileFileInputClicked()}>
+                            <label onClick={() => profileImageRef.current.click()}>
                                 <FaCamera className="camera" />
                             </label>
                         </div>}
@@ -229,7 +228,7 @@ const BackgroundHeader = (
                                     }
                                 }}
                                 handleChange={(e) => {
-                                    setSelectedBackground(
+                                    setSelectedBackgroundUrl(
                                         URL.createObjectURL(e.target.files[0])
                                     )
 
@@ -240,11 +239,11 @@ const BackgroundHeader = (
                             />
                             <label data-testid="add-cover-photo"
 
-                                onClick={() => onAddProfileClick()}
+                                onClick={() => setIsOpenBackgroundDropdown(!isOpenBackgroundDropdown)}
                             >
                                 <FaCamera className="camera" /> <span>Add Cover Photo</span>
                             </label>
-                            {isActive && <BackgroundSelectDropdown />}
+                            {isOpenBackgroundDropdown && <BackgroundSelectDropdown />}
                         </div>
                     }
 
@@ -284,7 +283,7 @@ const BackgroundHeader = (
 BackgroundHeader.propTypes = {
     user: PropTypes.object,
     loading: PropTypes.bool,
-    url: PropTypes.string,
+    fromDbBackgroundUrl: PropTypes.string,
     onClick: PropTypes.func,
     tab: PropTypes.string,
     hasImage: PropTypes.bool,

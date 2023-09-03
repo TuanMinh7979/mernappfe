@@ -18,6 +18,7 @@ const Profile = () => {
   const [searchParams] = useSearchParams();
 
   const [rendered, setRendered] = useState(false)
+  // * get user background image  , profile image and posts
   const getUserProfileAndPosts = useCallback(async () => {
     try {
       const res = await userService.getUserProfileAndPosts(username,
@@ -25,7 +26,7 @@ const Profile = () => {
         searchParams.get('uId')
       )
       setLoading(false)
-      setBgUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
+      setFromDbBackgroundUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
       // setUserProfileData(res.data)
       setUser(res.data.user)
     } catch (error) {
@@ -39,7 +40,7 @@ const Profile = () => {
       const res = await imageService.getUserImages(
         searchParams.get('id')
       )
-      console.log("--------", res.data);
+
       setGalleryImages(res.data.images)
     } catch (error) {
       console.log(error);
@@ -59,7 +60,7 @@ const Profile = () => {
   const [hasImage, setHasImage] = useState(false)
   const [selectedBackgroundImage, setSelectedBackgroundImage] = useState("")
   const [selectedProfileImage, setSelectedProfileImage] = useState("")
-  const [bgUrl, setBgUrl] = useState("")
+  const [fromDbBackgroundUrl, setFromDbBackgroundUrl] = useState("")
   const [galleryImages, setGalleryImages] = useState([])
   // const [imageUrl, setImageUrl] = useState('')
 
@@ -83,17 +84,17 @@ const Profile = () => {
     if (type == 'background') {
       setSelectedBackgroundImage(data)
     } else {
-      
+
       setSelectedProfileImage(data)
     }
 
   }
 
 
-  const addImage = async (result, type) => {
+  const saveImageToDB = async (result, type) => {
     try {
       const url = type === 'background' ? '/images/background' : '/images/profile';
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>", result);
+    
       const response = await imageService.addImage(url, result);
       if (response) {
         Utils.updToastsNewEle(response.data.message, 'success', dispatch);
@@ -108,7 +109,7 @@ const Profile = () => {
   };
   const saveImage = (type) => {
     const reader = new FileReader();
-    reader.addEventListener('load', async () => addImage(reader.result, type), false);
+    reader.addEventListener('load', async () => saveImageToDB(reader.result, type), false);
 
     if (selectedBackgroundImage && typeof selectedBackgroundImage !== 'string') {
       reader.readAsDataURL(Utils.renameFile(selectedBackgroundImage));
@@ -116,7 +117,7 @@ const Profile = () => {
       reader.readAsDataURL(Utils.renameFile(selectedProfileImage));
     } else {
 
-      addImage(selectedBackgroundImage, type);
+      saveImageToDB(selectedBackgroundImage, type);
     }
   };
 
@@ -124,7 +125,7 @@ const Profile = () => {
 
     try {
 
-      setBgUrl('')
+      setFromDbBackgroundUrl('')
       await removeImage(`/images/background/${bgImageId}`)
     } catch (error) {
       console.log(error)
@@ -165,7 +166,7 @@ const Profile = () => {
 
               user={user}
               loading={loading}
-              url={bgUrl}
+              fromDbBackgroundUrl={fromDbBackgroundUrl}
               onClick={changeTabContent}
               tab={displayContent}
               hasImage={hasImage}
@@ -175,7 +176,7 @@ const Profile = () => {
               onSelectFileImage={onSelectFileImage}
               onSaveImage={saveImage}
               cancelFileSelection={cancelFileSelection}
-              removeBackgroundImage={() => { }}
+              removeBackgroundImage={removeBackgroundImage}
               galleryImages={galleryImages}
 
             ></BackgroundHeader>
