@@ -30,16 +30,19 @@ const Profile = () => {
   const [rendered, setRendered] = useState(false)
   // * get user background image  , profile image and posts
   const getUserProfileAndPosts = useCallback(async () => {
+    console.log("-------------------------");
     try {
       const res = await userService.getUserProfileAndPosts(username,
         searchParams.get('id'),
         searchParams.get('uId')
       )
-      setLoading(false)
+
       setFromDbBackgroundUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
+      console.log("................", res);
       setUserProfileData(res.data)
       setUser(res.data.user)
     } catch (error) {
+
       console.log(error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
@@ -57,13 +60,7 @@ const Profile = () => {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }, [dispatch, searchParams, username])
-  useEffect(() => {
-    if (!rendered) setRendered(true)
-    if (rendered) {
-      getUserProfileAndPosts()
-    }
 
-  }, [rendered, getUserProfileAndPosts])
 
 
   const [hasError, setHasError] = useState(false)
@@ -163,6 +160,7 @@ const Profile = () => {
     if (rendered) {
       getUserProfileAndPosts()
       getUserImages()
+      setLoading(false)
     }
 
   }, [rendered, getUserProfileAndPosts, getUserImages])
@@ -245,7 +243,7 @@ const Profile = () => {
 
 
           <div className="profile-content">
-            {displayContent === 'timeline' && <TimeLine userProfileData={setUserProfileData}  />}
+            {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
             {displayContent === 'followers' && <FollowerCard useData={user}/>}
             {displayContent === 'gallery' && <>
 
