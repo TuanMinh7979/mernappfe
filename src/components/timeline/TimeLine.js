@@ -14,12 +14,13 @@ import { followerService } from '@services/api/follow/follow.service';
 import { useDispatch } from 'react-redux';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { useEffect } from 'react';
+import CountContainer from './CountContainer';
 const TimeLine = ({ userProfileData, loading }) => {
-  console.log(">>>>>>>>>>>", userProfileData);
+
   const dispatch = useDispatch()
   const { profile } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null)
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const { username } = useParams()
 
@@ -27,8 +28,11 @@ const TimeLine = ({ userProfileData, loading }) => {
 
 
   useEffect(() => {
-    if (userProfileData)
+    if (userProfileData) {
       setPosts(userProfileData.posts)
+      setUser(userProfileData.user)
+    }
+
   }, [userProfileData])
 
   const getMyIdols = async () => {
@@ -46,16 +50,30 @@ const TimeLine = ({ userProfileData, loading }) => {
   useEffectOnce(() => {
     getMyIdols()
   })
+
+  useEffect(() => {
+    PostUtils.socketIOPost(posts, setPosts)
+  }, [posts])
+
   return (
     <div className='timeline-wrapper'>
 
       <div className="timeline-wrapper-container">
         <div className="timeline-wrapper-container-side">
 
-          <div className="">side</div>
+          <div className="timeline-wrapper-container-side-count">
+
+            <CountContainer
+              followingCount={user?.followingCount}
+              followersCount={user?.followersCount}
+              loading={loading}
+            />
+
+
+          </div>
         </div>
         {/* loading post */}
-        { !userProfileData && !posts.length && (
+        {!userProfileData && !posts.length && (
           <div className="timeline-wrapper-container-main">
             <div className="" style={{ marginBottom: '10px' }}>
               <PostFormSkeleton />
@@ -73,7 +91,7 @@ const TimeLine = ({ userProfileData, loading }) => {
           </div>
         )}
         {/* show post */}
-        { userProfileData && posts.length > 0 && (
+        {userProfileData && posts.length > 0 && (
           <div className="timeline-wrapper-container-main">
             {username === profile?.username && <PostForm />}
 
@@ -98,7 +116,7 @@ const TimeLine = ({ userProfileData, loading }) => {
         )}
 
         {/* no post to show */}
-        { userProfileData && posts.length === 0 && (
+        {userProfileData && posts.length === 0 && (
           <div className="timeline-wrapper-container-main">
             <div className="empty-page">
               No post to show
