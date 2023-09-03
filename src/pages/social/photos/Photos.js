@@ -61,41 +61,21 @@ const Photos = () => {
     return post?.gifUrl ? post?.gifUrl : imgUrl
   }
 
+  const getShowingImageUrlFromPost = (post) => {
+    return post?.gifUrl ? post?.gifUrl : Utils.getImage(post?.imgId, post?.imgVersion)
 
-  const [rightImageIdx, setRightImageIdx] = useState()
-  const [leftImageIdx, setLeftImageIdx] = useState()
-
-  const [lastItemRight, setLastItemRight] = useState(false)
-  const [lastItemLeft, setLastItemLeft] = useState(false)
-
-
-  const displayImage = (post) => {
-    const imgUrl = post?.gifUrl ? post?.gifUrl : Utils.getImage(post?.imgId, post?.imgVersion)
-    setImageUrl(imgUrl)
   }
-  const onClickRight = () => {
-    setLastItemLeft(false)
-    setRightImageIdx(idx => idx + 1)
-    const lstPost = posts[posts.length - 1]
-    const curPost = posts[rightImageIdx]
-    displayImage(curPost)
-    setLeftImageIdx(rightImageIdx)
-    if(posts[rightImageIdx]===lstPost){
-      setLastItemRight(true)
-    }
 
+  const onClickRight = () => {
+    setCurrentShowImageIdx(prev => prev + 1)
+    setImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
-    setLastItemRight(false)
-    setLeftImageIdx(idx => idx - 1)
-    const fstPost = posts[0]
-    const curPost = posts[leftImageIdx-1]
-    displayImage(curPost)
-    setRightImageIdx(leftImageIdx)
-    if(fstPost===curPost){
-      setLastItemLeft(true)
-    }
+    setCurrentShowImageIdx(prev => prev - 1)
+    setImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
+
+  const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
   return (
     <>
       <div className="photos-container">
@@ -105,15 +85,9 @@ const Photos = () => {
           showArrow={true}
           onClickRight={onClickRight}
           onClickLeft={onClickLeft}
-
-          lastItemLeft={lastItemLeft}
-          lastItemRight={lastItemRight}
-
+          isLastItemRight={currentImageIdx == posts.length - 1}
+          isLastItemLeft={currentImageIdx == 0}
           onCancel={() => {
-            setRightImageIdx(0)
-            setLeftImageIdx(0)
-            setLastItemRight(false)
-            setLastItemLeft(false)
             setShowImageModal(false)
           }}
 
@@ -137,11 +111,7 @@ const Photos = () => {
                               showDelete={false}
                               imgSrc={getPostImageUrl(el)}
                               onClick={() => {
-                                setRightImageIdx(idx + 1)
-                                setLeftImageIdx(idx)
-
-                                setLastItemLeft(idx==0)
-                                setLastItemRight(idx+1===posts.length)
+                                setCurrentShowImageIdx(idx)
                                 setShowImageModal(!showImageModal)
                                 setImageUrl(getPostImageUrl(el))
                               }}
