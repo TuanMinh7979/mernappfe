@@ -231,7 +231,7 @@ const Profile = () => {
               hasImage={hasImage}
               tabItems={tabItems(username === profile?.username, username === profile?.username)}
               hasError={hasError}
-              hideSettings={username === profile.username}
+              hideSettings={username === profile?.username}
               onSelectFileImage={onSelectFileImage}
               onSaveImage={saveImage}
               cancelFileSelection={cancelFileSelection}

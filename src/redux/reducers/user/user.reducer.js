@@ -21,7 +21,7 @@ const userSlice = createSlice({
         },
         updateLoggedUserProfile:(state, action)=>{
         
-            state.profile=action.payload.profile
+            state.profile=action.payload
         }
 
     }
