@@ -10,6 +10,7 @@ import { authService } from '@services/api/auth/auth.service';
 import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
 import useLocalStorage from '@hooks/useLocalStorage';
+import useSessionStorage from '@hooks/useSessionStorage';
 const Login = () => {
     const [formData, setFormData] = useState({
         username: '',
@@ -31,8 +32,9 @@ const Login = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
 
-    const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-
+    const [setLocalKeepLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+    // true is logged in and get current user by jwt
+    const [setSessionStoreLogged] = useSessionStorage('logged', 'set')
 
 
     const loginUser = async (event) => {
@@ -46,7 +48,8 @@ const Login = () => {
             })
 
             // set to localStorage
-            setLoggedIn(keepLoggedIn);
+            setLocalKeepLoggedIn(keepLoggedIn);
+            setSessionStoreLogged(true);
             // * set logged in local storage
             // * set usename in local storage
             // * dispatch user to redux

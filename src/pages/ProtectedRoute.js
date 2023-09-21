@@ -16,10 +16,10 @@ const ProtectedRoute = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [tokenIsValid, setTokenIsValid] = useState(false);
   const keepLoggedIn = useLocalStorage('keepLoggedIn', 'get');
-  const pageReload = useSessionStorage('pageReload', 'get');
+  const logged = useSessionStorage('logged', 'get');
   const [deleteStorageUsername] = useLocalStorage('username', 'delete');
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
+  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ const ProtectedRoute = ({ children }) => {
     checkUser();
   });
 
-  if (keepLoggedIn || (!keepLoggedIn && userData) || (profile && token) || pageReload) {
+  if (keepLoggedIn || (!keepLoggedIn && userData) || (profile && token) || logged) {
     if (!tokenIsValid) {
       return <></>;
     } else {
