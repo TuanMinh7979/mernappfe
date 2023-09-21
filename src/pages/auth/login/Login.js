@@ -7,33 +7,42 @@ import "./Login.scss"
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { authService } from '@services/api/auth/auth.service';
-import { Utils } from '@services/utils/utils.service';
-import useSessionStorage from '@hooks/useSessionStorage';
+import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
 import useLocalStorage from '@hooks/useLocalStorage';
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+
+    });
+    const onInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    }
+
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const [loading, setLoading] = useState(false)
-
-    const [hasError, setHasError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    const [alertType, setAlertType] = useState('')
     const [user, setUser] = useState('')
     const navigate = useNavigate()
-    const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
     const dispatch = useDispatch();
 
-    const [pageReload] = useSessionStorage('pageReload', 'set')
+    const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+
 
 
     const loginUser = async (event) => {
+        setErrorMessage('')
         setLoading(true);
         event.preventDefault();
         try {
             const rs = await authService.signIn({
-                username, password
+                username: formData.username,
+                password: formData.password
             })
 
             // set to localStorage
@@ -43,13 +52,11 @@ const Login = () => {
             // * dispatch user to redux
             setLoading(false)
             setUser(rs.data.user)
-            setHasError(false);
-            setAlertType('alert-success')
-            Utils.dispatchUser(rs, pageReload, dispatch, setUser)
+            dispatch(
+                updateLoggedUser({ token: rs.data.token, profile: rs.data.user })
+            );
         } catch (error) {
             setLoading(false);
-            setHasError(true);
-            setAlertType('alert-error')
             setErrorMessage(error?.response?.data.message)
         }
 
@@ -65,8 +72,8 @@ const Login = () => {
     return (
         <div className="auth-inner">
 
-            {hasError && errorMessage && (
-                <div className={`alerts ${alertType}`} role="alert">
+            {errorMessage && (
+                <div className={`alerts alert-error}`} role="alert">
                     {errorMessage}
                 </div>
             )}
@@ -77,28 +84,28 @@ const Login = () => {
                         id="username"
                         name="username"
                         type="text"
-                        value={username}
+                        value={formData.username}
                         labelText="Username"
                         placeholder="Enter Username"
-                        style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
-                        handleChange={(event) => setUsername(event.target.value)}
+                        style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
+                        handleChange={onInputChange}
                     ></Input>
                     <Input
                         id="password"
                         name="password"
                         type="password"
-                        value={password}
+                        value={formData.password}
                         labelText="Password"
                         placeholder="Enter Password"
-                        style={{ border: `${hasError ? '1px solid #fa9b8a' : ''}` }}
-                        handleChange={(event) => setPassword(event.target.value)}
+                        style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
+                        handleChange={onInputChange}
                     />
                     <label className="checkmark-container" htmlFor="checkbox">
                         <Input
                             id="checkbox"
                             name="checkbox"
                             type="checkbox"
-                            handleChange={(event) => setKeepLoggedIn(!keepLoggedIn)}
+                            handleChange={onInputChange}
                         />
                         Keep me signed in
                     </label>

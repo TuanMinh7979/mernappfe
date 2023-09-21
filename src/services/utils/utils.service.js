@@ -34,13 +34,7 @@ export class Utils {
     return canvas.toDataURL("image/png");
   }
 
-  static dispatchUser = (result, pageReload, dispatch, setUser) => {
-    pageReload(true);
-    dispatch(
-      updateLoggedUser({ token: result.data.token, profile: result.data.user })
-    );
-    setUser(result.data.user);
-  };
+
   static clearStore = ({
     dispatch,
     deleteStorageUsername,
