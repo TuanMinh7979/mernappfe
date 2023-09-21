@@ -37,14 +37,14 @@ export class Utils {
 
   static clearStore = ({
     dispatch,
-    deleteStorageUsername,
+   
     deleteSessionPageReload,
-    setLoggedin,
+
   }) => {
     dispatch(emptyLoggedUser());
-    deleteStorageUsername();
+
     deleteSessionPageReload();
-    setLoggedin(false);
+
   };
 
   static appEnvironment = () => {

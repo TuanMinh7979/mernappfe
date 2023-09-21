@@ -20,9 +20,9 @@ const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState(false)
 
 
-  const [deleteStorageUsername] = useLocalStorage('username', 'delete');
+
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
+  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const changePassword = async (event) => {
     event.preventDefault()
     try {
@@ -43,9 +43,8 @@ const ChangePassword = () => {
         setTimeout(async () => {
           Utils.clearStore({
             dispatch,
-            deleteStorageUsername,
             deleteSessionPageReload,
-            setLoggedIn
+       
           });
           await userService.logoutUser();
           navigate('/');

@@ -63,9 +63,9 @@ const Header = () => {
       ? "#e9710f"
       : ""
     }`;
-  const [deleteStorageUsername] = useLocalStorage('username', 'delete');
+
   const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  const [deleteSessionPageReload] = useSessionStorage('pageReload', 'delete');
+  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const navigate = useNavigate()
   const storedUsername = useLocalStorage("username", "get")
   const initNotifications = async () => {
@@ -155,7 +155,7 @@ const Header = () => {
   const onLogout = async () => {
     try {
       setLoggedIn(false);
-      Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
+      Utils.clearStore({ dispatch, deleteSessionPageReload });
       await userService.logoutUser();
       navigate('/');
     } catch (error) {

@@ -16,9 +16,8 @@ const ProtectedRoute = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [tokenIsValid, setTokenIsValid] = useState(false);
   const keepLoggedIn = useLocalStorage('keepLoggedIn', 'get');
-  const logged = useSessionStorage('logged', 'get');
-  const [deleteStorageUsername] = useLocalStorage('username', 'delete');
-  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+  const pageReload = useSessionStorage('logged', 'get');
+
   const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,19 +32,20 @@ const ProtectedRoute = ({ children }) => {
     } catch (error) {
       setTokenIsValid(false);
       setTimeout(async () => {
-        Utils.clearStore({ dispatch, deleteStorageUsername, deleteSessionPageReload, setLoggedin: setLoggedIn });
+        Utils.clearStore({ dispatch,  deleteSessionPageReload,  });
         await userService.logoutUser();
         navigate('/');
       }, 1000);
     }
-  }, [dispatch, navigate, deleteStorageUsername, deleteSessionPageReload, setLoggedIn]);
+  }, [dispatch, navigate, , deleteSessionPageReload, ]);
 
   useEffectOnce(() => {
     checkUser();
   });
 
-  if (keepLoggedIn || (!keepLoggedIn && userData) || (profile && token) || logged) {
+  if (keepLoggedIn || (!keepLoggedIn && userData) || (profile && token) || pageReload) {
     if (!tokenIsValid) {
+    
       return <></>;
     } else {
       return <>{children}</>;

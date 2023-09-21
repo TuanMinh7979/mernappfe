@@ -25,14 +25,14 @@ const Login = () => {
         });
     }
 
-    const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+ 
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [user, setUser] = useState('')
     const navigate = useNavigate()
     const dispatch = useDispatch();
 
-    const [setLocalKeepLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
+
     // true is logged in and get current user by jwt
     const [setSessionStoreLogged] = useSessionStorage('logged', 'set')
 
@@ -48,7 +48,7 @@ const Login = () => {
             })
 
             // set to localStorage
-            setLocalKeepLoggedIn(keepLoggedIn);
+
             setSessionStoreLogged(true);
             // * set logged in local storage
             // * set usename in local storage
