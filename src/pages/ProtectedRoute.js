@@ -15,8 +15,8 @@ const ProtectedRoute = ({ children }) => {
   const { profile, token } = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
   const [tokenIsValid, setTokenIsValid] = useState(false);
-  const keepLoggedIn = useLocalStorage('keepLoggedIn', 'get');
-  const pageReload = useSessionStorage('logged', 'get');
+
+  const logged = useSessionStorage('logged', 'get');
 
   const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const dispatch = useDispatch();
@@ -30,6 +30,7 @@ const ProtectedRoute = ({ children }) => {
       setTokenIsValid(true);
       dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
     } catch (error) {
+  
       setTokenIsValid(false);
       setTimeout(async () => {
         Utils.clearStore({ dispatch,  deleteSessionPageReload,  });
@@ -43,9 +44,9 @@ const ProtectedRoute = ({ children }) => {
     checkUser();
   });
 
-  if (keepLoggedIn || (!keepLoggedIn && userData) || (profile && token) || pageReload) {
+  if (  userData || (profile && token) || logged) {
     if (!tokenIsValid) {
-    
+
       return <></>;
     } else {
       return <>{children}</>;
