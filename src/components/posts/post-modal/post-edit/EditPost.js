@@ -152,16 +152,16 @@ const EditPost = () => {
             //   new privacy
             postData.privacy = reduxPost.privacy || "Public";
             //   new imgId, imgVersion
+
             if (postData.image !== reduxPost.image) {
                 // reduxPost.image is blob of newest image need to show in preview image
-                // globalChoosedPostImage is new image file
-
-                console.log("------------><><><><><>", postData.image, reduxPost.image);
-                // must do
+                // globalChoosedPostImage is newest image file
+                // empty mean upload image and replace old image or add new image to none image post
                 postData.imgId = "";
                 postData.imgVersion = "";
 
-                postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage)
+                // if reduxPost.image ="" is not choose image
+                postData.image = reduxPost.image ? await ImageUtils.readAsBase64(globalChoosedPostImage) : reduxPost.image
 
                 // additional
                 if (reduxPost.image) {
@@ -199,8 +199,8 @@ const EditPost = () => {
             }
 
             let response = ""
-            if (postData.image) {
-                response = await postService.updatePostWithImage(reduxPost._id, postData);
+            if (postData.image && !postData.imgId && !postData.imgVersion) {
+                response = await postService.updatePostWithNewImage(reduxPost._id, postData);
             } else {
                 response = await postService.updatePost(reduxPost._id, postData);
             }
@@ -214,7 +214,7 @@ const EditPost = () => {
 
         } catch (error) {
             setLoading(false);
-
+            console.log("ERR", error);
             Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
         }
     };
