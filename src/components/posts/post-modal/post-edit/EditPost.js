@@ -37,7 +37,7 @@ const EditPost = () => {
         }
         setGlobalChoosedPostImage(file);
         // ! TO REDUX
-      
+
         dispatch(
             updatePost({
                 image: URL.createObjectURL(file),
@@ -153,12 +153,15 @@ const EditPost = () => {
             postData.privacy = reduxPost.privacy || "Public";
             //   new imgId, imgVersion
             if (postData.image !== reduxPost.image) {
+                // reduxPost.image is blob of newest image need to show in preview image
+                // globalChoosedPostImage is new image file
 
+                console.log("------------><><><><><>", postData.image, reduxPost.image);
                 // must do
                 postData.imgId = "";
                 postData.imgVersion = "";
 
-                postData.image = reduxPost.image ? await ImageUtils.readAsBase64(globalChoosedPostImage) : reduxPost.image
+                postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage)
 
                 // additional
                 if (reduxPost.image) {
@@ -211,7 +214,7 @@ const EditPost = () => {
 
         } catch (error) {
             setLoading(false);
-      
+
             Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
         }
     };
@@ -220,7 +223,7 @@ const EditPost = () => {
 
     // get privacy object from reduxPost
     const getPrivacyObject = (type) => {
-      
+
         let privacy = privacyList.find((data) => data.topText === type);
         return privacy = privacy ? privacy : privacyList[0];
     };
