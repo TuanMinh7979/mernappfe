@@ -13,7 +13,7 @@ import { getConversationList } from '@redux/api/chat';
 
 const ProtectedRoute = ({ children }) => {
   const { profile, token } = useSelector((state) => state.user);
-  const [userData, setUserData] = useState(null);
+
   const [tokenIsValid, setTokenIsValid] = useState(false);
 
   const logged = useSessionStorage('logged', 'get');
@@ -26,28 +26,31 @@ const ProtectedRoute = ({ children }) => {
     try {
       const response = await userService.checkCurrentUser();
       dispatch(getConversationList())
-      setUserData(response.data.user);
+
       setTokenIsValid(true);
       dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
     } catch (error) {
-  
+
       setTokenIsValid(false);
       setTimeout(async () => {
-        Utils.clearStore({ dispatch,  deleteSessionPageReload,  });
+        Utils.clearStore({ dispatch, deleteSessionPageReload, });
         await userService.logoutUser();
         navigate('/');
       }, 1000);
     }
-  }, [dispatch, navigate, , deleteSessionPageReload, ]);
+  }, [dispatch, navigate, , deleteSessionPageReload,]);
 
   useEffectOnce(() => {
-    checkUser();
+    
+      console.log("---------------refresh login session user every time go to page ----------- ");
+      checkUser();
+    
   });
 
-  if (  userData || (profile && token) || logged) {
+  if (logged || (profile && token)) {
     if (!tokenIsValid) {
-
-      return <></>;
+      //when reload refresh login session user time if logged == true => render empty
+      return <>REFRESH NEW TOKEN FOR LOGIN SESSION USER</>;
     } else {
       return <>{children}</>;
     }
