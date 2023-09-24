@@ -133,8 +133,6 @@ const PostForm = () => {
       )}
       {isOpen && type === "edit" && (
         <EditPost
-     
-        
         />
       )}
     </>

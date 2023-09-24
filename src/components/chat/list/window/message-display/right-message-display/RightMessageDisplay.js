@@ -5,49 +5,56 @@ import doubleCheckmark from '@assets/images/double-checkmark.png';
 import { reactionsMap } from '@services/utils/static.data';
 import RightMessageBubble from './RightMessageBubble';
 const RightMessageDisplay = ({
+  side,
   chat,
-  lastChatMessage,
+  messageIdx,
+  isLastChatMessage,
   profile,
-  toggleReaction,
-  showReactionIcon,
-  index,
-  activeElementIndex,
+  isShowReactionSelection,
+  setIsShowReactionSelection,
+
+  setHoveringMessageIndex,
+  isBeingHovered,
+
   reactionRef,
-  setToggleReaction,
-  handleReactionClick,
+
+  postMessageReaction,
+
   deleteMessage,
-  showReactionIconOnHover,
-  setActiveElementIndex,
-  setSelectedReaction,
+
   setShowImageModal,
   setImageUrl,
   showImageModal
+
+
 }) => {
   return (
-    <div className="message right-message" data-testid="right-message">
-      <div className="message-right-reactions-container">
-        {toggleReaction && index === activeElementIndex && !chat?.deleteForEveryone && (
+    <div className={`message ${side}-message`} data-testid="right-message">
+      <div className={`message-${side}-reactions-container`} style={{ border: "1px dashed red" }}>
+        {isShowReactionSelection && isBeingHovered && !chat?.deleteForEveryone && (
           <div ref={reactionRef}>
             <Reactions
               showLabel={false}
-              handleClick={(event) => {
+              handleClick={(reactionObject) => {
                 const body = {
                   conversationId: chat?.conversationId,
                   messageId: chat?._id,
-                  reaction: event,
+                  reaction: reactionObject,
                   type: 'add'
                 };
-                handleReactionClick(body);
-                setToggleReaction(false);
+                postMessageReaction(body);
+                setIsShowReactionSelection(false);
               }}
             />
           </div>
+
         )}
       </div>
-      <div className="message-right-content-container-wrapper">
+      <div className={`message-${side}-content-container-wrapper`} style={{ border: "1px dashed yellow" }}>
         <div
+        style={{ border: "1px solid yellow" }}
           data-testid="message-content"
-          className="message-content"
+          className="message-content message-content-right"
           onClick={() => {
             if (!chat.deleteForEveryone) {
               deleteMessage(chat, 'deleteForEveryone');
@@ -55,23 +62,30 @@ const RightMessageDisplay = ({
           }}
           onMouseEnter={() => {
             if (!chat.deleteForEveryone) {
-              showReactionIconOnHover(true, index);
-              setActiveElementIndex(index);
+
+              setHoveringMessageIndex(messageIdx)
+
             }
           }}
+
+       
+
+
         >
+
           {chat?.deleteForEveryone && chat?.deleteForMe && (
-            <div className="message-bubble right-message-bubble">
+            <div className={`message-bubble ${side}-message-bubble`}>
               <span className="message-deleted">message deleted</span>
             </div>
           )}
           {!chat?.deleteForEveryone && chat?.deleteForMe && chat?.senderUsername === profile?.username && (
-            <div className="message-bubble right-message-bubble">
+            <div className={`message-bubble ${side}-message-bubble`}>
               <span className="message-deleted">message deleted</span>
             </div>
           )}
           {!chat?.deleteForEveryone && !chat?.deleteForMe && (
             <RightMessageBubble
+              side={side}
               chat={chat}
               showImageModal={showImageModal}
               setImageUrl={setImageUrl}
@@ -80,26 +94,31 @@ const RightMessageDisplay = ({
           )}
           {!chat?.deleteForEveryone && chat?.deleteForMe && chat.senderUsername === profile?.username && (
             <RightMessageBubble
+              side={side}
               chat={chat}
               showImageModal={showImageModal}
               setImageUrl={setImageUrl}
               setShowImageModal={setShowImageModal}
             />
           )}
+
         </div>
-        {showReactionIcon && index === activeElementIndex && !chat.deleteForEveryone && (
-          <div className="message-content-emoji-right-container" onClick={() => setToggleReaction(true)}>
+        {/* reaction icon */}
+        {isBeingHovered && !chat.deleteForEveryone && (
+          <div className={`message-content-emoji-${side}-container`} style={{ border: "8px solid blue" }} onClick={() => setIsShowReactionSelection(true)}>
             &#9786;
           </div>
         )}
       </div>
-      <div className="message-content-bottom">
+      {/* time */}
+      <div className="message-content-bottom" style={{ border: "1px dashed green" }}>
         {chat?.reaction && chat?.reaction.length > 0 && !chat.deleteForEveryone && (
           <div className="message-reaction">
             {chat?.reaction.map((data, index) => (
               <img
                 key={index}
                 data-testid="reaction-img"
+
                 src={reactionsMap[data?.type]}
                 alt=""
                 onClick={() => {
@@ -110,7 +129,9 @@ const RightMessageDisplay = ({
                       reaction: data?.type,
                       type: 'remove'
                     };
-                    setSelectedReaction(body);
+                    postMessageReaction(body);
+
+
                   }
                 }}
               />
@@ -120,11 +141,11 @@ const RightMessageDisplay = ({
         <div className="message-time">
           {chat?.senderUsername === profile?.username && !chat?.deleteForEveryone && (
             <>
-              {lastChatMessage?.isRead ? (
-                <img src={doubleCheckmark} alt="" className="message-read-icon" />
-              ) : (
-                <>{chat?.isRead && <img src={doubleCheckmark} alt="" className="message-read-icon" />}</>
-              )}
+              {isLastChatMessage && (
+                // <img src={doubleCheckmark} alt="" className="message-read-icon" />
+                <span>received</span>
+              )
+              }
             </>
           )}
           <span data-testid="chat-time">{timeAgo.timeFormat(chat?.createdAt)}</span>
@@ -139,16 +160,16 @@ RightMessageDisplay.propTypes = {
   lastChatMessage: PropTypes.object,
   profile: PropTypes.object,
   reactionRef: PropTypes.any,
-  toggleReaction: PropTypes.bool,
-  showReactionIcon: PropTypes.bool,
+  isShowReactionSelection: PropTypes.bool,
+  isShowReactionIcon: PropTypes.bool,
   index: PropTypes.number,
-  activeElementIndex: PropTypes.number,
-  setToggleReaction: PropTypes.func,
-  handleReactionClick: PropTypes.func,
+  hoveringMessageIndex: PropTypes.number,
+  setIsShowReactionSelection: PropTypes.func,
+  postMessageReaction: PropTypes.func,
   deleteMessage: PropTypes.func,
   showReactionIconOnHover: PropTypes.func,
   setActiveElementIndex: PropTypes.func,
-  setSelectedReaction: PropTypes.func,
+
   setShowImageModal: PropTypes.func,
   showImageModal: PropTypes.bool,
   setImageUrl: PropTypes.func

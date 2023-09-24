@@ -7,17 +7,17 @@ import PropTypes from 'prop-types';
 const LeftMessageDisplay = ({
   chat,
   profile,
-  toggleReaction,
-  showReactionIcon,
-  index,
-  activeElementIndex,
+  isShowReactionSelection,
+
+  messageIdx,
+  isBeingHovered,
   reactionRef,
-  setToggleReaction,
-  handleReactionClick,
+  setIsShowReactionSelection,
+  postMessageReaction,
   deleteMessage,
-  showReactionIconOnHover,
-  setActiveElementIndex,
-  setSelectedReaction,
+  
+  setHoveringMessageIndex,
+
   setShowImageModal,
   setImageUrl,
   showImageModal
@@ -25,7 +25,7 @@ const LeftMessageDisplay = ({
   return (
     <div className="message left-message" data-testid="left-message">
       <div className="message-reactions-container">
-        {toggleReaction && index === activeElementIndex && (
+        {isShowReactionSelection && isBeingHovered && (
           <div ref={reactionRef}>
             <Reactions
               showLabel={false}
@@ -36,8 +36,8 @@ const LeftMessageDisplay = ({
                   reaction: event,
                   type: 'add'
                 };
-                handleReactionClick(body);
-                setToggleReaction(false);
+                postMessageReaction(body);
+                setIsShowReactionSelection(false);
               }}
             />
           </div>
@@ -64,8 +64,8 @@ const LeftMessageDisplay = ({
               }}
               onMouseEnter={() => {
                 if (!chat?.deleteForMe) {
-                  showReactionIconOnHover(true, index);
-                  setActiveElementIndex(index);
+     
+                  setHoveringMessageIndex(messageIdx);
                 }
               }}
             >
@@ -105,8 +105,8 @@ const LeftMessageDisplay = ({
                 </>
               )}
             </div>
-            {showReactionIcon && index === activeElementIndex && !chat?.deleteForMe && (
-              <div className="message-content-emoji-container" onClick={() => setToggleReaction(true)}>
+            {  isBeingHovered && !chat?.deleteForMe && (
+              <div className="message-content-emoji-container" onClick={() => setIsShowReactionSelection(true)}>
                 &#9786;
               </div>
             )}
@@ -126,7 +126,7 @@ const LeftMessageDisplay = ({
                         reaction: data?.type,
                         type: 'remove'
                       };
-                      setSelectedReaction(body);
+                      setIsShowReactionSelection(body);
                     }
                   }}
                 />
@@ -145,16 +145,16 @@ LeftMessageDisplay.propTypes = {
   chat: PropTypes.object,
   profile: PropTypes.object,
   reactionRef: PropTypes.any,
-  toggleReaction: PropTypes.bool,
+  isShowReactionSelection: PropTypes.bool,
   showReactionIcon: PropTypes.bool,
-  index: PropTypes.number,
+  messageIdx: PropTypes.number,
   activeElementIndex: PropTypes.number,
-  setToggleReaction: PropTypes.func,
-  handleReactionClick: PropTypes.func,
+  setIsShowReactionSelection: PropTypes.func,
+  postMessageReaction: PropTypes.func,
   deleteMessage: PropTypes.func,
   showReactionIconOnHover: PropTypes.func,
-  setActiveElementIndex: PropTypes.func,
-  setSelectedReaction: PropTypes.func,
+  setHoveringMessageIndex: PropTypes.func,
+  setIsShowReactionSelection: PropTypes.func,
   setShowImageModal: PropTypes.func,
   showImageModal: PropTypes.bool,
   setImageUrl: PropTypes.func

@@ -23,89 +23,48 @@ const ChatWindow = () => {
     const { profile } = useSelector((state) => state.user);
     const { isLoading } = useSelector((state) => state.chat);
     const [receiver, setReceiver] = useState(null)
-
     const [chatMessages, setChatMessages] = useState([])
-    const [onlineUsers, setOnlineUsers] = useState([])
-    // * use in cb
-    const getCurrentConversationMessages = useCallback(
-        async (receiverId) => {
-            try {
-                console.log("CALLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-                const response = await chatService.getChatMessages(receiverId);
-
-
-                setChatMessages([...response.data.messages]);
-
-
-                // console.log("call api messages");
-            } catch (error) {
-                console.log(error);
-                Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
-            }
-        },
-        [dispatch]
-    );
-
-
     const [searchParams] = useSearchParams();
-    // * usefor: get all messages of current conversation 
-    const getCurrentConversationMessagesCb = useCallback(() => {
-        if (searchParams.get('id') && searchParams.get('username')) {
 
-            setChatMessages([]);
-
-            console.log("CALLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-            getCurrentConversationMessages(searchParams.get('id'));
+    const getCurrentConversationMessages = async () => {
+        try {
+            if (searchParams.get('id') && searchParams.get('username')) {
+                setChatMessages([]);
+                const response = await chatService.getChatMessages(searchParams.get('id'));
+                setChatMessages([...response.data.messages]);
+            }
+        } catch (error) {
+            console.log(error);
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
-    }, [getCurrentConversationMessages, searchParams]);
+
+    }
 
     //  * userfor: get target user profile
-    const getTargetUserProfileById = useCallback(async () => {
+    const getTargetUserProfileById = async () => {
         try {
-
             const response = await userService.getUserProfileByUserId(searchParams.get('id'));
             setReceiver(response.data.user);
-            // ChatUtils.joinRoomEvent(response.data.user, profile);
         } catch (error) {
             Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
-    }, [dispatch, profile, searchParams]);
+    };
 
 
 
     useEffect(() => {
-        if (!rendered) setRendered(true)
-
-        if (
-            rendered &&
-            searchParams.get('id')) {
+        if (searchParams.get('id')) {
             getTargetUserProfileById()
-            getCurrentConversationMessagesCb()
+            getCurrentConversationMessages()
         }
 
-    }, [searchParams, rendered])
+    }, [searchParams])
 
 
 
     useEffect(() => {
-
-        if (!rendered) setRendered(true);
-        if (rendered && chatMessages.length) {
-
-            console.log("--------run init socket", chatMessages.length, chatMessages[0]?.senderUsername, chatMessages[0]?.receiverUsername);
-            ChatUtils.setupSocketIOMessageReceived(chatMessages, searchParams.get('username'), setChatMessages, window.location.href);
-        }
-
-        // ChatUtils.usersOnline(setOnlineUsers);
-        // ChatUtils.usersOnChatPage();
-
-    }, [chatMessages, rendered]);
-
-
-
-
-
-
+        ChatUtils.setupSocketIOMessageReceived(chatMessages, searchParams.get('username'), setChatMessages, window.location.href);
+    }, [chatMessages]);
 
     const createChatMessage = async (message, gifUrl, selectedImage) => {
         try {
@@ -137,25 +96,13 @@ const ChatWindow = () => {
 
 
     // * usefor : update message.reaction in DB
-    const updateMessageReaction = async (body) => {
-        try {
-            await chatService.updateMessageReaction(body);
-        } catch (error) {
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
-        }
-    };
+
     // * usefor : delete message.reaction in DB
-    const deleteChatMessage = async (senderId, receiverId, messageId, type) => {
-        try {
-            await chatService.markMessageAsDelete(messageId, senderId, receiverId, type);
-        } catch (error) {
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
-        }
-    };
+
     // ? END func for message:
 
 
-    console.log("Conversation id", reduxChat?.selectedChatUser?.conversationId);
+    console.log(">>>>>>>>>>>>>>>", chatMessages);
     return (
         <div className="chat-window-container" data-testid="chatWindowContainer">
             {isLoading ? (
@@ -178,14 +125,13 @@ const ChatWindow = () => {
                         <div className="chat-title-items">
                             <div
                                 className=
-                                {`chat-name ${Utils.checkIfUserIsOnline(receiver?.username, onlineUsers) ? '' : 'user-not-online'
-                                    }`}
+                                'chat-name'
                             >
                                 {receiver?.username}
                             </div>
-                            {Utils.checkIfUserIsOnline(receiver?.username, onlineUsers) && (
+                            {/* {Utils.checkIfUserIsOnline(receiver?.username, onlineUsers) && (
                                 <span className="chat-active">Online</span>
-                            )}
+                            )} */}
                         </div>
                     </div>
                     <div className="chat-window">
@@ -194,9 +140,8 @@ const ChatWindow = () => {
 
                                 chatMessages={chatMessages}
                                 profile={profile}
-                                updateMessageReaction={updateMessageReaction}
-                                deleteChatMessage={deleteChatMessage}
-
+                              
+                               
                             ></MessageDisplay>
                         </div>
                         <div className="chat-window-input">

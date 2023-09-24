@@ -43,11 +43,6 @@ const ChatSidebar = () => {
 
     // ? END for SearchListComponent
     let [toShowConversationList, setToShowConversationList] = useState([]);
-
-
-
-
-
     useEffect(() => {
 
         setToShowConversationList([...conversationList])
@@ -105,26 +100,16 @@ const ChatSidebar = () => {
                 senderProfilePicture: profile?.profilePicture,
                 body: ''
             };
-            // ChatUtils.joinRoomEvent(user, profile);
 
-    
             const findUser = toShowConversationList.find(
 
                 (chat) => chat.receiverId === user.receiverId || chat.senderId === user.receiverId
 
             );
             if (!findUser) {
-
                 const newConversationList = [newUser, ...toShowConversationList];
                 setToShowConversationList(newConversationList);
-       
-
                 dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
-                // const userTwoName =
-                //     newUser?.receiverUsername !== profile?.username ? newUser?.receiverUsername : newUser?.senderUsername;
-                // ! Service:
-                // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-
             }
         },
         [searchParams]
@@ -142,58 +127,13 @@ const ChatSidebar = () => {
 
 
 
-    const removeSelectedUserFromList = (event) => {
-        // event.stopPropagation();
-        // toShowConversationList = cloneDeep(toShowConversationList);
-        // const userIndex = findIndex(toShowConversationList, ['receiverId', searchParams.get('id')]);
-        // if (userIndex > -1) {
-        //     toShowConversationList.splice(userIndex, 1);
-        //     setSelectedUser(null);
-        //     setToShowConversationList(toShowConversationList);
-        //     ChatUtils.updatedSelectedChatUser({
-        //         toShowConversationList,
-        //         profile,
-        //         username: searchParams.get('username'),
-        //         setSelectedChatUser: updateChatSelectedUser,
-        //         params: toShowConversationList.length ? updateQueryParams(toShowConversationList[0]) : null,
-        //         pathname: location.pathname,
-        //         navigate,
-        //         dispatch
-        //     });
-        // }
-    }
-
-
-
-
     // this is for when a user already exist in the chat list
     const onConversationClick = async (newestMessageCvsData) => {
         try {
-            // TODO
-            // const sender = find(
-            //     ChatUtils.chatUsers,
-            //     (userData) =>
-            //         userData.userOne === profile?.username && userData.userTwo === searchParams.get('username')
-            // );
-
             dispatch(updateChatSelectedUser({ isLoading: false, user: newestMessageCvsData }));
-
             const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
-            // ChatUtils.joinRoomEvent(newestMessageCvsData, profile);
-
-            // const userTwoName = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverUsername : newestMessageCvsData?.senderUsername;
-            // const targetUserId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
-            // console.log("PARAMS FOR DETAIL CONVERSATION URL", params);
-
             navigate(`${location.pathname}?${createSearchParams(params)}`);
-            // if (sender) {
-            //     chatService.removeChatUsers(sender);
-            // }
-            // TODO
-            // chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-            // if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
-            //     await chatService.markMessagesAsRead(profile?._id, targetUserId);
-            // }
+
         } catch (error) {
             console.log(error);
             Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -203,10 +143,7 @@ const ChatSidebar = () => {
 
 
     useEffect(() => {
-
         ChatUtils.socketIOConversations(profile, toShowConversationList, setToShowConversationList);
-
-
     }, [toShowConversationList]);
 
 
@@ -263,7 +200,6 @@ const ChatSidebar = () => {
                                         : ''
                                         }`}
                                     onClick={() => {
-                                        console.log("}}}}}}}}}}}}}}}}}");
                                         onConversationClick(data)
                                     }}
                                 >
@@ -289,7 +225,7 @@ const ChatSidebar = () => {
                                     </div>
                                     {data.body && data?.createdAt && <div className="created-date">{timeAgo.transform(data?.createdAt)}</div>}
                                     {!data?.body && (
-                                        <div className="created-date" onClick={removeSelectedUserFromList}>
+                                        <div className="created-date" onClick={() => { }}>
 
 
                                             <FaTimes />

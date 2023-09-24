@@ -165,7 +165,6 @@ const EditPost = () => {
 
                 // additional
                 if (reduxPost.image) {
-
                     postData.bgColor = "#ffffff"
                     postData.gifUrl = "";
                 }
@@ -179,7 +178,6 @@ const EditPost = () => {
                 postData.gifUrl = reduxPost.gifUrl;
                 // additional
                 if (reduxPost.gifUrl) {
-
                     postData.imgId = "";
                     postData.imgVersion = "";
                     postData.bgColor = "#ffffff"
@@ -190,7 +188,6 @@ const EditPost = () => {
             if (reduxPost.bgColor !== postData.bgColor) {
                 // additional
                 if (postData.bgColor !== "#ffffff") {
-
                     postData.imgId = "";
                     postData.imgVersion = "";
                     postData.gifUrl = "";

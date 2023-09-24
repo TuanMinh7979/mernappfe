@@ -9,32 +9,50 @@ import useDetectOutsideClick from '@hooks/useDetectOutsideClick';
 import useChatScrollToBottom from '@hooks/useChatScrollToBottom';
 import RightMessageBubble from './right-message-display/RightMessageBubble';
 import LeftMessageDisplay from './left-message-display/LeftMessageDisplay';
-const MessageDisplay = ({ chatMessages, profile, updateMessageReaction, deleteChatMessage }) => {
-   
+import { chatService } from '@services/api/chat/chat.service';
+import { useDispatch } from 'react-redux';
+import ImageModal from '@components/image-modal/ImageModal';
+const MessageDisplay = ({ chatMessages, profile }) => {
     const [imageUrl, setImageUrl] = useState('');
-    const [showReactionIcon, setShowReactionIcon] = useState(false);
+
     const [showImageModal, setShowImageModal] = useState(false);
+
+
+
+    const dispatch = useDispatch()
+    const postMessageReaction = async (body) => {
+        try {
+            await chatService.updateMessageReaction(body);
+        } catch (error) {
+            console.log(error);
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+        }
+    };
+
+    const deleteChatMessage = async (senderId, receiverId, messageId, type) => {
+        try {
+            await chatService.markMessageAsDelete(messageId, senderId, receiverId, type);
+        } catch (error) {
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+        }
+    };
+
+
+
+
     const [deleteDialog, setDeleteDialog] = useState({
         open: false,
         message: null,
         type: ''
     });
-    const [activeElementIndex, setActiveElementIndex] = useState(null);
-    const [selectedReaction, setSelectedReaction] = useState(null);
-    const reactionRef = useRef(null);
-    const [toggleReaction, setToggleReaction] = useDetectOutsideClick(reactionRef, false);
+    const [hoveringMessageIndex, setHoveringMessageIndex] = useState(null);
+
+
     const scrollRef = useChatScrollToBottom(chatMessages);
 
-    const showReactionIconOnHover = (show, index) => {
-        if (index === activeElementIndex || !activeElementIndex) {
-            setShowReactionIcon(show);
-        }
-    };
 
-    const handleReactionClick = (body) => {
-        updateMessageReaction(body);
-        setSelectedReaction(null);
-    };
+
+
 
     const deleteMessage = (message, type) => {
         setDeleteDialog({
@@ -44,13 +62,26 @@ const MessageDisplay = ({ chatMessages, profile, updateMessageReaction, deleteCh
         });
     };
 
+
+
+
+    const reactionRef = useRef(null);
+    const [isShowReactionSelection, setIsShowReactionSelection] = useDetectOutsideClick(reactionRef, false);
+
+
+
+
+    
     return (
         <>
-
-            <div className="message-page" data-testid="message-page">
+            {showImageModal && (
+                <ImageModal image={`${imageUrl}`} onCancel={() => setShowImageModal(!showImageModal)} showArrow={false} />
+            )}
+            <div className="message-page" ref={scrollRef} data-testid="message-page">
                 {chatMessages.map((chat, index) => (
-                    <div key={Utils.generateString(10)} className="message-chat" data-testid="message-chat">
+                    <div key={Utils.generateString(10)} style={{ border: "1px dashed black" }} className="message-chat" data-testid="message-chat">
 
+                        {/* time by day */}
 
                         {(index === 0 ||
                             timeAgo.dayMonthYear(chat.createdAt) !== timeAgo.dayMonthYear(chatMessages[index - 1].createdAt)) && (
@@ -67,45 +98,77 @@ const MessageDisplay = ({ chatMessages, profile, updateMessageReaction, deleteCh
                             <>
                                 {chat.senderUsername === profile?.username && (
                                     <RightMessageDisplay
+                                    side='right'
                                         chat={chat}
-                                        lastChatMessage={chatMessages[chatMessages.length - 1]}
+                                        isLastChatMessage={chatMessages[chatMessages.length - 1]._id == chat._id}
                                         profile={profile}
-                                        toggleReaction={toggleReaction}
-                                        showReactionIcon={showReactionIcon}
-                                        index={index}
-                                        activeElementIndex={activeElementIndex}
+
                                         reactionRef={reactionRef}
-                                        setToggleReaction={setToggleReaction}
-                                        handleReactionClick={handleReactionClick}
+
+                                        messageIdx={index}
+
+
+                                        isShowReactionSelection={isShowReactionSelection}
+                                        setIsShowReactionSelection={setIsShowReactionSelection}
+
+                                        isBeingHovered={index == hoveringMessageIndex}
+                                        setHoveringMessageIndex={setHoveringMessageIndex}
+
+
+                                        postMessageReaction={postMessageReaction}
+
                                         deleteMessage={deleteMessage}
-                                        showReactionIconOnHover={showReactionIconOnHover}
-                                        setActiveElementIndex={setActiveElementIndex}
+
+                                        showImageModal={showImageModal}
+
                                         setShowImageModal={setShowImageModal}
                                         setImageUrl={setImageUrl}
-                                        showImageModal={showImageModal}
-                                        setSelectedReaction={setSelectedReaction}
+
+
+
+
+
+
                                     />
                                 )}
 
                                 {chat.receiverUsername === profile?.username && (
                                     <LeftMessageDisplay
+                                 
                                         chat={chat}
+                                        isLastChatMessage={chatMessages[chatMessages.length - 1]._id == chat._id}
                                         profile={profile}
-                                        toggleReaction={toggleReaction}
-                                        showReactionIcon={showReactionIcon}
-                                        index={index}
-                                        activeElementIndex={activeElementIndex}
+
                                         reactionRef={reactionRef}
-                                        setToggleReaction={setToggleReaction}
-                                        handleReactionClick={handleReactionClick}
+
+                                        messageIdx={index}
+
+
+                                        isShowReactionSelection={isShowReactionSelection}
+                                        setIsShowReactionSelection={setIsShowReactionSelection}
+
+                                        isBeingHovered={index == hoveringMessageIndex}
+                                        setHoveringMessageIndex={setHoveringMessageIndex}
+
+
+                                        postMessageReaction={postMessageReaction}
+
                                         deleteMessage={deleteMessage}
-                                        showReactionIconOnHover={showReactionIconOnHover}
-                                        setActiveElementIndex={setActiveElementIndex}
+
+                                        showImageModal={showImageModal}
+
                                         setShowImageModal={setShowImageModal}
                                         setImageUrl={setImageUrl}
-                                        showImageModal={showImageModal}
-                                        setSelectedReaction={setSelectedReaction}
+
+
+
+
+
+
                                     />
+
+                                   
+
                                 )}
                             </>
                         )}
@@ -121,7 +184,7 @@ const MessageDisplay = ({ chatMessages, profile, updateMessageReaction, deleteCh
 MessageDisplay.propTypes = {
     chatMessages: PropTypes.array,
     profile: PropTypes.object,
-    updateMessageReaction: PropTypes.func,
+    postMessageReaction: PropTypes.func,
     deleteChatMessage: PropTypes.func
 };
 
