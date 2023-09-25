@@ -21,18 +21,6 @@ const Sidebar = () => {
     if (name === 'Profile') {
       url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id, uId: profile?.uId })}`;
     }
-
-    // if (name === 'Streams') {
-    //   dispatch(getPosts());
-    // }
-
-    // if (name === 'Chat') {
-    //   setChatPageName('Chat');
-    // } else {
-    //   leaveChatPage();
-    //   setChatPageName('');
-    // }
-    // socketService?.socket.off('message received');
     navigate(url);
   };
 

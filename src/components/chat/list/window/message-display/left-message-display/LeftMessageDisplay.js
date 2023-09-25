@@ -6,17 +6,25 @@ import PropTypes from 'prop-types';
 
 const LeftMessageDisplay = ({
   chat,
-  profile,
-  isShowReactionSelection,
 
   messageIdx,
+
+
+  profile,
+
+  isShowReactionSelection,
+  setIsShowReactionSelection,
+
+
+  setHoveringMessageIndex,
   isBeingHovered,
   reactionRef,
-  setIsShowReactionSelection,
+
   postMessageReaction,
+
+
   deleteMessage,
-  
-  setHoveringMessageIndex,
+
 
   setShowImageModal,
   setImageUrl,
@@ -64,8 +72,15 @@ const LeftMessageDisplay = ({
               }}
               onMouseEnter={() => {
                 if (!chat?.deleteForMe) {
-     
+
                   setHoveringMessageIndex(messageIdx);
+                }
+              }}
+
+
+              onMouseLeave={() => {
+                if (!isShowReactionSelection) {
+                  setHoveringMessageIndex(null);
                 }
               }}
             >
@@ -102,14 +117,16 @@ const LeftMessageDisplay = ({
                       <img src={chat?.gifUrl} alt="" />
                     </div>
                   )}
+
+                  {isBeingHovered && !chat?.deleteForMe && (
+                    <div style={{ position: "absolute", left: 0, top: 0 }} className="message-content-emoji-container" onClick={() => setIsShowReactionSelection(true)}>
+                      &#9786;
+                    </div>
+                  )}
                 </>
               )}
             </div>
-            {  isBeingHovered && !chat?.deleteForMe && (
-              <div className="message-content-emoji-container" onClick={() => setIsShowReactionSelection(true)}>
-                &#9786;
-              </div>
-            )}
+
           </div>
           {chat?.reaction && chat.reaction.length > 0 && !chat?.deleteForMe && (
             <div className="message-reaction">
@@ -124,9 +141,9 @@ const LeftMessageDisplay = ({
                         conversationId: chat?.conversationId,
                         messageId: chat?._id,
                         reaction: data?.type,
-                        type: 'remove'
+                        type: "remove",
                       };
-                      setIsShowReactionSelection(body);
+                      postMessageReaction(body);
                     }
                   }}
                 />

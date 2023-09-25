@@ -102,9 +102,7 @@ const ChatSidebar = () => {
             };
 
             const findUser = toShowConversationList.find(
-
                 (chat) => chat.receiverId === user.receiverId || chat.senderId === user.receiverId
-
             );
             if (!findUser) {
                 const newConversationList = [newUser, ...toShowConversationList];

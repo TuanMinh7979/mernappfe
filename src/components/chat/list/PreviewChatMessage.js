@@ -11,7 +11,8 @@ const PreviewChatMessage = ({ data, profile }) => {
           {data.receiverUsername === profile?.username ? (
             <FaCircle className="icon" />
           ) : (
-            <FaCheck className="icon not-read" />
+            // <FaCheck className="icon not-read" />
+            <>____Đã nhận</>
           )}
         </>
       ) : (
