@@ -87,6 +87,8 @@ export class ChatUtils {
     setToShowConversationList
   ) {
     socketService?.socket?.on("chat list", (data) => {
+
+      console.log(">>>>>>>>>>>>>>>>>>>>received", data.senderUsername, this.targetUserName)
       if (
         data.senderUsername === profile?.username ||
         data.receiverUsername === profile?.username
@@ -147,13 +149,15 @@ export class ChatUtils {
 
 
     socketService?.socket?.on('message read', (data) => {
-      console.log(data)
+      console.log(data);
+      console.log(this.targetUserName);
+
+      console.log(">>>>>>>>>>>>>>>>>>>>received", data.senderUsername, this.targetUserName)
       if (data.senderUsername.toLowerCase() === this.targetUserName.toLowerCase()
         || data.receiverUsername.toLowerCase() === this.targetUserName.toLowerCase()) {
         const findMessageIndex = findIndex(this.chatMessages, ['_id', data._id]);
         if (findMessageIndex > -1) {
 
-          console.log("-------------><><><><>><><><><><><<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------yessssssssssssss");
           this.chatMessages.splice(findMessageIndex, 1, data);
 
           this.setChatMessages(this.chatMessages);
