@@ -30,9 +30,6 @@ import { notificationService } from "@services/api/notification/notification.ser
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-import { chatService } from "@services/api/chat/chat.service";
-import { createSearchParams } from "react-router-dom";
-import { getConversationList } from "@redux/api/chat";
 const Header = () => {
   const [environment, setEnvironment] = useState("");
   const { profile } = useSelector((state) => state.user);
@@ -75,7 +72,7 @@ const Header = () => {
         setNotificationCount
       )
       setNotifications(mapNotis)
-      socketService?.socket.emit('setup', { userId: storedUsername })
+
 
     } catch (error) {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -178,9 +175,12 @@ const Header = () => {
     setMessageCount(count);
     setMessageNotifications(conversationList);
   }, [conversationList, profile]);
+
   useEffect(() => {
+    console.log("----------JOIN private message room-----------");
     ChatUtils.joinRoomEvent(profile)
-  }, [])
+}, [])
+
   return (
 
     <>
@@ -229,11 +229,14 @@ const Header = () => {
           <div className="header-navbar">
             <div className="header-image" data-testid="header-image"
 
-              onClick={() => navigate('/app/social/streams')}
+              onClick={() => {
+                socketService?.socket?.emit("leave room", profile);
+                navigate('/app/social/streams')
+              }}
             >
               <img src={logo} className="img-fluid" alt="" />
               <div className="app-name">
-                Chatty
+                Myapp
                 {environment && (
                   <span
                     className="environment"

@@ -11,6 +11,7 @@ export class ChatUtils {
 
 
   static joinRoomEvent(profile) {
+    console.log("---------join room------");
     socketService?.socket?.emit("join room", profile);
   }
 

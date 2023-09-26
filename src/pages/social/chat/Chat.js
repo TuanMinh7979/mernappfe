@@ -3,9 +3,12 @@ import "./Chat.scss"
 import { useSelector } from 'react-redux'
 import ChatSidebar from '@components/chat/list/ChatSidebar'
 import ChatWindow from '@components/chat/list/window/ChatWindow'
+import { useEffect } from 'react'
+import { ChatUtils } from '@services/utils/chat-utils.service.'
 const Chat = () => {
 
     const reduxChat = useSelector(state => state.chat)
+
 
     return (
         <div className="private-chat-wrapper">
@@ -14,7 +17,7 @@ const Chat = () => {
                     <ChatSidebar />
                 </div>
                 <div className="private-chat-wrapper-content-conversation">
-                    {reduxChat.selectedChatUser  && <ChatWindow />}
+                    {reduxChat.selectedChatUser && <ChatWindow />}
                     {!reduxChat.selectedChatUser && !reduxChat.conversationList.length && (
                         <div className="no-chat" data-testid="no-chat">
                             Select or Search for users to chat with

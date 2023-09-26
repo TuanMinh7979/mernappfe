@@ -1,9 +1,10 @@
 import { sideBarItems, fontAwesomeIcons } from "@services/utils/static.data";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.scss";
 import { useSelector } from "react-redux";
 import { createSearchParams } from "react-router-dom";
+import { socketService } from "@services/socket/socket.service";
 const Sidebar = () => {
   const { profile } = useSelector((state) => state.user);
 
@@ -21,8 +22,14 @@ const Sidebar = () => {
     if (name === 'Profile') {
       url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id, uId: profile?.uId })}`;
     }
+    if (name !== 'Chat') {
+      //  leave chat room
+      socketService?.socket?.emit("leave room", profile);
+    }
     navigate(url);
   };
+
+
 
 
 
@@ -37,7 +44,7 @@ const Sidebar = () => {
             >
               <div
                 data-testid="sidebar-list"
-                  className={`sidebar-link ${checkUrl(data.name) ? 'active' : ''}`}
+                className={`sidebar-link ${checkUrl(data.name) ? 'active' : ''}`}
               >
                 <div className="menu-icon">
                   {fontAwesomeIcons[data.iconName]}
