@@ -133,12 +133,15 @@ const ChatSidebar = () => {
             const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
 
             const receiverId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
+
+
+            navigate(`${location.pathname}?${createSearchParams(params)}`);
+
             if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
 
                 console.log("-------------><><><><><><<<<<<<<<<<<<<<<<<< set isread");
                 await chatService.markMessagesAsRead(profile?._id, receiverId);
             }
-            navigate(`${location.pathname}?${createSearchParams(params)}`);
 
         } catch (error) {
             console.log(error);

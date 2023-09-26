@@ -178,8 +178,8 @@ const Header = () => {
 
   useEffect(() => {
     console.log("----------JOIN private message room-----------");
-    ChatUtils.joinRoomEvent(profile)
-}, [])
+    socketService?.socket?.emit("join room", profile);
+  }, [])
 
   return (
 

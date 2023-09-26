@@ -5,6 +5,7 @@ import "./Sidebar.scss";
 import { useSelector } from "react-redux";
 import { createSearchParams } from "react-router-dom";
 import { socketService } from "@services/socket/socket.service";
+import { ChatUtils } from "@services/utils/chat-utils.service.";
 const Sidebar = () => {
   const { profile } = useSelector((state) => state.user);
 
@@ -24,7 +25,7 @@ const Sidebar = () => {
     }
     if (name !== 'Chat') {
       //  leave chat room
-      socketService?.socket?.emit("leave room", profile);
+      ChatUtils.leaveOnChatPage(profile)
     }
     navigate(url);
   };

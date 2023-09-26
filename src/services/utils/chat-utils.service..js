@@ -7,12 +7,14 @@ export class ChatUtils {
 
 
 
+  static joinOnChatPage(profile) {
+    console.log("---------join on chat page------");
+    socketService?.socket?.emit("join onchatpage", profile);
+  }
 
-
-
-  static joinRoomEvent(profile) {
-    console.log("---------join room------");
-    socketService?.socket?.emit("join room", profile);
+  static leaveOnChatPage(profile) {
+    console.log("---------leave on chat page------");
+    socketService?.socket?.emit("leave onchatpage", profile);
   }
 
 
@@ -158,9 +160,8 @@ export class ChatUtils {
         || data.receiverUsername.toLowerCase() === this.targetUserName.toLowerCase()) {
         const findMessageIndex = findIndex(this.chatMessages, ['_id', data._id]);
         if (findMessageIndex > -1) {
-
+          console.log("yesssssssssssssssssssssssssssssssssssss");
           this.chatMessages.splice(findMessageIndex, 1, data);
-
           this.setChatMessages(this.chatMessages);
         }
       }

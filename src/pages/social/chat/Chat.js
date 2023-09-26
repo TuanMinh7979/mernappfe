@@ -5,9 +5,22 @@ import ChatSidebar from '@components/chat/list/ChatSidebar'
 import ChatWindow from '@components/chat/list/window/ChatWindow'
 import { useEffect } from 'react'
 import { ChatUtils } from '@services/utils/chat-utils.service.'
+import { getConversationList } from '@redux/api/chat'
+import { useDispatch } from 'react-redux'
 const Chat = () => {
-
+    const dispatch = useDispatch()
+    const { profile } = useSelector((state) => state.user);
     const reduxChat = useSelector(state => state.chat)
+
+    useEffect(() => {
+
+        dispatch(getConversationList());
+
+        ChatUtils.joinOnChatPage(profile)
+    }, [])
+
+
+
 
 
     return (
