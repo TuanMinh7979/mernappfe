@@ -4,27 +4,17 @@ import { createSearchParams } from "react-router-dom";
 import { cloneDeep, find, findIndex, remove } from "lodash";
 
 export class ChatUtils {
-  static chatUsers = [];
 
-  static usersOnline(setOnlineUsers) {
-    socketService?.socket?.on("user online", (data) => {
-      setOnlineUsers(data);
-    });
-  }
 
-  static usersOnChatPage() {
-    socketService?.socket?.on("add chat users", (data) => {
-      ChatUtils.chatUsers = [...data];
-    });
-  }
+
+
+
 
   static joinRoomEvent(profile) {
     socketService?.socket?.emit("join room", profile);
   }
 
-  static emitChatPageEvent(event, data) {
-    socketService?.socket?.emit(event, data);
-  }
+
 
   static makeDetailConversationUrlParam(user, profile) {
     const params = { username: "", id: "" };
@@ -87,14 +77,7 @@ export class ChatUtils {
       navigate(`${pathname}?${createSearchParams(params)}`);
     } else {
       dispatch(setSelectedChatUser({ isLoading: false, user: null }));
-      const sender = ChatUtils.chatUsers.find(
-        (user) =>
-          user.userOne === profile?.username &&
-          user.userTwo.toLowerCase() === username
-      );
-      if (sender) {
-        chatService.removeChatUsers(sender);
-      }
+
     }
   }
 
@@ -130,7 +113,7 @@ export class ChatUtils {
 
   static chatMessages = [];
   static targetUserName = "";
-  static setChatMessages = () => {};
+  static setChatMessages = () => { };
   static link = "";
 
   // like above
@@ -151,7 +134,7 @@ export class ChatUtils {
 
   static socketIOMessageReceived1() {
     socketService?.socket?.on("message received", (data) => {
-      console.log(">>>>>>>>>>>socket on message received", data);
+
       if (
         data.senderUsername.toLowerCase() === this.targetUserName ||
         data.receiverUsername.toLowerCase() === this.targetUserName
@@ -160,12 +143,29 @@ export class ChatUtils {
         this.setChatMessages([...this.chatMessages]);
       }
     });
+
+
+
+    socketService?.socket?.on('message read', (data) => {
+      console.log(data)
+      if (data.senderUsername.toLowerCase() === this.targetUserName.toLowerCase()
+        || data.receiverUsername.toLowerCase() === this.targetUserName.toLowerCase()) {
+        const findMessageIndex = findIndex(this.chatMessages, ['_id', data._id]);
+        if (findMessageIndex > -1) {
+
+          console.log("-------------><><><><>><><><><><><<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------yessssssssssssss");
+          this.chatMessages.splice(findMessageIndex, 1, data);
+
+          this.setChatMessages(this.chatMessages);
+        }
+      }
+    });
   }
 
   static socketIOMessageReaction(
     chatMessages,
     username,
-    
+
     setChatMessages
   ) {
     socketService?.socket?.on("message reaction", (data) => {

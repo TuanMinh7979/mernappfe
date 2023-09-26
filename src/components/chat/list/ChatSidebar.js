@@ -115,6 +115,7 @@ const ChatSidebar = () => {
     // ? END add user to chat list(conversationlist)
 
     // 
+
     useEffect(() => {
         if (selectedUser && componentType === 'searchList') {
             // * navigate to new url
@@ -130,6 +131,13 @@ const ChatSidebar = () => {
         try {
             dispatch(updateChatSelectedUser({ isLoading: false, user: newestMessageCvsData }));
             const params = ChatUtils.makeDetailConversationUrlParam(newestMessageCvsData, profile);
+
+            const receiverId = newestMessageCvsData?.receiverUsername !== profile?.username ? newestMessageCvsData?.receiverId : newestMessageCvsData?.senderId;
+            if (newestMessageCvsData?.receiverUsername === profile?.username && !newestMessageCvsData.isRead) {
+
+                console.log("-------------><><><><><><<<<<<<<<<<<<<<<<<< set isread");
+                await chatService.markMessagesAsRead(profile?._id, receiverId);
+            }
             navigate(`${location.pathname}?${createSearchParams(params)}`);
 
         } catch (error) {

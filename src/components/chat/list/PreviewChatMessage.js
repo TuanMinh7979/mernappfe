@@ -3,20 +3,22 @@ import { FaCheck, FaCircle } from 'react-icons/fa';
 import doubleCheckmark from '@assets/images/double-checkmark.png';
 
 const PreviewChatMessage = ({ data, profile }) => {
+  console.log(".................", data, profile);
   return (
     <div className="conversation-message">
       <span>{data.body}</span>
       {!data.isRead ? (
         <>
           {data.receiverUsername === profile?.username ? (
-            <FaCircle className="icon" />
+            // <FaCircle className="icon" />
+            <>___Tin moi</>
           ) : (
             // <FaCheck className="icon not-read" />
-            <>____Đã nhận</>
+            <>____Da nhan</>
           )}
         </>
       ) : (
-        <>{data.senderUsername === profile?.username && <img src={doubleCheckmark} alt="" className="icon read" />}</>
+      <></>
       )}
     </div>
   );

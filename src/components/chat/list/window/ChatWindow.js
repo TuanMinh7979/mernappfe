@@ -75,16 +75,7 @@ const ChatWindow = () => {
 
   const createChatMessage = async (message, gifUrl, selectedImage) => {
     try {
-      const checkUserOne = ChatUtils.chatUsers.some(
-        (user) =>
-          user?.userOne === profile?.username &&
-          user?.userTwo === receiver?.username
-      );
-      const checkUserTwo = ChatUtils.chatUsers.some(
-        (user) =>
-          user?.userOne === receiver?.username &&
-          user?.userTwo === profile?.username
-      );
+ 
       // if !conversationId=>create new conversation
       const messageData = ChatUtils.buildMessageData({
         receiver,
@@ -96,7 +87,7 @@ const ChatWindow = () => {
         chatMessages,
         gifUrl,
         selectedImage,
-        isRead: checkUserOne && checkUserTwo,
+        isRead: false,
       });
       await chatService.saveChatMessage(messageData);
     } catch (error) {
