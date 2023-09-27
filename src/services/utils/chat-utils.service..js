@@ -89,12 +89,12 @@ export class ChatUtils {
 
   static socketIOConversations(
     profile,
-    
+
     toShowConversationList,
     setToShowConversationList
   ) {
     socketService?.socket?.on("chat list", (data) => {
-
+      console.log("DATA ON CHAT LIST", data);
       if (
         data.senderUsername === profile?.username ||
         data.receiverUsername === profile?.username
@@ -102,15 +102,17 @@ export class ChatUtils {
         const messageIndex = toShowConversationList.findIndex(
           (el) => el.conversationId == data.conversationId
         );
-        let newToShowConversationList = [...toShowConversationList];
+        // let newToShowConversationList = [...toShowConversationList];
+        let newToShowConversationList = cloneDeep(toShowConversationList);
         if (messageIndex > -1) {
+          // không là conversation rỗng
           newToShowConversationList = newToShowConversationList.filter(
             (el) => el.conversationId !== data.conversationId
           );
           newToShowConversationList = [data, ...newToShowConversationList];
         } else {
 
-
+          //   là conversation rỗng
           newToShowConversationList = newToShowConversationList.filter(
             (el) => el?.conversationId
           );

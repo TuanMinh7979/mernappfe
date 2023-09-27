@@ -75,13 +75,15 @@ const ChatWindow = () => {
 
   const createChatMessage = async (message, gifUrl, selectedImage) => {
     try {
- 
+
       // if !conversationId=>create new conversation
+
+      const newConversationId = reduxChat?.selectedChatUser?.conversationId
+        ? reduxChat?.selectedChatUser?.conversationId
+        : ""
       const messageData = ChatUtils.buildMessageData({
         receiver,
-        conversationId: reduxChat?.selectedChatUser?.conversationId
-          ? reduxChat?.selectedChatUser?.conversationId
-          : "",
+        conversationId: newConversationId,
         message,
         searchParamsId: searchParams.get("id"),
         chatMessages,
@@ -89,7 +91,13 @@ const ChatWindow = () => {
         selectedImage,
         isRead: false,
       });
-      await chatService.saveChatMessage(messageData);
+      const res = await chatService.saveChatMessage(messageData);
+      if (!newConversationId) {
+        // if is new conversation
+        console.log(">>>RESDATA ADD NEW CONVERSATION", res.data);
+        ChatUtils.joinConversation(profile, res.data.conversationId)
+
+      }
     } catch (error) {
       console.log(error);
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
@@ -123,7 +131,7 @@ const ChatWindow = () => {
             )}
             <div className="chat-title-items">
               <div className="chat-name">{receiver?.username}</div>
-  
+
             </div>
           </div>
           <div className="chat-window">

@@ -152,7 +152,7 @@ const ChatSidebar = () => {
         newestMessageCvsData?.receiverUsername === profile?.username &&
         !newestMessageCvsData.isRead
       ) {
-
+        console.log("--------------->>>>>> RUN HERE");
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
@@ -164,8 +164,8 @@ const ChatSidebar = () => {
   useEffect(() => {
     ChatUtils.socketIOConversations(
       profile,
-      
-      toShowConversationList,
+
+      [...toShowConversationList],
       setToShowConversationList
     );
   }, [toShowConversationList]);

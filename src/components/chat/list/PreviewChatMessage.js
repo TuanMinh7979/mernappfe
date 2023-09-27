@@ -7,6 +7,7 @@ const PreviewChatMessage = ({ data, profile }) => {
   return (
     <div className="conversation-message">
       <span>{data.body}</span>
+      <span>{data.isRead ? "true" : "false"}</span>
       {!data.isRead ? (
         <>
           {data.receiverUsername === profile?.username ? (
@@ -18,7 +19,7 @@ const PreviewChatMessage = ({ data, profile }) => {
           )}
         </>
       ) : (
-      <></>
+        <></>
       )}
     </div>
   );
