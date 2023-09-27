@@ -26,7 +26,7 @@ const Sidebar = () => {
     }
     if (name !== 'Chat') {
       //  leave chat room
-      ChatUtils.leaveOnChatPage(profile, curConversationId )
+      ChatUtils.leaveOnChatPage(profile )
     }
     navigate(url);
   };

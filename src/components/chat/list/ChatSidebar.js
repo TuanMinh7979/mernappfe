@@ -20,7 +20,7 @@ import { ChatUtils } from "@services/utils/chat-utils.service.";
 
 import {
   updateChatSelectedUser,
-  updateCurConversationId,
+
 } from "@redux/reducers/chat/chat.reducer";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import PreviewChatMessage from "./PreviewChatMessage";
@@ -139,12 +139,11 @@ const ChatSidebar = () => {
           ? newestMessageCvsData?.receiverId
           : newestMessageCvsData?.senderId;
       // if (newestMessageCvsData.conversationId) {
-      ChatUtils.leaveAndJoinOnConversation(
+      ChatUtils.joinConversation(
         profile,
-        curConversationId,
         newestMessageCvsData.conversationId
       );
-      dispatch(updateCurConversationId(newestMessageCvsData.conversationId));
+
       // }
 
       navigate(`${location.pathname}?${createSearchParams(params)}`);
@@ -153,7 +152,7 @@ const ChatSidebar = () => {
         newestMessageCvsData?.receiverUsername === profile?.username &&
         !newestMessageCvsData.isRead
       ) {
-        console.log("-------------><><><><><><<<<<<<<<<<<<<<<<<< set isread");
+
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
@@ -165,11 +164,16 @@ const ChatSidebar = () => {
   useEffect(() => {
     ChatUtils.socketIOConversations(
       profile,
+      
       toShowConversationList,
       setToShowConversationList
     );
   }, [toShowConversationList]);
-  console.log("conversationlist", toShowConversationList);
+
+
+
+
+
   return (
     <div data-testid="conversationList">
       <div className="conversation-container">

@@ -2,7 +2,10 @@ import PropTypes from 'prop-types';
 import './SearchList.scss';
 import Avatar from '@components/avatar/Avatar';
 import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
+import { ChatUtils } from '@services/utils/chat-utils.service.';
 
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 const SearchList = ({
 
   userSearchText,
@@ -21,11 +24,22 @@ const SearchList = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const { profile } = useSelector((state) => state.user);
+  const dispatch = useDispatch()
+  const { conversationList, curConversationId } = useSelector(
+    (state) => state.chat
+  );
   const onSearchedUserClick = (user) => {
     setComponentType('searchList');
     setSelectedUser(user);
     const url = `${location.pathname}?${createSearchParams({ username: user.username.toLowerCase(), id: user._id })}`;
+
+    ChatUtils.joinConversation(
+      profile,
+      ""
+    );
+
+
     navigate(url);
     setUserSearchText('');
     setIsSearching(false);
@@ -45,7 +59,7 @@ const SearchList = ({
                 className="search-result-container-item"
                 key={user._id}
                 onClick={() => onSearchedUserClick(user)}
-                style={{background: "cyan"}}
+                style={{ background: "cyan" }}
               >
                 <Avatar
                   name={user.username}
@@ -61,7 +75,7 @@ const SearchList = ({
         )}
 
         {userSearchText && isSearching && (
-          <div className="search-result-container-empty"  data-testid="searching-text">
+          <div className="search-result-container-empty" data-testid="searching-text">
             <span>Searching...</span>
           </div>
         )}

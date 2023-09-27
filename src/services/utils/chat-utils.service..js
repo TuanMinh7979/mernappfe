@@ -4,23 +4,22 @@ import { createSearchParams } from "react-router-dom";
 import { cloneDeep, find, findIndex, remove } from "lodash";
 
 export class ChatUtils {
-  static leaveAndJoinOnConversation(
+
+
+  static joinConversation(
     profile,
-    oldConversationId,
     newConversationId
   ) {
-    console.log("---------------leave and join", profile._id, oldConversationId, newConversationId);
-    socketService?.socket?.emit("leave and join conversation", {
+    console.log("---------------join", profile._id, newConversationId);
+    socketService?.socket?.emit("join conversation", {
       userId: profile._id,
-      oldConversationId,
       newConversationId,
     });
   }
 
-  static leaveOnChatPage(profile, curConversationId) {
+  static leaveOnChatPage(profile) {
     socketService?.socket?.emit("leave chat page", {
-      userId: profile._id,
-      curConversationId,
+      userId: profile._id
     });
   }
 
@@ -90,6 +89,7 @@ export class ChatUtils {
 
   static socketIOConversations(
     profile,
+    
     toShowConversationList,
     setToShowConversationList
   ) {

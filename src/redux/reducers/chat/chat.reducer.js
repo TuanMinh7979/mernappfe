@@ -5,7 +5,7 @@ const initialState = {
   conversationList: [],
   selectedChatUser: null,
   isLoading: false,
-  curConversationId: "",
+
 };
 
 const chatSlice = createSlice({
@@ -22,9 +22,7 @@ const chatSlice = createSlice({
       state.selectedChatUser = user;
       state.isLoading = isLoading;
     },
-    updateCurConversationId: (state, action) => {
-      state.curConversationId = action.payload;
-    },
+
   },
   extraReducers: (builder) => {
     builder.addCase(getConversationList.pending, (state) => {
