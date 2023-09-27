@@ -19,7 +19,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   const getReactionDocsOfCurPost = async () => {
     try {
       const response = await postService.getReactionDocsOfAPost(post?._id);
-      console.log(response);
+
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);

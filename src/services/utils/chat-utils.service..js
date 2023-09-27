@@ -4,20 +4,25 @@ import { createSearchParams } from "react-router-dom";
 import { cloneDeep, find, findIndex, remove } from "lodash";
 
 export class ChatUtils {
-
-
-
-  static joinOnChatPage(profile) {
-    console.log("---------join on chat page------");
-    socketService?.socket?.emit("join onchatpage", profile);
+  static leaveAndJoinOnConversation(
+    profile,
+    oldConversationId,
+    newConversationId
+  ) {
+    console.log("---------------leave and join", profile._id, oldConversationId, newConversationId);
+    socketService?.socket?.emit("leave and join conversation", {
+      userId: profile._id,
+      oldConversationId,
+      newConversationId,
+    });
   }
 
-  static leaveOnChatPage(profile) {
-    console.log("---------leave on chat page------");
-    socketService?.socket?.emit("leave onchatpage", profile);
+  static leaveOnChatPage(profile, curConversationId) {
+    socketService?.socket?.emit("leave chat page", {
+      userId: profile._id,
+      curConversationId,
+    });
   }
-
-
 
   static makeDetailConversationUrlParam(user, profile) {
     const params = { username: "", id: "" };
@@ -80,7 +85,6 @@ export class ChatUtils {
       navigate(`${pathname}?${createSearchParams(params)}`);
     } else {
       dispatch(setSelectedChatUser({ isLoading: false, user: null }));
-
     }
   }
 
@@ -91,7 +95,6 @@ export class ChatUtils {
   ) {
     socketService?.socket?.on("chat list", (data) => {
 
-      console.log(">>>>>>>>>>>>>>>>>>>>received", data.senderUsername, this.targetUserName)
       if (
         data.senderUsername === profile?.username ||
         data.receiverUsername === profile?.username
@@ -106,9 +109,12 @@ export class ChatUtils {
           );
           newToShowConversationList = [data, ...newToShowConversationList];
         } else {
+
+
           newToShowConversationList = newToShowConversationList.filter(
             (el) => el?.conversationId
           );
+
           newToShowConversationList = [data, ...newToShowConversationList];
         }
         setToShowConversationList(newToShowConversationList);
@@ -128,18 +134,15 @@ export class ChatUtils {
     setChatMessages,
     link
   ) {
-
     this.chatMessages = new Set([...chatMessages]);
     this.targetUserName = targetUserName;
     this.setChatMessages = setChatMessages;
     this.link = link;
     this.socketIOMessageReceived1();
-
   }
 
   static socketIOMessageReceived1() {
     socketService?.socket?.on("message received", (data) => {
-
       if (
         data.senderUsername.toLowerCase() === this.targetUserName ||
         data.receiverUsername.toLowerCase() === this.targetUserName
@@ -149,18 +152,20 @@ export class ChatUtils {
       }
     });
 
+    socketService?.socket?.on("message read", (data) => {
 
-
-    socketService?.socket?.on('message read', (data) => {
-      console.log(data);
-      console.log(this.targetUserName);
-
-      console.log(">>>>>>>>>>>>>>>>>>>>received", data.senderUsername, this.targetUserName)
-      if (data.senderUsername.toLowerCase() === this.targetUserName.toLowerCase()
-        || data.receiverUsername.toLowerCase() === this.targetUserName.toLowerCase()) {
-        const findMessageIndex = findIndex(this.chatMessages, ['_id', data._id]);
+      if (
+        data.senderUsername.toLowerCase() ===
+        this.targetUserName.toLowerCase() ||
+        data.receiverUsername.toLowerCase() ===
+        this.targetUserName.toLowerCase()
+      ) {
+        const findMessageIndex = findIndex(this.chatMessages, [
+          "_id",
+          data._id,
+        ]);
         if (findMessageIndex > -1) {
-          console.log("yesssssssssssssssssssssssssssssssssssss");
+
           this.chatMessages.splice(findMessageIndex, 1, data);
           this.setChatMessages(this.chatMessages);
         }
@@ -175,7 +180,6 @@ export class ChatUtils {
     setChatMessages
   ) {
     socketService?.socket?.on("message reaction", (data) => {
-
       if (
         data.senderUsername.toLowerCase() === username ||
         data.receiverUsername.toLowerCase() === username

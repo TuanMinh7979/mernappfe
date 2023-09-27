@@ -36,10 +36,10 @@ const NotificationSetting = () => {
   const updateNotificationTypesToggle = (itemIndex) => {
 
 
-    console.log("---------------");
+
     let newToggles = [...toggles]
     newToggles[itemIndex].toggle = !newToggles[itemIndex].toggle
-    console.log(">>>>>>>>>>>>>>>", newToggles);
+
     setToggles(newToggles)
   };
 

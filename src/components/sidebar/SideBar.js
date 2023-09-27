@@ -8,6 +8,7 @@ import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
 const Sidebar = () => {
   const { profile } = useSelector((state) => state.user);
+  const { curConversationId} = useSelector((state) => state.chat);
 
   const [sidebar, setSideBar] = useState([]);
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Sidebar = () => {
     }
     if (name !== 'Chat') {
       //  leave chat room
-      ChatUtils.leaveOnChatPage(profile)
+      ChatUtils.leaveOnChatPage(profile, curConversationId )
     }
     navigate(url);
   };

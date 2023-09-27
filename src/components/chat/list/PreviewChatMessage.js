@@ -3,7 +3,7 @@ import { FaCheck, FaCircle } from 'react-icons/fa';
 import doubleCheckmark from '@assets/images/double-checkmark.png';
 
 const PreviewChatMessage = ({ data, profile }) => {
-  console.log(".................", data, profile);
+
   return (
     <div className="conversation-message">
       <span>{data.body}</span>

@@ -30,7 +30,7 @@ const Profile = () => {
   const [rendered, setRendered] = useState(false)
   // * get user background image  , profile image and posts
   const getUserProfileAndPosts = useCallback(async () => {
-    console.log("-------------------------");
+
     try {
       const res = await userService.getUserProfileAndPosts(username,
         searchParams.get('id'),
@@ -38,7 +38,7 @@ const Profile = () => {
       )
 
       setFromDbBackgroundUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
-      console.log("................", res);
+
       setUserProfileData(res.data)
       setUser(res.data.user)
     } catch (error) {
