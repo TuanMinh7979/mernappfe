@@ -23,15 +23,19 @@ const RightMessageDisplay = ({
 
   postMessageReaction,
 
-  deleteMessage,
+  showDeleteMessageDialog,
 
   setShowImageModal,
   setImageUrl,
   showImageModal,
 }) => {
 
-
+  const [deletedByMe, setDeletedByMe] = useState(chat.deletedByUsers.length>0 && chat?.deletedByUsers.some(el => el == profile._id))
+  useEffect(() => {
+    setDeletedByMe(chat.deletedByUsers.length >0 && chat?.deletedByUsers.some(el => el == profile._id))
+  }, [chat])
   return (
+
     <div className={`message ${side}-message`} data-testid="right-message">
       <div
         className={`message-${side}-reactions-container`}
@@ -67,7 +71,7 @@ const RightMessageDisplay = ({
           className="message-content message-content-right"
           onClick={() => {
             if (!chat.deleteForEveryone) {
-              deleteMessage(chat, "deleteForEveryone");
+              showDeleteMessageDialog(chat, !chat.isRead ? "bold" : "deleteForMe");
             }
           }}
           onMouseEnter={() => {
@@ -81,30 +85,25 @@ const RightMessageDisplay = ({
             }
           }}
         >
-          {chat?.deleteForEveryone && chat?.deleteForMe && (
-            <div className={`message-bubble ${side}-message-bubble`}>
-              <span className="message-deleted">message deleted</span>
-            </div>
-          )}
+          {/* delete for me */}
+
           {!chat?.deleteForEveryone &&
-            chat?.deleteForMe &&
-            chat?.senderUsername === profile?.username && (
+            deletedByMe
+            && (
               <div className={`message-bubble ${side}-message-bubble`}>
-                <span className="message-deleted">message deleted</span>
+                <span className="message-deleted">message deleted for me</span>
               </div>
             )}
-          {!chat?.deleteForEveryone && !chat?.deleteForMe && (
-            <RightMessageBubble
-              side={side}
-              chat={chat}
-              showImageModal={showImageModal}
-              setImageUrl={setImageUrl}
-              setShowImageModal={setShowImageModal}
-            />
+
+          {/* returned */}
+          {chat?.deleteForEveryone && (
+            <div className={`message-bubble ${side}-message-bubble`}>
+              <span className="message-deleted">message is returend</span>
+            </div>
           )}
-          {!chat?.deleteForEveryone &&
-            chat?.deleteForMe &&
-            chat.senderUsername === profile?.username && (
+          {/* */}
+          {!chat?.deleteForEveryone && !deletedByMe
+            && (
               <RightMessageBubble
                 side={side}
                 chat={chat}
@@ -114,7 +113,8 @@ const RightMessageDisplay = ({
               />
             )}
 
-          {isBeingHovered && !chat.deleteForEveryone && (
+
+          {isBeingHovered && !chat.deleteForEveryone && !deletedByMe && (
             <div
               style={{ position: "absolute", left: 0, top: 0 }}
               className={`message-content-emoji-${side}-container`}
@@ -188,7 +188,7 @@ RightMessageDisplay.propTypes = {
   hoveringMessageIndex: PropTypes.number,
   setIsShowReactionSelection: PropTypes.func,
   postMessageReaction: PropTypes.func,
-  deleteMessage: PropTypes.func,
+  showDeleteMessageDialog: PropTypes.func,
   showReactionIconOnHover: PropTypes.func,
   setActiveElementIndex: PropTypes.func,
 

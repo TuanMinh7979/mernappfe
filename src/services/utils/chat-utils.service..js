@@ -67,25 +67,7 @@ export class ChatUtils {
     return messageData;
   }
 
-  static updatedSelectedChatUser({
-    chatMessageList,
-    profile,
-    username,
-    setSelectedChatUser,
-    params,
-    pathname,
-    navigate,
-    dispatch,
-  }) {
-    if (chatMessageList.length) {
-      dispatch(
-        setSelectedChatUser({ isLoading: false, user: chatMessageList[0] })
-      );
-      navigate(`${pathname}?${createSearchParams(params)}`);
-    } else {
-      dispatch(setSelectedChatUser({ isLoading: false, user: null }));
-    }
-  }
+
 
   static socketIOConversations(
     profile,
@@ -102,13 +84,10 @@ export class ChatUtils {
         const messageIndex = toShowConversationList.findIndex(
           (el) => el.conversationId == data.conversationId
         );
-        // let newToShowConversationList = [...toShowConversationList];
+
         toShowConversationList = cloneDeep(toShowConversationList);
         if (messageIndex > -1) {
-          // không là conversation rỗng
-          // toShowConversationList = toShowConversationList.filter(
-          //   (el) => el.conversationId !== data.conversationId
-          // );
+
           remove(toShowConversationList,
             (el) => el.conversationId === data.conversationId
           );
@@ -127,54 +106,44 @@ export class ChatUtils {
     });
   }
 
-  static chatMessages = [];
-  static targetUserName = "";
-  static setChatMessages = () => { };
-  static link = "";
 
-  // like above
-  static setupSocketIOMessageReceived(
-    chatMessages,
+  static socketIOMessageReceived(chatMessages,
     targetUserName,
-    setChatMessages,
-    link
+    setChatMessages
   ) {
-    this.chatMessages = new Set([...chatMessages]);
-    this.targetUserName = targetUserName;
-    this.setChatMessages = setChatMessages;
-    this.link = link;
-    this.socketIOMessageReceived1();
-  }
-
-  static socketIOMessageReceived1() {
     socketService?.socket?.on("message received", (data) => {
+
       if (
-        data.senderUsername.toLowerCase() === this.targetUserName ||
-        data.receiverUsername.toLowerCase() === this.targetUserName
+        data.senderUsername.toLowerCase() === targetUserName ||
+        data.receiverUsername.toLowerCase() === targetUserName
       ) {
-        this.chatMessages.add(data);
-        this.setChatMessages([...this.chatMessages]);
+        chatMessages.push(data);
+        setChatMessages([...chatMessages]);
       }
     });
 
     socketService?.socket?.on("message read", (data) => {
-
+      console.log('MESSAGE READED ', data);
       if (
         data.senderUsername.toLowerCase() ===
-        this.targetUserName.toLowerCase() ||
+        targetUserName.toLowerCase() ||
         data.receiverUsername.toLowerCase() ===
-        this.targetUserName.toLowerCase()
+        targetUserName.toLowerCase()
       ) {
-        const findMessageIndex = findIndex(this.chatMessages, [
+        const findMessageIndex = findIndex(chatMessages, [
           "_id",
           data._id,
         ]);
         if (findMessageIndex > -1) {
 
-          this.chatMessages.splice(findMessageIndex, 1, data);
-          this.setChatMessages(this.chatMessages);
+          chatMessages.splice(findMessageIndex, 1, data);
+          // setChatMessages(chatMessages);
+          setChatMessages([...chatMessages]);
+
         }
       }
+
+      console.log("-----------------done message readed");
     });
   }
 

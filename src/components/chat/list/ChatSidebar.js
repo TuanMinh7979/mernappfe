@@ -162,7 +162,6 @@ const ChatSidebar = () => {
   };
 
 
-  const [rendered, setRendered] = useState(false);
   useEffect(() => {
 
     ChatUtils.socketIOConversations(
@@ -179,7 +178,7 @@ const ChatSidebar = () => {
 
 
 
-
+  console.log(">>>>>>>><><>><><><<<<<<<<<<", toShowConversationList);
 
   return (
     <div data-testid="conversationList">
@@ -239,6 +238,9 @@ const ChatSidebar = () => {
           {!userSearchText && (
             <div className="conversation">
               {toShowConversationList.map((data) => {
+
+                console.log("----------data", data);
+                let deletedByMe = data?.deletedByUsers?.some(el => el == profile._id)
                 return (
                   <div
                     key={Utils.generateString(10)}
@@ -294,29 +296,25 @@ const ChatSidebar = () => {
                       </div>
                     )}
                     {data?.body &&
-                      !data?.deleteForMe &&
+                      !deletedByMe &&
                       !data.deleteForEveryone && (
                         <PreviewChatMessage data={data} profile={profile} />
                       )}
-                    {data?.deleteForMe && data?.deleteForEveryone && (
+                    {!deletedByMe && data?.deleteForEveryone && (
                       <div className="conversation-message">
-                        <span className="message-deleted">message deleted</span>
+                        <span className="message-deleted">message returned</span>
                       </div>
                     )}
-                    {data?.deleteForMe &&
+                    {deletedByMe &&
                       !data.deleteForEveryone &&
-                      data.senderUsername !== profile?.username && (
+                      (
                         <div className="conversation-message">
                           <span className="message-deleted">
-                            message deleted
+                            message deleted 
                           </span>
                         </div>
                       )}
-                    {data?.deleteForMe &&
-                      !data.deleteForEveryone &&
-                      data.receiverUsername !== profile?.username && (
-                        <PreviewChatMessage data={data} profile={profile} />
-                      )}
+
                   </div>
                 );
               })}

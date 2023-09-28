@@ -5,14 +5,16 @@ import { Utils } from "@services/utils/utils.service";
 import RightMessageDisplay from "./right-message-display/RightMessageDisplay";
 import { useState } from "react";
 import { useRef } from "react";
-import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
+
 import useChatScrollToBottom from "@hooks/useChatScrollToBottom";
-import RightMessageBubble from "./right-message-display/RightMessageBubble";
+
 import LeftMessageDisplay from "./left-message-display/LeftMessageDisplay";
 import { chatService } from "@services/api/chat/chat.service";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import ImageModal from "@components/image-modal/ImageModal";
+import Dialog from "@components/dialog/Dialog";
+import ThreeButtonDialog from "@components/dialog/ThreeButtonDialog";
 const MessageDisplay = ({ chatMessages, profile }) => {
   const [imageUrl, setImageUrl] = useState("");
 
@@ -28,7 +30,28 @@ const MessageDisplay = ({ chatMessages, profile }) => {
     }
   };
 
-  const deleteChatMessage = async (senderId, receiverId, messageId, type) => {
+
+
+  const [hoveringMessageIndex, setHoveringMessageIndex] = useState(null);
+
+  const scrollRef = useChatScrollToBottom(chatMessages);
+
+
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    message: null,
+    type: "",
+  });
+  const showDeleteMessageDialog = (message, type) => {
+    setDeleteDialog({
+      open: true,
+      message,
+      type,
+    });
+  };
+
+  const deleteChatMessageService = async (senderId, receiverId, messageId, type) => {
     try {
       await chatService.markMessageAsDelete(
         messageId,
@@ -41,22 +64,6 @@ const MessageDisplay = ({ chatMessages, profile }) => {
     }
   };
 
-  const [deleteDialog, setDeleteDialog] = useState({
-    open: false,
-    message: null,
-    type: "",
-  });
-  const [hoveringMessageIndex, setHoveringMessageIndex] = useState(null);
-
-  const scrollRef = useChatScrollToBottom(chatMessages);
-
-  const deleteMessage = (message, type) => {
-    setDeleteDialog({
-      open: true,
-      message,
-      type,
-    });
-  };
 
   const reactionRef = useRef(null);
 
@@ -92,6 +99,68 @@ const MessageDisplay = ({ chatMessages, profile }) => {
           showArrow={false}
         />
       )}
+
+      {deleteDialog.open && (<> {
+        deleteDialog.type === "deleteForMe" ?
+          <Dialog
+            title="Delete message?"
+            showButtons={true}
+            firstButtonText='DELETE FOR ME'
+            secondButtonText="CANCEL"
+            firstBtnHandler={() => {
+              const { message, type } = deleteDialog;
+              deleteChatMessageService(message.senderId, message.receiverId, message._id, "deleteForMe");
+              setDeleteDialog({
+                open: false,
+                message: null,
+                type: ''
+              });
+            }}
+            secondBtnHandler={() => {
+              setDeleteDialog({
+                open: false,
+                message: null,
+                type: ''
+              });
+            }}
+          /> :
+          <ThreeButtonDialog
+            title="Delete message?"
+            showButtons={true}
+            firstButtonText='DELETE FOR ME'
+            secondButtonText="DELETE FOR EVERYONE"
+
+            thirdButtonText="CANCEL"
+            firstBtnHandler={() => {
+              const { message, type } = deleteDialog;
+              deleteChatMessageService(message.senderId, message.receiverId, message._id, "deleteForMe");
+              setDeleteDialog({
+                open: false,
+                message: null,
+                type: ''
+              });
+            }}
+            secondBtnHandler={() => {
+              const { message, type } = deleteDialog;
+              deleteChatMessageService(message.senderId, message.receiverId, message._id, "deleteForEveryone");
+              setDeleteDialog({
+                open: false,
+                message: null,
+                type: ''
+              });
+            }
+            }
+            thirdBtnHandler={() => {
+              setDeleteDialog({
+                open: false,
+                message: null,
+                type: ''
+              });
+            }} />
+      }</>
+
+
+      )}
       <div className="message-page" ref={scrollRef} data-testid="message-page">
         {chatMessages.map((chat, index) => (
           <div
@@ -104,65 +173,66 @@ const MessageDisplay = ({ chatMessages, profile }) => {
 
             {(index === 0 ||
               timeAgo.dayMonthYear(chat.createdAt) !==
-                timeAgo.dayMonthYear(chatMessages[index - 1].createdAt)) && (
-              <div className="message-date-group">
-                <div
-                  className="message-chat-date"
-                  data-testid="message-chat-date"
-                >
-                  {timeAgo.chatMessageTransform(chat.createdAt)}
+              timeAgo.dayMonthYear(chatMessages[index - 1].createdAt)) && (
+                <div className="message-date-group">
+                  <div
+                    className="message-chat-date"
+                    data-testid="message-chat-date"
+                  >
+                    {timeAgo.chatMessageTransform(chat.createdAt)}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* data */}
             {(chat.receiverUsername === profile?.username ||
               chat.senderUsername === profile?.username) && (
-              <>
-                {chat.senderUsername === profile?.username && (
-                  <RightMessageDisplay
-                    side="right"
-                    chat={chat}
-                    isLastChatMessage={
-                      chatMessages[chatMessages.length - 1]._id == chat._id
-                    }
-                    profile={profile}
-                    reactionRef={reactionRef}
-                    messageIdx={index}
-                    isShowReactionSelection={isShowReactionSelection}
-                    setIsShowReactionSelection={setIsShowReactionSelection}
-                    isBeingHovered={index == hoveringMessageIndex}
-                    setHoveringMessageIndex={setHoveringMessageIndex}
-                    postMessageReaction={postMessageReaction}
-                    deleteMessage={deleteMessage}
-                    showImageModal={showImageModal}
-                    setShowImageModal={setShowImageModal}
-                    setImageUrl={setImageUrl}
-                  />
-                )}
+                <>
+                  {chat.senderUsername === profile?.username && (
+                    <RightMessageDisplay
+                      side="right"
+                      chat={chat}
+                      isLastChatMessage={
+                        chatMessages[chatMessages.length - 1]._id == chat._id
+                      }
+                      profile={profile}
+                      reactionRef={reactionRef}
+                      messageIdx={index}
+                      isShowReactionSelection={isShowReactionSelection}
+                      setIsShowReactionSelection={setIsShowReactionSelection}
+                      isBeingHovered={index == hoveringMessageIndex}
+                      setHoveringMessageIndex={setHoveringMessageIndex}
+                      postMessageReaction={postMessageReaction}
+                      showDeleteMessageDialog={showDeleteMessageDialog}
+                      showImageModal={showImageModal}
+                      setShowImageModal={setShowImageModal}
+                      setImageUrl={setImageUrl}
+                    />
+                  )}
 
-                {chat.receiverUsername === profile?.username && (
-                  <LeftMessageDisplay
-                    chat={chat}
-                    isLastChatMessage={
-                      chatMessages[chatMessages.length - 1]._id == chat._id
-                    }
-                    profile={profile}
-                    reactionRef={reactionRef}
-                    messageIdx={index}
-                    isShowReactionSelection={isShowReactionSelection}
-                    setIsShowReactionSelection={setIsShowReactionSelection}
-                    isBeingHovered={index == hoveringMessageIndex}
-                    setHoveringMessageIndex={setHoveringMessageIndex}
-                    postMessageReaction={postMessageReaction}
-                    deleteMessage={deleteMessage}
-                    showImageModal={showImageModal}
-                    setShowImageModal={setShowImageModal}
-                    setImageUrl={setImageUrl}
-                  />
-                )}
-              </>
-            )}
+                  {chat.receiverUsername === profile?.username && (
+
+                    <LeftMessageDisplay
+                      chat={chat}
+                      isLastChatMessage={
+                        chatMessages[chatMessages.length - 1]._id == chat._id
+                      }
+                      profile={profile}
+                      reactionRef={reactionRef}
+                      messageIdx={index}
+                      isShowReactionSelection={isShowReactionSelection}
+                      setIsShowReactionSelection={setIsShowReactionSelection}
+                      isBeingHovered={index == hoveringMessageIndex}
+                      setHoveringMessageIndex={setHoveringMessageIndex}
+                      postMessageReaction={postMessageReaction}
+                      showDeleteMessageDialog={showDeleteMessageDialog}
+                      showImageModal={showImageModal}
+                      setShowImageModal={setShowImageModal}
+                      setImageUrl={setImageUrl}
+                    />
+                  )}
+                </>
+              )}
           </div>
         ))}
       </div>
@@ -174,7 +244,7 @@ MessageDisplay.propTypes = {
   chatMessages: PropTypes.array,
   profile: PropTypes.object,
   postMessageReaction: PropTypes.func,
-  deleteChatMessage: PropTypes.func,
+  deleteChatMessageService: PropTypes.func,
 };
 
 export default MessageDisplay;

@@ -14,6 +14,7 @@ import { chatService } from "@services/api/chat/chat.service";
 import { useEffect } from "react";
 import MessageDisplay from "./message-display/MessageDisplay";
 import sumBy from "lodash";
+import { socketService } from "@services/socket/socket.service";
 const ChatWindow = () => {
 
   const reduxChat = useSelector((state) => state.chat);
@@ -59,11 +60,10 @@ const ChatWindow = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    ChatUtils.setupSocketIOMessageReceived(
+    ChatUtils.socketIOMessageReceived(
       chatMessages,
       searchParams.get("username"),
-      setChatMessages,
-      window.location.href
+      setChatMessages
     );
 
     ChatUtils.socketIOMessageReaction(
@@ -71,10 +71,13 @@ const ChatWindow = () => {
       searchParams.get("username"),
       setChatMessages
     );
+    return () => {
+      socketService.socket.off("message received");
+      socketService.socket.off("message read");
+    };
 
-    
   }, [chatMessages]);
-
+  console.log("CHAT MESSAGES", chatMessages);
   const createChatMessage = async (message, gifUrl, selectedImage) => {
     try {
 

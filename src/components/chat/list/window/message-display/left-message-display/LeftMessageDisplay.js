@@ -3,6 +3,8 @@ import Reactions from '@components/posts/reactions/Reactions';
 import { reactionsMap } from '@services/utils/static.data';
 import { timeAgo } from '@services/utils/time.ago.utils';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const LeftMessageDisplay = ({
   chat,
@@ -23,13 +25,18 @@ const LeftMessageDisplay = ({
   postMessageReaction,
 
 
-  deleteMessage,
+  showDeleteMessageDialog,
 
 
   setShowImageModal,
   setImageUrl,
   showImageModal
 }) => {
+
+  const [deletedByMe, setDeletedByMe] = useState(chat.deletedByUsers.length > 0 && chat.deletedByUsers.some(el => el == profile._id))
+  useEffect(() => {
+    setDeletedByMe(chat.deletedByUsers.length > 0 && chat?.deletedByUsers.some(el => el == profile._id))
+  }, [chat])
   return (
     <div className="message left-message" data-testid="left-message">
       <div className="message-reactions-container">
@@ -67,7 +74,7 @@ const LeftMessageDisplay = ({
               className="message-content"
               onClick={() => {
                 if (!chat?.deleteForMe) {
-                  deleteMessage(chat, 'deleteForMe');
+                  showDeleteMessageDialog(chat, 'deleteForMe');
                 }
               }}
               onMouseEnter={() => {
@@ -84,14 +91,25 @@ const LeftMessageDisplay = ({
                 }
               }}
             >
-              {chat?.deleteForMe && chat?.receiverUsername === profile?.username && (
+
+              {/* delete for me */}
+              {!chat?.deleteForEveryone &&
+                deletedByMe
+                &&
                 <div className="message-bubble left-message-bubble">
                   <span className="message-deleted">message deleted</span>
                 </div>
-              )}
+              }
+              {/* returned */}
+              {chat.deleteForEveryone &&
+                <div className="message-bubble left-message-bubble">
+                  <span className="message-deleted">message returned</span>
+                </div>
+              }
 
-              {!chat?.deleteForMe && (
-                <>
+              {!chat.deleteForEveryone &&
+                !deletedByMe
+                && <>
                   {chat?.body !== 'Sent a GIF' && chat?.body !== 'Sent an Image' && (
                     <div className="message-bubble left-message-bubble">{chat?.body}</div>
                   )}
@@ -122,13 +140,20 @@ const LeftMessageDisplay = ({
                     <div style={{ position: "absolute", left: 0, top: 0 }} className="message-content-emoji-container" onClick={() => setIsShowReactionSelection(true)}>
                       &#9786;
                     </div>
-                  )}
-                </>
-              )}
+                  )}</>
+
+              }
+
+
+
+
+
+
+
             </div>
 
           </div>
-          {chat?.reaction && chat.reaction.length > 0 && !chat?.deleteForMe && (
+          {chat?.reaction && chat.reaction.length > 0 && !chat?.deleteForMe && !deletedByMe && (
             <div className="message-reaction">
               {chat?.reaction.map((data, index) => (
                 <img
@@ -168,7 +193,7 @@ LeftMessageDisplay.propTypes = {
   activeElementIndex: PropTypes.number,
   setIsShowReactionSelection: PropTypes.func,
   postMessageReaction: PropTypes.func,
-  deleteMessage: PropTypes.func,
+  showDeleteMessageDialog: PropTypes.func,
   showReactionIconOnHover: PropTypes.func,
   setHoveringMessageIndex: PropTypes.func,
   setIsShowReactionSelection: PropTypes.func,
