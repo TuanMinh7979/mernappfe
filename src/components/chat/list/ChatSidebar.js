@@ -84,7 +84,7 @@ const ChatSidebar = () => {
   // ? add user to chat list(conversationlist)
   // api /chat/message/add-chat-users
   // trigger searchParasm change:
-  const updateToShowConversationsFromSelectedUser = useCallback(
+  const updateToShowConversationsFromSelectedUser =
     (user) => {
       const newUser = {
         receiverId: user?._id,
@@ -105,12 +105,12 @@ const ChatSidebar = () => {
       );
       if (!findUser) {
         const newConversationList = [newUser, ...toShowConversationList];
-        setToShowConversationList(newConversationList);
+        setToShowConversationList([...newConversationList]);
         dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
       }
-    },
-    [searchParams]
-  );
+    }
+
+
   // ? END add user to chat list(conversationlist)
 
   //
@@ -310,7 +310,7 @@ const ChatSidebar = () => {
                       (
                         <div className="conversation-message">
                           <span className="message-deleted">
-                            message deleted 
+                            message deleted
                           </span>
                         </div>
                       )}
