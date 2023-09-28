@@ -4,7 +4,8 @@ import { getConversationList } from "@redux/api/chat";
 const initialState = {
   conversationList: [],
   selectedChatUser: null,
-  isLoading: false,
+  isLoading: false
+
 
 };
 
@@ -12,15 +13,9 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    updateChatNewEle: (state, action) => {
-      const { isLoading, conversationList } = action.payload;
-      state.conversationList = [...conversationList];
-      state.isLoading = isLoading;
-    },
+
     updateChatSelectedUser: (state, action) => {
-      const { isLoading, user } = action.payload;
-      state.selectedChatUser = user;
-      state.isLoading = isLoading;
+      state.selectedChatUser = action.payload;
     },
 
   },
@@ -42,7 +37,7 @@ const chatSlice = createSlice({
 });
 
 export const {
-  updateChatNewEle,
+
   updateChatSelectedUser,
 
 } = chatSlice.actions;

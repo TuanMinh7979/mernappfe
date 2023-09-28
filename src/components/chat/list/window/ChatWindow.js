@@ -20,7 +20,7 @@ const ChatWindow = () => {
   const reduxChat = useSelector((state) => state.chat);
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.user);
-  const { isLoading } = useSelector((state) => state.chat);
+
   const [receiver, setReceiver] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [searchParams] = useSearchParams();
@@ -118,40 +118,38 @@ const ChatWindow = () => {
 
   return (
     <div className="chat-window-container" data-testid="chatWindowContainer">
-      {isLoading ? (
-        <div className="message-loading" data-testid="message-loading"></div>
-      ) : (
-        <div data-testid="chatWindow">
-          <div className="chat-title" data-testid="chat-title">
-            {receiver && (
-              <div className="chat-title-avatar">
-                <Avatar
-                  name={receiver?.username}
-                  bgColor={receiver.avatarColor}
-                  textColor="#ffffff"
-                  size={40}
-                  avatarSrc={receiver?.profilePicture}
-                />
-              </div>
-            )}
-            <div className="chat-title-items">
-              <div className="chat-name">{receiver?.username}</div>
 
+      <div data-testid="chatWindow">
+        <div className="chat-title" data-testid="chat-title">
+          {receiver && (
+            <div className="chat-title-avatar">
+              <Avatar
+                name={receiver?.username}
+                bgColor={receiver.avatarColor}
+                textColor="#ffffff"
+                size={40}
+                avatarSrc={receiver?.profilePicture}
+              />
             </div>
-          </div>
-          <div className="chat-window">
-            <div className="chat-window-message">
-              <MessageDisplay
-                chatMessages={chatMessages}
-                profile={profile}
-              ></MessageDisplay>
-            </div>
-            <div className="chat-window-input">
-              <MessageInput sendChatMessage={createChatMessage}></MessageInput>
-            </div>
+          )}
+          <div className="chat-title-items">
+            <div className="chat-name">{receiver?.username}</div>
+
           </div>
         </div>
-      )}
+        <div className="chat-window">
+          <div className="chat-window-message">
+            <MessageDisplay
+              chatMessages={chatMessages}
+              profile={profile}
+            ></MessageDisplay>
+          </div>
+          <div className="chat-window-input">
+            <MessageInput sendChatMessage={createChatMessage}></MessageInput>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

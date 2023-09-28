@@ -106,7 +106,7 @@ const ChatSidebar = () => {
       if (!findUser) {
         const newConversationList = [newUser, ...toShowConversationList];
         setToShowConversationList([...newConversationList]);
-        dispatch(updateChatSelectedUser({ isLoading: false, user: newUser }));
+        dispatch(updateChatSelectedUser(newUser));
       }
     }
 
@@ -127,7 +127,7 @@ const ChatSidebar = () => {
   const onConversationClick = async (newestMessageCvsData) => {
     try {
       dispatch(
-        updateChatSelectedUser({ isLoading: false, user: newestMessageCvsData })
+        updateChatSelectedUser(newestMessageCvsData)
       );
       const params = ChatUtils.makeDetailConversationUrlParam(
         newestMessageCvsData,
@@ -180,6 +180,20 @@ const ChatSidebar = () => {
 
   console.log(">>>>>>>><><>><><><<<<<<<<<<", toShowConversationList);
 
+
+  const removeInitConversation = (message) => {
+    let tmp = [...toShowConversationList]
+    tmp = tmp.filter(el => el.receiverUsername !== message.receiverUsername)
+    setToShowConversationList([...tmp])
+    ChatUtils.joinConversation(
+      profile,
+      ""
+    );
+
+    dispatch(updateChatSelectedUser(
+      null
+    ))
+  }
   return (
     <div data-testid="conversationList">
       <div className="conversation-container">
@@ -291,7 +305,7 @@ const ChatSidebar = () => {
                       </div>
                     )}
                     {!data?.body && (
-                      <div className="created-date" onClick={() => { }}>
+                      <div className="created-date" onClick={() => removeInitConversation(data)}>
                         <FaTimes />
                       </div>
                     )}
