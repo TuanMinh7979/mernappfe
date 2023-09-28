@@ -71,6 +71,8 @@ const ChatWindow = () => {
       searchParams.get("username"),
       setChatMessages
     );
+
+    
   }, [chatMessages]);
 
   const createChatMessage = async (message, gifUrl, selectedImage) => {

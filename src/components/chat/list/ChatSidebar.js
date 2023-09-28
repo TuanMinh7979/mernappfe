@@ -17,7 +17,7 @@ import { userService } from "@services/api/user/user.service";
 
 import { chatService } from "@services/api/chat/chat.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-
+import { socketService } from "@services/socket/socket.service";
 import {
   updateChatSelectedUser,
 
@@ -32,7 +32,7 @@ const ChatSidebar = () => {
   const [searchParams] = useSearchParams();
   //
   const { profile } = useSelector((state) => state.user);
-  const { conversationList, curConversationId } = useSelector(
+  const { conversationList } = useSelector(
     (state) => state.chat
   );
 
@@ -161,13 +161,20 @@ const ChatSidebar = () => {
     }
   };
 
+
+  const [rendered, setRendered] = useState(false);
   useEffect(() => {
+
     ChatUtils.socketIOConversations(
       profile,
 
       [...toShowConversationList],
       setToShowConversationList
     );
+    return () => {
+      socketService.socket.off("chat list");
+    };
+
   }, [toShowConversationList]);
 
 

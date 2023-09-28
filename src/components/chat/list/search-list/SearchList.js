@@ -25,10 +25,8 @@ const SearchList = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { profile } = useSelector((state) => state.user);
-  const dispatch = useDispatch()
-  const { conversationList, curConversationId } = useSelector(
-    (state) => state.chat
-  );
+ 
+
   const onSearchedUserClick = (user) => {
     setComponentType('searchList');
     setSelectedUser(user);

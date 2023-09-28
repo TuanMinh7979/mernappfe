@@ -44,6 +44,6 @@ const chatSlice = createSlice({
 export const {
   updateChatNewEle,
   updateChatSelectedUser,
-  updateCurConversationId,
+
 } = chatSlice.actions;
 export default chatSlice.reducer;

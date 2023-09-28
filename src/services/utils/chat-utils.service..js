@@ -103,23 +103,26 @@ export class ChatUtils {
           (el) => el.conversationId == data.conversationId
         );
         // let newToShowConversationList = [...toShowConversationList];
-        let newToShowConversationList = cloneDeep(toShowConversationList);
+        toShowConversationList = cloneDeep(toShowConversationList);
         if (messageIndex > -1) {
           // không là conversation rỗng
-          newToShowConversationList = newToShowConversationList.filter(
-            (el) => el.conversationId !== data.conversationId
+          // toShowConversationList = toShowConversationList.filter(
+          //   (el) => el.conversationId !== data.conversationId
+          // );
+          remove(toShowConversationList,
+            (el) => el.conversationId === data.conversationId
           );
-          newToShowConversationList = [data, ...newToShowConversationList];
+          toShowConversationList = [data, ...toShowConversationList];
         } else {
 
           //   là conversation rỗng
-          newToShowConversationList = newToShowConversationList.filter(
-            (el) => el?.conversationId
+          remove(toShowConversationList,
+            (el) => el.receiverUsername === data.receiverUsername
           );
 
-          newToShowConversationList = [data, ...newToShowConversationList];
+          toShowConversationList = [data, ...toShowConversationList];
         }
-        setToShowConversationList(newToShowConversationList);
+        setToShowConversationList(toShowConversationList);
       }
     });
   }
