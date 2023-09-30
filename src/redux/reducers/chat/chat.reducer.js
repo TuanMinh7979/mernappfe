@@ -3,7 +3,7 @@ import { orderBy } from "lodash";
 import { getConversationList } from "@redux/api/chat";
 const initialState = {
   conversationList: [],
-  selectedChatUser: null,
+
   isLoading: false
 
 
@@ -14,9 +14,7 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
 
-    updateChatSelectedUser: (state, action) => {
-      state.selectedChatUser = action.payload;
-    },
+  
 
   },
   extraReducers: (builder) => {
@@ -36,9 +34,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const {
 
-  updateChatSelectedUser,
-
-} = chatSlice.actions;
 export default chatSlice.reducer;

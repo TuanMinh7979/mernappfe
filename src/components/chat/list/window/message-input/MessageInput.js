@@ -27,8 +27,7 @@ const MessageInput = ({ sendChatMessage }) => {
     const [showEmojiContainer, setShowEmojiContainer] = useState(false);
     const [showGifContainer, setShowGifContainer] = useState(false);
     const [showImagePreview, setShowImagePreview] = useState(false);
-    //   const [file, setImageUrl] = useState();
-    //   const [base64File, setBase64File] = useState('');
+
     const [hasFocus, setHasFocus] = useState(false);
     const fileInputRef = useRef();
     const messageInputRef = useRef();

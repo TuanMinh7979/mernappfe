@@ -4,19 +4,18 @@ import { useSelector } from "react-redux";
 import "./ChatWindow.scss";
 import MessageInput from "./message-input/MessageInput";
 import { Utils } from "@services/utils/utils.service";
-import { useCallback } from "react";
+
 import { ChatUtils } from "@services/utils/chat-utils.service.";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userService } from "@services/api/user/user.service";
-import useEffectOnce from "@hooks/useEffectOnce";
+
 import { chatService } from "@services/api/chat/chat.service";
 import { useEffect } from "react";
 import MessageDisplay from "./message-display/MessageDisplay";
-import sumBy from "lodash";
+
 import { socketService } from "@services/socket/socket.service";
 const ChatWindow = () => {
-
   const reduxChat = useSelector((state) => state.chat);
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.user);
@@ -75,33 +74,31 @@ const ChatWindow = () => {
       socketService.socket.off("message received");
       socketService.socket.off("message read");
     };
-
   }, [chatMessages]);
-  console.log("CHAT MESSAGES", chatMessages);
+
   const createChatMessage = async (message, gifUrl, selectedImage) => {
     try {
-
       // if !conversationId=>create new conversation
 
-      const newConversationId = reduxChat?.selectedChatUser?.conversationId
-        ? reduxChat?.selectedChatUser?.conversationId
-        : ""
       const messageData = ChatUtils.buildMessageData({
         receiver,
-        conversationId: newConversationId,
+
         message,
-        searchParamsId: searchParams.get("id"),
+
         chatMessages,
         gifUrl,
         selectedImage,
-        isRead: false,
+   
       });
       const res = await chatService.saveChatMessage(messageData);
-      if (!newConversationId) {
-        // if is new conversation
-        console.log(">>>RESDATA ADD NEW CONVERSATION", res.data);
-        ChatUtils.joinConversation(profile, res.data.conversationId)
-
+      if (
+        !chatMessages.find(
+          (chat) =>
+            chat.receiverId === searchParams.get("id") ||
+            chat.senderId === searchParams.get("id")
+        )
+      ) {
+        ChatUtils.joinConversation(profile, res.data.conversationId);
       }
     } catch (error) {
       console.log(error);
@@ -109,16 +106,8 @@ const ChatWindow = () => {
     }
   };
 
-  // * usefor : update message.reaction in DB
-
-  // * usefor : delete message.reaction in DB
-
-  // ? END func for message:
-
-
   return (
     <div className="chat-window-container" data-testid="chatWindowContainer">
-
       <div data-testid="chatWindow">
         <div className="chat-title" data-testid="chat-title">
           {receiver && (
@@ -134,7 +123,6 @@ const ChatWindow = () => {
           )}
           <div className="chat-title-items">
             <div className="chat-name">{receiver?.username}</div>
-
           </div>
         </div>
         <div className="chat-window">
@@ -149,7 +137,6 @@ const ChatWindow = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };

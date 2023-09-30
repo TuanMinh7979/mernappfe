@@ -4,12 +4,7 @@ import { createSearchParams } from "react-router-dom";
 import { cloneDeep, find, findIndex, remove } from "lodash";
 
 export class ChatUtils {
-
-
-  static joinConversation(
-    profile,
-    newConversationId
-  ) {
+  static joinConversation(profile, newConversationId) {
     console.log("---------------join", profile._id, newConversationId);
     socketService?.socket?.emit("join conversation", {
       userId: profile._id,
@@ -19,7 +14,7 @@ export class ChatUtils {
 
   static leaveOnChatPage(profile) {
     socketService?.socket?.emit("leave chat page", {
-      userId: profile._id
+      userId: profile._id,
     });
   }
 
@@ -38,36 +33,29 @@ export class ChatUtils {
   static buildMessageData({
     receiver,
     message,
-    searchParamsId,
-    conversationId,
+
     chatMessages,
-    isRead,
+
     gifUrl,
     selectedImage,
   }) {
-    const chatConversationId = chatMessages.find(
-      (chat) =>
-        chat.receiverId === searchParamsId || chat.senderId === searchParamsId
-    );
+    const currentConversationId =
+      chatMessages.length > 0 ? chatMessages[0].conversationId : "";
 
     const messageData = {
-      conversationId: chatConversationId
-        ? chatConversationId.conversationId
-        : conversationId,
+      conversationId: currentConversationId,
 
       receiverId: receiver?._id,
       receiverUsername: receiver?.username,
       receiverAvatarColor: receiver?.avatarColor,
       receiverProfilePicture: receiver?.profilePicture,
       body: message.trim(),
-      isRead,
+      isRead: false,
       gifUrl,
       selectedImage,
     };
     return messageData;
   }
-
-
 
   static socketIOConversations(
     profile,
@@ -87,15 +75,15 @@ export class ChatUtils {
 
         toShowConversationList = cloneDeep(toShowConversationList);
         if (messageIndex > -1) {
-
-          remove(toShowConversationList,
+          remove(
+            toShowConversationList,
             (el) => el.conversationId === data.conversationId
           );
           toShowConversationList = [data, ...toShowConversationList];
         } else {
-
           //   là conversation rỗng
-          remove(toShowConversationList,
+          remove(
+            toShowConversationList,
             (el) => el.receiverUsername === data.receiverUsername
           );
 
@@ -106,13 +94,12 @@ export class ChatUtils {
     });
   }
 
-
-  static socketIOMessageReceived(chatMessages,
+  static socketIOMessageReceived(
+    chatMessages,
     targetUserName,
     setChatMessages
   ) {
     socketService?.socket?.on("message received", (data) => {
-
       if (
         data.senderUsername.toLowerCase() === targetUserName ||
         data.receiverUsername.toLowerCase() === targetUserName
@@ -123,23 +110,16 @@ export class ChatUtils {
     });
 
     socketService?.socket?.on("message read", (data) => {
-      console.log('MESSAGE READED ', data);
+      console.log("MESSAGE READED ", data);
       if (
-        data.senderUsername.toLowerCase() ===
-        targetUserName.toLowerCase() ||
-        data.receiverUsername.toLowerCase() ===
-        targetUserName.toLowerCase()
+        data.senderUsername.toLowerCase() === targetUserName.toLowerCase() ||
+        data.receiverUsername.toLowerCase() === targetUserName.toLowerCase()
       ) {
-        const findMessageIndex = findIndex(chatMessages, [
-          "_id",
-          data._id,
-        ]);
+        const findMessageIndex = findIndex(chatMessages, ["_id", data._id]);
         if (findMessageIndex > -1) {
-
           chatMessages.splice(findMessageIndex, 1, data);
           // setChatMessages(chatMessages);
           setChatMessages([...chatMessages]);
-
         }
       }
 

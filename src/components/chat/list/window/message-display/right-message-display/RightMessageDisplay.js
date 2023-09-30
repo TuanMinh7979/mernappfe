@@ -30,6 +30,7 @@ const RightMessageDisplay = ({
   showImageModal,
 }) => {
 
+  console.log(chat);
   const [deletedByMe, setDeletedByMe] = useState(chat.deletedByUsers.length>0 && chat?.deletedByUsers.some(el => el == profile._id))
   useEffect(() => {
     setDeletedByMe(chat.deletedByUsers.length >0 && chat?.deletedByUsers.some(el => el == profile._id))

@@ -1,45 +1,44 @@
-import React from 'react'
-import "./Chat.scss"
-import { useSelector } from 'react-redux'
-import ChatSidebar from '@components/chat/list/ChatSidebar'
-import ChatWindow from '@components/chat/list/window/ChatWindow'
-import { useEffect } from 'react'
-import { ChatUtils } from '@services/utils/chat-utils.service.'
-import { getConversationList } from '@redux/api/chat'
-import { useDispatch } from 'react-redux'
+import React from "react";
+import "./Chat.scss";
+import { useSelector } from "react-redux";
+import ChatSidebar from "@components/chat/list/ChatSidebar";
+import ChatWindow from "@components/chat/list/window/ChatWindow";
+import { useEffect } from "react";
+import { ChatUtils } from "@services/utils/chat-utils.service.";
+import { getConversationList } from "@redux/api/chat";
+import { useDispatch } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 const Chat = () => {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-    const reduxChat = useSelector(state => state.chat)
+  const reduxChat = useSelector((state) => state.chat);
 
-    useEffect(() => {
+  useEffect(() => {
+    dispatch(getConversationList());
+  }, []);
 
-        dispatch(getConversationList());
+  const [searchParams] = useSearchParams();
 
-    
-    }, [])
-
-
-
-
-
-    return (
-        <div className="private-chat-wrapper">
-            <div className="private-chat-wrapper-content">
-                <div className="private-chat-wrapper-content-side" style={{ border: "1px solid blue" }}>
-                    <ChatSidebar />
-                </div>
-                <div className="private-chat-wrapper-content-conversation">
-                    {reduxChat.selectedChatUser && <ChatWindow />}
-                    {!reduxChat.selectedChatUser && !reduxChat.conversationList.length && (
-                        <div className="no-chat" data-testid="no-chat">
-                            Select or Search for users to chat with
-                        </div>
-                    )}
-                </div>
-            </div>
+  return (
+    <div className="private-chat-wrapper">
+      <div className="private-chat-wrapper-content">
+        <div
+          className="private-chat-wrapper-content-side"
+          style={{ border: "1px solid blue" }}
+        >
+          <ChatSidebar />
         </div>
-    )
-}
+        <div className="private-chat-wrapper-content-conversation">
+          {searchParams.get("username") && <ChatWindow />}
+          {!reduxChat.conversationList.length && (
+            <div className="no-chat" data-testid="no-chat">
+              Select or Search for users to chat with
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default Chat
+export default Chat;

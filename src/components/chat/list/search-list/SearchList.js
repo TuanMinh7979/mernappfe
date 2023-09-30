@@ -1,16 +1,10 @@
-import PropTypes from 'prop-types';
-import './SearchList.scss';
-import Avatar from '@components/avatar/Avatar';
-import { useLocation, useNavigate, createSearchParams } from 'react-router-dom';
-import { ChatUtils } from '@services/utils/chat-utils.service.';
+import PropTypes from "prop-types";
+import "./SearchList.scss";
+import Avatar from "@components/avatar/Avatar";
 
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 const SearchList = ({
-
   userSearchText,
   setUserSearchText,
-
 
   userSearchResult,
   setUserSearchResult,
@@ -18,36 +12,20 @@ const SearchList = ({
   isSearching,
   setIsSearching,
 
+  // setSelectedUser,
 
-  setSelectedUser,
-  setComponentType
+  addNewItemToConversationList,
 }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { profile } = useSelector((state) => state.user);
- 
-
   const onSearchedUserClick = (user) => {
-    setComponentType('searchList');
-    setSelectedUser(user);
-    const url = `${location.pathname}?${createSearchParams({ username: user.username.toLowerCase(), id: user._id })}`;
+    addNewItemToConversationList(user);
 
-    ChatUtils.joinConversation(
-      profile,
-      ""
-    );
-
-
-    navigate(url);
-    setUserSearchText('');
+    setUserSearchText("");
     setIsSearching(false);
     setUserSearchResult([]);
   };
 
-
   return (
     <div className="search-result">
-
       <div className="search-result-container">
         {!isSearching && userSearchResult.length > 0 && (
           <>
@@ -73,15 +51,23 @@ const SearchList = ({
         )}
 
         {userSearchText && isSearching && (
-          <div className="search-result-container-empty" data-testid="searching-text">
+          <div
+            className="search-result-container-empty"
+            data-testid="searching-text"
+          >
             <span>Searching...</span>
           </div>
         )}
 
         {userSearchText && !isSearching && userSearchResult.length === 0 && (
-          <div className="search-result-container-empty" data-testid="nothing-found">
+          <div
+            className="search-result-container-empty"
+            data-testid="nothing-found"
+          >
             <span>Nothing found</span>
-            <p className="search-result-container-empty-msg">We could not find any match for {userSearchText}</p>
+            <p className="search-result-container-empty-msg">
+              We could not find any match for {userSearchText}
+            </p>
           </div>
         )}
       </div>
@@ -97,7 +83,7 @@ SearchList.propTypes = {
   setUserSearchText: PropTypes.func,
   setIsSearching: PropTypes.func,
   setUserSearchResult: PropTypes.func,
-  setComponentType: PropTypes.func
+  setComponentType: PropTypes.func,
 };
 
 export default SearchList;
