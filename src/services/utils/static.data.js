@@ -63,20 +63,15 @@ export const sideBarItems = [
     url: '/app/social/photos',
     iconName: 'FaImages'
   },
+
   {
     index: 7,
-    name: 'Videos',
-    url: '/app/social/videos',
-    iconName: 'FaVideo'
-  },
-  {
-    index: 8,
     name: 'Notifications',
     url: '/app/social/notifications',
     iconName: 'FaRegBell'
   },
   {
-    index: 9,
+    index: 8,
     name: 'Profile',
     url: '/app/social/profile',
     iconName: 'FaRegUser'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import "./Follower.scss"
+import "../people/People.scss"
 import { Utils } from '@services/utils/utils.service'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
@@ -90,7 +90,7 @@ const Follower = () => {
     <div className="card-container" >
       <div className="followers">People</div>
       {followers.length > 0 && (
-        <div className="card-element">
+        <div className="card-element scroll-3">
           {followers.map((data) => (
             <div className="card-element-item" key={data?._id} data-testid="card-element-item">
 

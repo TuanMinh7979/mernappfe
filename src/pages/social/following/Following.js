@@ -1,4 +1,4 @@
-import '@pages/social/following/Following.scss';
+import "../people/People.scss"
 
 import Avatar from '@components/avatar/Avatar';
 import CardElementButtons from '@components/card-element/CardElementButton';
@@ -60,7 +60,7 @@ const Following = () => {
     <div className="card-container">
       <div className="people">Following</div>
       {following.length > 0 && (
-        <div className="card-element">
+        <div className="card-element scroll-3">
           {following.map((data) => (
             <div className="card-element-item" key={Utils.generateString(10)} data-testid="card-element-item">
               <div className="card-element-header">

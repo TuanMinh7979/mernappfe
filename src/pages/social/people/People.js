@@ -31,7 +31,7 @@ const People = () => {
 
   const [users, setUsers] = useState([]);
   const [totalUserCnt, setTotalUserCnt] = useState(0);
-  const [onlineUsers, setOnlineUsers] = useState([]);
+
 
 
   const [myIdols, setMyIdols] = useState([]);
@@ -78,7 +78,7 @@ const People = () => {
 
   useEffectOnce(() => {
     getAllUsers();
-    ChatUtils.usersOnline(setOnlineUsers)
+
 
   });
 
@@ -115,14 +115,10 @@ const People = () => {
     <div className="card-container" ref={bodyRef}>
       <div className="people">People</div>
       {users.length > 0 && (
-        <div className="card-element">
+        <div className="card-element scroll-3">
           {users.map((data) => (
             <div className="card-element-item" key={data?._id} data-testid="card-element-item">
-              {Utils.checkIfUserIsOnline(data?.username, onlineUsers) && (
-                <div className="card-element-item-indicator">
-                  <FaCircle className="online-indicator" />
-                </div>
-              )}
+         
               <div className="card-element-header">
                 <div className="card-element-header-bg"></div>
                 <Avatar
