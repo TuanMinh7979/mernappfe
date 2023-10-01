@@ -43,7 +43,7 @@ export class FollowersUtils {
         let newUser = { ...users[idolIndex] }
         newUser.followersCount = newIdolData.followersCount;
         newUser.followingCount = newIdolData.followingCount;
-        newUser.postsCount = newIdolData.postsCount;
+
         let newUsers = [...users]
         newUsers.splice(idolIndex, 1, newUser);
         setUsers([...newUsers])

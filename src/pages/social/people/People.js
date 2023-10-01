@@ -64,7 +64,7 @@ const People = () => {
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
   useInfiniteScroll(bodyRef, bottomLineRef, fetchData);
-  const PAGE_SIZE = 12;
+  const PAGE_SIZE = 8;
 
   function fetchData() {
     let pageNum = currentPage;
@@ -82,10 +82,10 @@ const People = () => {
 
   });
 
-  // ? END new user data when scroll 
+  //  END new user data when scroll 
 
 
-  // ? follow and unfollow
+  //  follow and unfollow
   const followUser = async (user) => {
     try {
       FollowersUtils.followUser(user, dispatch);
@@ -104,7 +104,7 @@ const People = () => {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
-  // ? END follow and unfollow
+  //  END follow and unfollow
 
 
   useEffect(() => {

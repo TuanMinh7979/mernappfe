@@ -1,6 +1,6 @@
 import Avatar from '@components/avatar/Avatar';
 import Button from '@components/button/Button';
-import './Follower.scss';
+import './FollowCard.scss';
 import { FaUserPlus } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';

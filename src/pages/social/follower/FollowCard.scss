@@ -1,0 +1,79 @@
+
+  .follower-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 352px);
+    gap: 20px;
+    max-width: 1152px;
+    margin: auto;
+    margin-bottom: 100px;
+    overflow: scroll;
+    background-color: var(--white-1);
+    padding: 24px;
+    border-radius: 16px;
+  
+    &-elements {
+      background-color: var(--white-1);
+      padding: 24px;
+      border-radius: 16px;
+      align-content: center;
+      box-shadow: rgb(145 158 171 / 20%) 0 0 2px 0, rgb(145 158 171 / 12%) 0 12px 24px -4px;
+  
+      &-content {
+        display: grid;
+        grid-template-areas: "avatar user button";
+        grid-template-rows: 1fr;
+        grid-template-columns: max-content 1fr 100px;
+  
+        .card-avatar {
+          grid-area: avatar;
+        }
+  
+        .card-user {
+          grid-area: user;
+          margin: auto;
+          text-align: left;
+          width: 100%;
+          padding-left: 15px;
+  
+          .name {
+            font-weight: 600;
+          }
+  
+          .count {
+            color: #637381;
+            font-size: 14px;
+  
+            span,
+            .heart {
+              vertical-align: middle;
+            }
+          }
+        }
+  
+        .card-following-button {
+          grid-area: button;
+          margin: auto;
+          text-align: center;
+  
+          .following-button {
+            background-color: var(--primary-1);
+            border: 1px solid var(--primary-1);
+            color: var(--white-1);
+            padding: 9px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+  
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+  
+          .isUserFollowed {
+            background-color: var(--red-3);
+            border: 1px solid var(--red-3);
+          }
+        }
+      }
+    }
+  }

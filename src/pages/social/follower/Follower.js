@@ -4,16 +4,12 @@ import { Utils } from '@services/utils/utils.service'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { useRef } from 'react'
-import useInfiniteScroll from '@hooks/useInfiniteScroll'
-import { FaCircle } from 'react-icons/fa'
+
 import Avatar from '@components/avatar/Avatar'
 import CardElementButtons from '@components/card-element/CardElementButton'
 import CardElementStats from '@components/card-element/CardElementStats'
 import { useCallback } from 'react'
-import { uniqBy } from "lodash"
-import { userService } from '@services/api/user/user.service'
-import useEffectOnce from '@hooks/useEffectOnce'
+
 import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
@@ -27,7 +23,7 @@ const Follower = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ? init follower
+  //  init follower
 
   const getMyFans = useCallback(async () => {
     try {
@@ -42,8 +38,8 @@ const Follower = () => {
     }
   }, [profile, dispatch]);
 
-  // ? END init followers
-  // ? new user data when scroll 
+  //  END init followers
+  //  new user data when scroll 
 
 
   useEffect(() => {
@@ -56,10 +52,10 @@ const Follower = () => {
 
   }, [dispatch, profile, token]);
 
-  // ? END new user data when scroll 
+  //  END new user data when scroll 
 
 
-  // ? block and unblock
+  //  block and unblock
   const blockUser = async (user) => {
     try {
       // hdl in sockets/user.ts
@@ -77,7 +73,6 @@ const Follower = () => {
   const unBlockUser = async (user) => {
     try {
       socketService?.socket?.emit('unblock user', {
-
         blockedUser: user._id, blockedBy: profile._id
       })
       FollowersUtils.unblockUser(user, dispatch)
@@ -85,7 +80,7 @@ const Follower = () => {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
-  // ? END block and unBlock
+  //  END block and unBlock
   return (
     <div className="card-container" >
       <div className="followers">People</div>
