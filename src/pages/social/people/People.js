@@ -18,7 +18,7 @@ import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
 import { useEffect } from 'react'
-import { ChatUtils } from '@services/utils/chat-utils.service.'
+
 const People = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -83,8 +83,6 @@ const People = () => {
   });
 
   //  END new user data when scroll 
-
-
   //  follow and unfollow
   const followUser = async (user) => {
     try {
@@ -95,10 +93,8 @@ const People = () => {
   };
 
   const unFollowUser = async (idol) => {
+
     try {
-      const userData = {...idol};
-      userData.followersCount -= 1;
-      socketService?.socket?.emit('unfollow user', userData);
       FollowersUtils.unFollowUser(idol, profile, dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
@@ -108,9 +104,10 @@ const People = () => {
 
 
   useEffect(() => {
+    // users is list use now, myidols is user is folled by logged user 
     FollowersUtils.socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers)
   }, [myIdols, users])
-
+  console.log(users);
   return (
     <div className="card-container" ref={bodyRef}>
       <div className="people">People</div>
@@ -118,7 +115,7 @@ const People = () => {
         <div className="card-element scroll-3">
           {users.map((data) => (
             <div className="card-element-item" key={data?._id} data-testid="card-element-item">
-         
+
               <div className="card-element-header">
                 <div className="card-element-header-bg"></div>
                 <Avatar

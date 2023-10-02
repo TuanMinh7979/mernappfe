@@ -11,8 +11,8 @@ export class FollowersUtils {
     Utils.updToastsNewEle(response.data.message, 'success', dispatch);
   }
 
-  static async unFollowUser(user, profile, dispatch) {
-    const response = await followerService.unFollowUser(user?._id, profile?._id);
+  static async unFollowUser(idol, profile, dispatch) {
+    const response = await followerService.unFollowUser(idol?._id, profile?._id);
     Utils.updToastsNewEle(response.data.message, 'success', dispatch);
   }
 
@@ -28,15 +28,13 @@ export class FollowersUtils {
   }
 
 
-  // use in People page, user is user state list in page
+  //  use in People page
   static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
-
-    // in follow-user
-    socketService?.socket?.on('add follow', (newIdolData) => {
-    
+    // when follow some one and then will be received from server socket "added follow"
+    socketService?.socket?.on('added follow', (newIdolData) => {
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
       if (idolIndex != -1) {
-        
+
         // update idol state
         setMyIdols([...myIdols, newIdolData]);
         // update users state
@@ -50,9 +48,9 @@ export class FollowersUtils {
 
       }
     });
+// when remove follow some one and then will be received from server socket "added follow"
+    socketService?.socket?.on('removed follow', (newIdolData) => {
 
-    socketService?.socket?.on('remove follow', (newIdolData) => {
-     
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
       if (idolIndex) {
         // update idol state
@@ -89,7 +87,7 @@ export class FollowersUtils {
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
     socketService?.socket?.on('blocked user id', (data) => {
-      
+
 
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);

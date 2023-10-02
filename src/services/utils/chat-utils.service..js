@@ -1,11 +1,10 @@
-import { chatService } from "@services/api/chat/chat.service";
 import { socketService } from "@services/socket/socket.service";
-import { createSearchParams } from "react-router-dom";
-import { cloneDeep, find, findIndex, remove } from "lodash";
+
+
 
 export class ChatUtils {
   static joinConversation(profile, newConversationId) {
-    console.log("---------------join", profile._id, newConversationId);
+    console.log("join", profile._id, newConversationId);
     socketService?.socket?.emit("join conversation", {
       userId: profile._id,
       newConversationId,
@@ -73,23 +72,24 @@ export class ChatUtils {
           (el) => el.conversationId == data.conversationId
         );
 
-        toShowConversationList = cloneDeep(toShowConversationList);
+        let newtoShowConversationList = [...toShowConversationList];
         if (messageIndex > -1) {
-          remove(
-            toShowConversationList,
-            (el) => el.conversationId === data.conversationId
-          );
-          toShowConversationList = [data, ...toShowConversationList];
+          // remove old conversation message
+          newtoShowConversationList = newtoShowConversationList.filter(
+            (el) => el.conversationId !== data.conversationId)
+
+          // add new conversation message to top
+          newtoShowConversationList = [data, ...newtoShowConversationList];
         } else {
           //   là conversation rỗng
-          remove(
-            toShowConversationList,
-            (el) => el.receiverUsername === data.receiverUsername
-          );
 
-          toShowConversationList = [data, ...toShowConversationList];
+          newtoShowConversationList = newtoShowConversationList.filter(
+            (el) => el.receiverUsername === data.receiverUsername)
+
+
+          newtoShowConversationList = [data, ...newtoShowConversationList];
         }
-        setToShowConversationList(toShowConversationList);
+        setToShowConversationList([...newtoShowConversationList]);
       }
     });
   }
@@ -115,14 +115,12 @@ export class ChatUtils {
         data.senderUsername.toLowerCase() === targetUserName.toLowerCase() ||
         data.receiverUsername.toLowerCase() === targetUserName.toLowerCase()
       ) {
-        const findMessageIndex = findIndex(chatMessages, ["_id", data._id]);
+        const findMessageIndex = chatMessages.findIndex(el => el._id === data._id);
         if (findMessageIndex > -1) {
           chatMessages.splice(findMessageIndex, 1, data);
-          // setChatMessages(chatMessages);
           setChatMessages([...chatMessages]);
         }
       }
-
       console.log("-----------------done message readed");
     });
   }
@@ -130,7 +128,6 @@ export class ChatUtils {
   static socketIOMessageReaction(
     chatMessages,
     username,
-
     setChatMessages
   ) {
     socketService?.socket?.on("message reaction", (data) => {
@@ -138,15 +135,15 @@ export class ChatUtils {
         data.senderUsername.toLowerCase() === username ||
         data.receiverUsername.toLowerCase() === username
       ) {
-        chatMessages = cloneDeep(chatMessages);
+        let newChatMessages = [...chatMessages];
 
-        const messageIndex = findIndex(
-          chatMessages,
-          (message) => message?._id === data._id
-        );
+        const messageIndex =
+          newChatMessages.findIndex(
+            (message) => message?._id === data._id
+          );
         if (messageIndex > -1) {
-          chatMessages.splice(messageIndex, 1, data);
-          setChatMessages(chatMessages);
+          newChatMessages.splice(messageIndex, 1, data);
+          setChatMessages([...newChatMessages]);
         }
       }
     });
