@@ -117,11 +117,12 @@ const ChatSidebar = () => {
       senderProfilePicture: profile?.profilePicture,
       body: "",
     };
-    const findUser = conversationList.find(
+    let newConversationList = [...conversationList]
+    const findUser = newConversationList.find(
       (chat) => chat.receiverId === user._id || chat.senderId === user._id
     );
     if (!findUser) {
-      const newConversationList = [newUser, ...conversationList];
+      newConversationList = [newUser, ...newConversationList];
       callUpdateConversationListAction([...newConversationList]);
     }
 
@@ -137,7 +138,7 @@ const ChatSidebar = () => {
   const removeInitConversation = (message) => {
     let tmp = [...conversationList];
     tmp = tmp.filter((el) => el.receiverUsername !== message.receiverUsername);
-    updateConversationList([...tmp]);
+    callUpdateConversationListAction([...tmp]);
     ChatUtils.joinConversation(profile, "");
 
     return navigate("/app/social/chat/messages");

@@ -85,14 +85,14 @@ export class ChatUtils {
           //   là conversation rỗng
 
           newtoShowConversationList = newtoShowConversationList.filter(
-            (el) => el.receiverUsername === data.receiverUsername)
+            (el) => el.receiverUsername !== data.receiverUsername)
 
 
           newtoShowConversationList = [data, ...newtoShowConversationList];
         }
         setToShowConversationList([...newtoShowConversationList]);
 
-        if (!data.isRead) {
+        if (!data.isRead && data.receiverUsername === profile.username) {
           Utils.updToastsNewEle('You have a new message', 'success', dispatch);
         }
 

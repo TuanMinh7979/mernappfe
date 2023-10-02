@@ -115,16 +115,8 @@ const Header = () => {
 
   }
 
+
   useEffect(() => {
-
-    NotificationUtils.socketIONotification(
-      profile,
-      notifications,
-      setNotifications,
-      "header",
-      setNotificationCount
-    )
-
 
     ChatUtils.socketIOConversations(
       profile,
@@ -132,18 +124,27 @@ const Header = () => {
       callUpdateConversationListAction,
       dispatch
     );
-
-
-
+    return (() => {
+      socketService.socket.off("chat list");
+    })
+  }, [conversationList])
+  useEffect(() => {
+    NotificationUtils.socketIONotification(
+      profile,
+      notifications,
+      setNotifications,
+      "header",
+      setNotificationCount
+    )
     return (() => {
       socketService.socket.off("inserted notification");
       socketService.socket.off("updated notification");
       socketService.socket.off("deleted notification");
-      socketService.socket.off("chat list");
+
     })
 
 
-  }, [notifications, conversationList, profile])
+  }, [notifications, profile])
 
   const openChatPage = async (notification) => {
     try {
