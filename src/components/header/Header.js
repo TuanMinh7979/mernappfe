@@ -18,7 +18,7 @@ import { sumBy } from "lodash";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 import NotiDropdown from "@components/dropdown/NotiDropdown";
 
-import useLocalStorage from "@hooks/useLocalStorage";
+
 import useSessionStorage from "@hooks/useSessionStorage";
 import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
@@ -107,6 +107,8 @@ const Header = () => {
 
 
   useEffect(() => {
+
+    console.log("----------------------yessssssssssssssssssssss");
     NotificationUtils.socketIONotification(
       profile,
       notifications,
@@ -125,9 +127,10 @@ const Header = () => {
     );
 
     return (() => {
-      socketService.socket.off("inserted notification");
-      socketService.socket.off("updated notification");
-      socketService.socket.off("deleted notification");
+      // socketService.socket.off("inserted notification");
+      // socketService.socket.off("updated notification");
+      // socketService.socket.off("deleted notification");
+      // socketService.socket.off("chat list");
     })
 
 

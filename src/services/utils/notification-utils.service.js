@@ -1,9 +1,9 @@
 
-import { notificationService } from "@services/api/notification/notification.service";
+
 import { socketService } from "@services/socket/socket.service";
 import { Utils } from "@services/utils/utils.service";
 import { timeAgo } from "./time.ago.utils";
-import { cloneDeep, find, findIndex, remove, sumBy } from 'lodash';
+
 export default class NotificationUtils {
   // use for message noti in navbar
   static socketIONotification(
@@ -16,7 +16,6 @@ export default class NotificationUtils {
 
     socketService?.socket?.on("inserted notification", (allNotificationsToLoggedUser, userToData) => {
 
-      console.log("------------------------");
       // allNotificationsToLoggedUser(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
         // if is notification to logged user
@@ -144,8 +143,9 @@ export default class NotificationUtils {
     location
   ) {
     socketService?.socket?.on('chat list', (data) => {
-      messageNotifications = cloneDeep(messageNotifications);
+      let newMessageNotifications = [...messageNotifications];
       if (data?.receiverUsername === profile?.username) {
+        // if logged user is receiver
         const notificationData = {
           senderId: data.senderId,
           senderUsername: data.senderUsername,
@@ -160,24 +160,32 @@ export default class NotificationUtils {
           body: data.body,
           isRead: data.isRead
         };
-        const messageIndex = findIndex(
-          messageNotifications,
-          (notification) => notification.conversationId === data.conversationId
-        );
+        const messageIndex =
+          newMessageNotifications.findIndex(
+            (notification) => notification.conversationId === data.conversationId
+          );
         if (messageIndex > -1) {
-          remove(messageNotifications, (notification) => notification.conversationId === data.conversationId);
-          messageNotifications = [notificationData, ...messageNotifications];
+          newMessageNotifications = newMessageNotifications.filter((notification) => notification.conversationId !== data.conversationId);
+          newMessageNotifications = [notificationData, ...newMessageNotifications];
         } else {
-          messageNotifications = [notificationData, ...messageNotifications];
+          newMessageNotifications = [notificationData, ...newMessageNotifications];
         }
-        const count = sumBy(messageNotifications, (notification) => {
-          return !notification.isRead ? 1 : 0;
-        });
-        if (!Utils.checkUrl(location.pathname, 'chat')) {
+
+
+
+        const count = newMessageNotifications.reduce((sum, item) => {
+          if (item.isRead === false) {
+            return sum + 1;
+          } else {
+            return sum;
+          }
+        }, 0);
+
+        if (location.pathname.includes('chat')) {
           Utils.updToastsNewEle('You have a new message', 'success', dispatch);
         }
         setMessageCount(count);
-        setMessageNotifications(messageNotifications);
+        setMessageNotifications([...newMessageNotifications]);
       }
     });
   }
