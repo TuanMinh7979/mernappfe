@@ -31,7 +31,7 @@ import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
 const Header = () => {
-  const [environment, setEnvironment] = useState("");
+
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
@@ -54,17 +54,13 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const location = useLocation();
-  const backgroundColor = `${environment === "DEV" || environment === "LOCAL"
-    ? "#50b5ff"
-    : environment === "STG"
-      ? "#e9710f"
-      : ""
-    }`;
-
-  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const navigate = useNavigate()
-  const storedUsername = useLocalStorage("username", "get")
+
+
+
+  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
+
+
   const initNotifications = async () => {
     try {
       const rs = await notificationService.getUserNotifications()
@@ -80,9 +76,10 @@ const Header = () => {
   }
   const onMarkAsRead = async (notification) => {
     try {
-      NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
+      // to show dialog
+      NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
+      await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
-
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
@@ -99,9 +96,15 @@ const Header = () => {
 
   const [settings, setSettings] = useState('')
   useEffectOnce(() => {
-    Utils.mapSettingsDropdownItems(setSettings);
+    setSettings([{
+      topText: "Profile",
+      subText: "View personal profile.",
+    }])
     initNotifications()
   });
+
+
+
 
   useEffect(() => {
     NotificationUtils.socketIONotification(
@@ -114,12 +117,18 @@ const Header = () => {
 
     NotificationUtils.socketIOMessageNotification(
       profile,
-      messageNotifications,
-      setMessageNotifications,
+      chatMessageNotifications,
+      setChatMessageNotifications,
       setMessageCount,
       dispatch,
       location
     );
+
+    return (() => {
+      socketService.socket.off("inserted notification");
+      socketService.socket.off("updated notification");
+      socketService.socket.off("deleted notification");
+    })
 
 
   }, [notifications, profile])
@@ -151,7 +160,7 @@ const Header = () => {
 
   const onLogout = async () => {
     try {
-      setLoggedIn(false);
+
       Utils.clearStore({ dispatch, deleteSessionPageReload });
       await userService.logoutUser();
       navigate('/');
@@ -164,7 +173,7 @@ const Header = () => {
 
   //  ? FOR MESSAGES SIDEBAR
 
-  const [messageNotifications, setMessageNotifications] = useState([]);
+  const [chatMessageNotifications, setChatMessageNotifications] = useState([]);
   const { conversationList } = useSelector((state) => state.chat);
   //  ? END FOR MESSAGES SIDEBAR
   useEffect(() => {
@@ -173,7 +182,7 @@ const Header = () => {
       return !notification.isRead && notification.receiverUsername === profile?.username ? 1 : 0;
     });
     setMessageCount(count);
-    setMessageNotifications(conversationList);
+    setChatMessageNotifications(conversationList);
   }, [conversationList, profile]);
 
   useEffect(() => {
@@ -193,7 +202,7 @@ const Header = () => {
                 <MessageSidebar
                   profile={profile}
                   messageCount={messageCount}
-                  messageNotifications={messageNotifications}
+                  messageNotifications={chatMessageNotifications}
                   openChatPage={openChatPage}
                 />
               </div>
@@ -237,14 +246,7 @@ const Header = () => {
               <img src={logo} className="img-fluid" alt="" />
               <div className="app-name">
                 Myapp
-                {environment && (
-                  <span
-                    className="environment"
-                    style={{ backgroundColor: `${backgroundColor}` }}
-                  >
-                    {environment}
-                  </span>
-                )}
+
               </div>
             </div>
             <div className="header-menu-toggle">

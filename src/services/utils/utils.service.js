@@ -63,16 +63,7 @@ export class Utils {
   static remToasts(dispatch) {
     dispatch(removeToasts());
   }
-  static mapSettingsDropdownItems(setSettings) {
-    const items = [];
-    const item = {
-      topText: "My Profile",
-      subText: "View personal profile.",
-    };
-    items.push(item);
-    setSettings(items);
-    return items;
-  }
+
 
   static generateString(length) {
     const characters =

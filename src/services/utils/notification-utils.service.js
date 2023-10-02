@@ -5,6 +5,7 @@ import { Utils } from "@services/utils/utils.service";
 import { timeAgo } from "./time.ago.utils";
 import { cloneDeep, find, findIndex, remove, sumBy } from 'lodash';
 export default class NotificationUtils {
+  // use for message noti in navbar
   static socketIONotification(
     profile,
     notifications,
@@ -13,23 +14,26 @@ export default class NotificationUtils {
     setNotificationsCount
   ) {
 
-    socketService?.socket?.on("insert notification", (data, userToData) => {
-   
-      // data(is list of current user's notification) and userToData from server
+    socketService?.socket?.on("inserted notification", (allNotificationsToLoggedUser, userToData) => {
+
+      console.log("------------------------");
+      // allNotificationsToLoggedUser(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
+        // if is notification to logged user
 
         if (type === "notificationPage") {
-      
-          setNotifications([...data]);
+          // is on Notification Page
+          setNotifications([...allNotificationsToLoggedUser]);
         } else {
-          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems([...data], setNotificationsCount)
-       
-          setNotifications(mappedNotifications);
+          //if type is header
+          const mappedNotifications = NotificationUtils.mapNotificationDropdownItems([...allNotificationsToLoggedUser], setNotificationsCount)
+
+          setNotifications([...mappedNotifications]);
         }
       }
     });
 
-    socketService?.socket?.on("update notification", (notificationId) => {
+    socketService?.socket?.on("updated notification", (notificationId) => {
       let newNotifications = [...notifications];
 
       const updatedIdx =
@@ -37,30 +41,32 @@ export default class NotificationUtils {
           (notification) => notification._id === notificationId)
 
       if (updatedIdx !== -1) {
+        // update deleted noti id in list 
         newNotifications[updatedIdx].read = true
         if (type === "notificationPage") {
-          setNotifications(newNotifications);
+          setNotifications([...newNotifications]);
         } else {
           const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(newNotifications, setNotificationsCount)
-          setNotifications(mappedNotifications);
+          setNotifications([...mappedNotifications]);
         }
       }
     });
 
-    socketService?.socket?.on("delete notification", (notificationId) => {
+    socketService?.socket?.on("deleted notification", (notificationId) => {
+      // remove deleted noti id in list 
       let newNotifications = [...notifications].filter(item => item._id !== notificationId)
       if (type === "notificationPage") {
-        setNotifications(newNotifications);
+        setNotifications([...newNotifications]);
       } else {
         const mappedNotifications = NotificationUtils.mapNotificationDropdownItems(newNotifications, setNotificationsCount)
-        setNotifications(mappedNotifications);
+        setNotifications([...mappedNotifications]);
       }
     });
   }
 
 
 
-  static async markMessageAsRead(messageId, notification, setNotificationDialogContent) {
+  static async markMessageAsRead(notification, setNotificationDialogContent) {
 
     if (notification.notificationType !== "follow") {
       const notiDialog = {
@@ -78,7 +84,7 @@ export default class NotificationUtils {
       }
       setNotificationDialogContent(notiDialog)
     }
-    await notificationService.markNotificationAsRead(messageId);
+
   }
 
 

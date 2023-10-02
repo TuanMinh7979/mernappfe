@@ -12,6 +12,7 @@ import useEffectOnce from "@hooks/useEffectOnce";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import NotificationUtils from "@services/utils/notification-utils.service";
 import NotificationPreview from "@components/dialog/NotificationPreview";
+import { socketService } from "@services/socket/socket.service";
 const Notification = () => {
   const { profile } = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
@@ -41,7 +42,9 @@ const Notification = () => {
 
   const markAsRead = async (notification) => {
     try {
-      NotificationUtils.markMessageAsRead(notification._id, notification, setNotificationDialogContent)
+      // to show dialog
+      NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
+      await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
 
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -62,8 +65,15 @@ const Notification = () => {
       profile,
       notifications,
       setNotifications,
-      "notificationPage"
+      "notificationPage",
+      undefined
     )
+
+    return (() => {
+      socketService.socket.off("inserted notification");
+      socketService.socket.off("updated notification");
+      socketService.socket.off("deleted notification");
+    })
     // if notichanges , call init socket data
   }, [notifications, profile])
 
