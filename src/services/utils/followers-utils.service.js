@@ -48,7 +48,7 @@ export class FollowersUtils {
 
       }
     });
-// when remove follow some one and then will be received from server socket "added follow"
+    // when remove follow some one and then will be received from server socket "added follow"
     socketService?.socket?.on('removed follow', (newIdolData) => {
 
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
@@ -71,9 +71,9 @@ export class FollowersUtils {
 
   //  use for following page
   static socketIORemoveFollowing(following, setFollowing) {
-    socketService?.socket?.on('remove follow', (data) => {
+    socketService?.socket?.on('removed follow', (data) => {
       const updatedFollowing = following.filter((user) => user._id !== data?._id);
-      setFollowing(updatedFollowing);
+      setFollowing([...updatedFollowing]);
     });
   }
 
@@ -82,17 +82,18 @@ export class FollowersUtils {
   // block and unblock
   // in socket/user.ts
   // update profile in redux
-  static socketIOBlockAndUnblock(profile, token, setBlockedUsers, dispatch) {
+  static socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch) {
 
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
     socketService?.socket?.on('blocked user id', (data) => {
-
-
+      // data:  blockedUser: toBlockUser._id, blockedBy: profile._id
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
       // update blockedUsers State in Follower Component
-      setBlockedUsers(newProfile?.blocked);
+      // update blocked list in state
+      setMyBlockedUsers(newProfile?.blocked);
+      // update profile in redux
       dispatch(updateLoggedUser({ token, profile: newProfile }));
     });
 
@@ -101,7 +102,7 @@ export class FollowersUtils {
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
-      setBlockedUsers(newProfile?.blocked);
+      setMyBlockedUsers(newProfile?.blocked);
       dispatch(updateLoggedUser({ token, profile: newProfile }));
     });
   }

@@ -31,8 +31,8 @@ class UserService {
   }
 
 
-  async getUserProfileAndPosts(username, userId, uId) {
-    const response = await axios.get(`/user/profile/posts/${username}/${userId}/${uId}`);
+  async getUserProfileAndPosts(username, userId) {
+    const response = await axios.get(`/user/profile/posts/${username}/${userId}`);
     return response;
   }
 

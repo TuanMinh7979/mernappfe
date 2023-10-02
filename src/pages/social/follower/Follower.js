@@ -56,15 +56,15 @@ const Follower = () => {
 
 
   //  block and unblock
-  const blockUser = async (user) => {
+  const blockUser = async (toBlockUser) => {
     try {
       // hdl in sockets/user.ts
       //   TODO: change to client=>service=>socket to clients
       socketService?.socket?.emit('block user', {
-        blockedUser: user._id, blockedBy: profile._id
+        blockedUser: toBlockUser._id, blockedBy: profile._id
       })
       //  service
-      FollowersUtils.blockUserInServer(user, dispatch)
+      FollowersUtils.blockUserInServer(toBlockUser, dispatch)
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }

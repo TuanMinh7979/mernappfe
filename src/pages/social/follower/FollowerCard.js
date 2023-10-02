@@ -36,8 +36,7 @@ const FollowerCard = ({ userData }) => {
     try {
       const response = await userService.getUserProfileAndPosts(
         username,
-        searchParams.get('id'),
-        searchParams.get('uId')
+        searchParams.get('id')
       );
       setUser(response.data.user);
     } catch (error) {

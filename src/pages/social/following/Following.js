@@ -41,8 +41,6 @@ const Following = () => {
 
   const unFollowUser = async (user) => {
     try {
-      console.log("------->>>>>>>>>>>>>>>>>>>>>>>>", user);
-      socketService?.socket?.emit('unfollow user', user);
       FollowersUtils.unFollowUser(user, profile, dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
