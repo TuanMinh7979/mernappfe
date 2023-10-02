@@ -30,6 +30,10 @@ import { notificationService } from "@services/api/notification/notification.ser
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
+
+import { createSearchParams } from "react-router-dom";
+import { chatService } from "@services/api/chat/chat.service";
+import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 const Header = () => {
 
   const { profile } = useSelector((state) => state.user);
@@ -59,7 +63,7 @@ const Header = () => {
 
 
   const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
-
+  const { conversationList } = useSelector((state) => state.chat);
 
   const initNotifications = async () => {
     try {
@@ -106,9 +110,13 @@ const Header = () => {
 
 
 
+  const callUpdateConversationListAction = (data) => {
+    dispatch(updateConversationList(data))
+
+  }
+
   useEffect(() => {
 
-    console.log("----------------------yessssssssssssssssssssss");
     NotificationUtils.socketIONotification(
       profile,
       notifications,
@@ -117,43 +125,49 @@ const Header = () => {
       setNotificationCount
     )
 
-    NotificationUtils.socketIOMessageNotification(
+
+    ChatUtils.socketIOConversations(
       profile,
-      chatMessageNotifications,
-      setChatMessageNotifications,
-      setMessageCount,
-      dispatch,
-      location
+      [...conversationList],
+      callUpdateConversationListAction,
+      dispatch
     );
 
+
+
     return (() => {
-      // socketService.socket.off("inserted notification");
-      // socketService.socket.off("updated notification");
-      // socketService.socket.off("deleted notification");
-      // socketService.socket.off("chat list");
+      socketService.socket.off("inserted notification");
+      socketService.socket.off("updated notification");
+      socketService.socket.off("deleted notification");
+      socketService.socket.off("chat list");
     })
 
 
-  }, [notifications, profile])
+  }, [notifications, conversationList, profile])
 
   const openChatPage = async (notification) => {
     try {
-      // const params = ChatUtils.makeDetailConversationUrlParam(notification, profile);
-      // ChatUtils.joinRoomEvent(notification, profile);
+      const params = ChatUtils.makeDetailConversationUrlParam(
+        notification,
+        profile
+      );
 
-      // const receiverId =
-      //   notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
-      // if (notification?.receiverUsername === profile?.username && !notification.isRead) {
-      //   await chatService.markMessagesAsRead(profile?._id, receiverId);
-      // }
-      // const userTwoName =
-      //   notification?.receiverUsername !== profile?.username
-      //     ? notification?.receiverUsername
-      //     : notification?.senderUsername;
-      // await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-      // navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
-      // setIsMessageActive(false);
-      // dispatch(getConversationList());
+      const receiverId =
+        notification?.receiverUsername !== profile?.username
+          ? notification?.receiverId
+          : notification?.senderId;
+
+      ChatUtils.joinConversation(profile, notification.conversationId);
+      navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
+
+      if (
+        notification?.receiverUsername === profile?.username &&
+        !notification.isRead
+      ) {
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
+      }
+
+
     } catch (error) {
       console.log(error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -177,16 +191,19 @@ const Header = () => {
   //  ? FOR MESSAGES SIDEBAR
 
   const [chatMessageNotifications, setChatMessageNotifications] = useState([]);
-  const { conversationList } = useSelector((state) => state.chat);
+
   //  ? END FOR MESSAGES SIDEBAR
+
+
+
   useEffect(() => {
 
-    const count = sumBy(conversationList, (notification) => {
-      return !notification.isRead && notification.receiverUsername === profile?.username ? 1 : 0;
-    });
-    setMessageCount(count);
-    setChatMessageNotifications(conversationList);
-  }, [conversationList, profile]);
+    let newMessageNotifications = [...conversationList];
+    newMessageNotifications = newMessageNotifications.filter(el => el.receiverUsername == profile.username && !el.isRead)
+    setMessageCount(newMessageNotifications.length);
+    setChatMessageNotifications([...newMessageNotifications]);
+
+  }, [conversationList, profile])
 
   useEffect(() => {
     console.log("----------JOIN private message room-----------");

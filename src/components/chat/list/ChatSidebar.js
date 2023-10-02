@@ -22,6 +22,7 @@ import { socketService } from "@services/socket/socket.service";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import PreviewChatMessage from "./PreviewChatMessage";
 import { createSearchParams } from "react-router-dom";
+import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 const ChatSidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -35,7 +36,7 @@ const ChatSidebar = () => {
   const [userSearchResult, setUserSearchResult] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   //  END for SearchListComponent
-  let [toShowConversationList, setToShowConversationList] = useState([]);
+  // let [conversationList, setToShowConversationList] = useState([]);
 
   // ? init user list
 
@@ -60,9 +61,7 @@ const ChatSidebar = () => {
 
   //  END init user list
 
-  useEffect(() => {
-    setToShowConversationList([...conversationList]);
-  }, [conversationList]);
+
 
   useEffect(() => {
     if (userSearchText) {
@@ -72,17 +71,12 @@ const ChatSidebar = () => {
       };
     }
   }, [userSearchText]);
-  useEffect(() => {
-    ChatUtils.socketIOConversations(
-      profile,
 
-      [...toShowConversationList],
-      setToShowConversationList
-    );
-    return () => {
-      socketService.socket.off("chat list");
-    };
-  }, [toShowConversationList]);
+  const callUpdateConversationListAction = (data) => {
+    dispatch(updateConversationList(data))
+
+  }
+
 
   const onConversationClick = async (newestMessageCvsData) => {
     try {
@@ -123,12 +117,12 @@ const ChatSidebar = () => {
       senderProfilePicture: profile?.profilePicture,
       body: "",
     };
-    const findUser = toShowConversationList.find(
+    const findUser = conversationList.find(
       (chat) => chat.receiverId === user._id || chat.senderId === user._id
     );
     if (!findUser) {
-      const newConversationList = [newUser, ...toShowConversationList];
-      setToShowConversationList([...newConversationList]);
+      const newConversationList = [newUser, ...conversationList];
+      callUpdateConversationListAction([...newConversationList]);
     }
 
     const url = `${location.pathname}?${createSearchParams({
@@ -141,9 +135,9 @@ const ChatSidebar = () => {
     navigate(url);
   };
   const removeInitConversation = (message) => {
-    let tmp = [...toShowConversationList];
+    let tmp = [...conversationList];
     tmp = tmp.filter((el) => el.receiverUsername !== message.receiverUsername);
-    setToShowConversationList([...tmp]);
+    updateConversationList([...tmp]);
     ChatUtils.joinConversation(profile, "");
 
     return navigate("/app/social/chat/messages");
@@ -205,7 +199,7 @@ const ChatSidebar = () => {
         >
           {!userSearchText && (
             <div className="conversation">
-              {toShowConversationList.map((data) => {
+              {conversationList.map((data) => {
                 let deletedByMe = data?.deletedByUsers?.some(
                   (el) => el == profile._id
                 );
@@ -213,14 +207,13 @@ const ChatSidebar = () => {
                   <div
                     key={Utils.generateString(10)}
                     data-testid="conversation-item"
-                    className={`conversation-item ${
+                    className={`conversation-item ${searchParams.get("username") ===
+                      data?.receiverUsername.toLowerCase() ||
                       searchParams.get("username") ===
-                        data?.receiverUsername.toLowerCase() ||
-                      searchParams.get("username") ===
-                        data?.senderUsername.toLowerCase()
-                        ? "active"
-                        : ""
-                    }`}
+                      data?.senderUsername.toLowerCase()
+                      ? "active"
+                      : ""
+                      }`}
                     onClick={() => {
                       onConversationClick(data);
                     }}
@@ -250,7 +243,7 @@ const ChatSidebar = () => {
                       className={`title-text ${
                         // selectedUser &&
                         !data.body ? "selected-user-text" : ""
-                      }`}
+                        }`}
                     >
                       {data.receiverUsername !== profile?.username
                         ? data.receiverUsername
@@ -303,7 +296,7 @@ const ChatSidebar = () => {
             setUserSearchResult={setUserSearchResult}
             isSearching={isSearching}
             setIsSearching={setIsSearching}
-            // setSelectedUser={setSelectedUser}
+
             addNewItemToConversationList={addNewItemToConversationList}
           />
         </div>

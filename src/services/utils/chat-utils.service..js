@@ -1,5 +1,5 @@
 import { socketService } from "@services/socket/socket.service";
-
+import { Utils } from "./utils.service";
 
 
 export class ChatUtils {
@@ -60,7 +60,8 @@ export class ChatUtils {
     profile,
 
     toShowConversationList,
-    setToShowConversationList
+    setToShowConversationList,
+    dispatch
   ) {
     socketService?.socket?.on("chat list", (data) => {
       console.log("DATA ON CHAT LIST", data);
@@ -90,6 +91,12 @@ export class ChatUtils {
           newtoShowConversationList = [data, ...newtoShowConversationList];
         }
         setToShowConversationList([...newtoShowConversationList]);
+
+        if (!data.isRead) {
+          Utils.updToastsNewEle('You have a new message', 'success', dispatch);
+        }
+
+
       }
     });
   }

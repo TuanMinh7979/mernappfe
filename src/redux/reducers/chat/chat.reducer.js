@@ -14,7 +14,13 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
 
-  
+    updateConversationList: (state, action) => {
+
+      state.conversationList = action.payload;
+
+    }
+
+
 
   },
   extraReducers: (builder) => {
@@ -34,5 +40,7 @@ const chatSlice = createSlice({
   },
 });
 
-
+export const {
+  updateConversationList
+} = chatSlice.actions;
 export default chatSlice.reducer;
