@@ -66,14 +66,13 @@ const Notification = () => {
       notifications,
       setNotifications,
       "notificationPage",
-
+      undefined
     )
 
-
     return (() => {
-      // socketService.socket.off("inserted notification");
-      // socketService.socket.off("updated notification");
-      // socketService.socket.off("deleted notification");
+      socketService.socket.off("inserted notification");
+      socketService.socket.off("updated notification");
+      socketService.socket.off("deleted notification");
     })
     // if notichanges , call init socket data
   }, [notifications, profile])
