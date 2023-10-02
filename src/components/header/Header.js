@@ -30,6 +30,9 @@ import { notificationService } from "@services/api/notification/notification.ser
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
+
+import { createSearchParams } from "react-router-dom";
+import { chatService } from "@services/api/chat/chat.service";
 const Header = () => {
 
   const { profile } = useSelector((state) => state.user);
@@ -138,22 +141,27 @@ const Header = () => {
 
   const openChatPage = async (notification) => {
     try {
-      // const params = ChatUtils.makeDetailConversationUrlParam(notification, profile);
-      // ChatUtils.joinRoomEvent(notification, profile);
+      const params = ChatUtils.makeDetailConversationUrlParam(
+        notification,
+        profile
+      );
 
-      // const receiverId =
-      //   notification?.receiverUsername !== profile?.username ? notification?.receiverId : notification?.senderId;
-      // if (notification?.receiverUsername === profile?.username && !notification.isRead) {
-      //   await chatService.markMessagesAsRead(profile?._id, receiverId);
-      // }
-      // const userTwoName =
-      //   notification?.receiverUsername !== profile?.username
-      //     ? notification?.receiverUsername
-      //     : notification?.senderUsername;
-      // await chatService.addChatUsers({ userOne: profile?.username, userTwo: userTwoName });
-      // navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
-      // setIsMessageActive(false);
-      // dispatch(getConversationList());
+      const receiverId =
+        notification?.receiverUsername !== profile?.username
+          ? notification?.receiverId
+          : notification?.senderId;
+
+      ChatUtils.joinConversation(profile, notification.conversationId);
+      navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
+
+      if (
+        notification?.receiverUsername === profile?.username &&
+        !notification.isRead
+      ) {
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
+      }
+
+
     } catch (error) {
       console.log(error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
