@@ -49,13 +49,11 @@ const MessageSidebar = ({ profile, messageCount, messageNotifications, openChatP
                   </div>
                   <div className="content-body">
                     <h6 className="title">
-                      {notification.receiverUsername !== profile?.username
-                        ? notification.receiverUsername
-                        : notification.senderUsername}
+                      {notification.receiverUsername}
                     </h6>
-                    <p className="subtext">{notification?.body ? notification?.body : notification?.message}</p>
+                    <p className="subtext">{!notification?.deleteForEveryone ? notification?.body : "message returned"}</p>
                   </div>
-                  <div className="content-icons">
+                  {/* <div className="content-icons">
                     {!notification?.isRead ? (
                       <>
                         {notification.receiverUsername === profile?.username ? (
@@ -71,7 +69,7 @@ const MessageSidebar = ({ profile, messageCount, messageNotifications, openChatP
                         )}
                       </>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
