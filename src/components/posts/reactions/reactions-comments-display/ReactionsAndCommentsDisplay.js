@@ -71,8 +71,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
   // ? end comment details
 
-  // console.log("PROPS", reactionsOfCurPost);
-  // console.log("after format raw object", reactionsProp);
+
 
 
 

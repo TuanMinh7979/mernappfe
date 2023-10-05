@@ -42,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
 
   useEffectOnce(() => {
     
-      console.log("---------------refresh login session user every time go to page ----------- ");
+
       checkUser();
     
   });

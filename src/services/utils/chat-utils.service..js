@@ -4,7 +4,7 @@ import { Utils } from "./utils.service";
 
 export class ChatUtils {
   static joinConversation(profile, newConversationId) {
-    console.log("join", profile._id, newConversationId);
+
     socketService?.socket?.emit("join conversation", {
       userId: profile._id,
       newConversationId,
@@ -64,7 +64,7 @@ export class ChatUtils {
     dispatch
   ) {
     socketService?.socket?.on("chat list", (data) => {
-      console.log("DATA ON CHAT LIST", data);
+
       if (
         data.senderUsername === profile?.username ||
         data.receiverUsername === profile?.username
@@ -117,7 +117,7 @@ export class ChatUtils {
     });
 
     socketService?.socket?.on("message read", (data) => {
-      console.log("MESSAGE READED ", data);
+
       if (
         data.senderUsername.toLowerCase() === targetUserName.toLowerCase() ||
         data.receiverUsername.toLowerCase() === targetUserName.toLowerCase()
@@ -128,7 +128,7 @@ export class ChatUtils {
           setChatMessages([...chatMessages]);
         }
       }
-      console.log("-----------------done message readed");
+
     });
   }
 

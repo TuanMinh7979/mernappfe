@@ -208,7 +208,7 @@ const Header = () => {
   }, [conversationList, profile])
 
   useEffect(() => {
-    console.log("----------JOIN private message room-----------");
+
     socketService?.socket?.emit("join room", profile);
   }, [])
 

@@ -21,7 +21,7 @@ import Dialog from '@components/dialog/Dialog';
 const Profile = () => {
 
   const { profile } = useSelector((state) => state.user);
-  console.log(">>>>>>>>>>", profile);
+
   const { isDeleteDialogOpen } = useSelector((state) => state.modal);
   const [user, setUser] = useState()
   const dispatch = useDispatch()
