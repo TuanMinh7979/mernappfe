@@ -47,8 +47,9 @@ const FollowerCard = ({ userData }) => {
 
   const blockUser = (userInfo) => {
     try {
-      socketService?.socket?.emit('block user', { blockedUser: userInfo._id, blockedBy: user?._id });
-      FollowersUtils.blockUser(userInfo, dispatch);
+      socketService?.socket?.emit('block user', { blockedUser: userInfo._id, 
+        blockedBy: user?._id });
+      FollowersUtils.blockUserInServer(userInfo, dispatch);
     } catch (error) {
       console.log(error);
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);

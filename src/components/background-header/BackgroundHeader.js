@@ -144,20 +144,11 @@ const BackgroundHeader = (
 
                 <div data-testid="profile-banner-image"
                     className="profile-banner-image"
-                    // style={{ background: `${!selectedBackgroundUrl ? user?.avatarColor : ''}` }}
+
                     style={{ background: user?.avatarColor }}
 
                 >
-                    {/* {fromDbBackgroundUrl && hideSettings &&
-                        <div className="delete-btn" data-testid="delete-btn">
-                            <Button label="Remove"
-                                className="remove"
-                                disabled={false}
-                                handleClick={() => {
-                                    removeBackgroundImage(user?.bgImageId)
-                                }} />
-                        </div>
-                    } */}
+
 
                     {
                         !selectedBackgroundUrl && !fromDbBackgroundUrl && <h3>No background image</h3>

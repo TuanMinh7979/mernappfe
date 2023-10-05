@@ -21,6 +21,7 @@ import Dialog from '@components/dialog/Dialog';
 const Profile = () => {
 
   const { profile } = useSelector((state) => state.user);
+  console.log(">>>>>>>>>>", profile);
   const { isDeleteDialogOpen } = useSelector((state) => state.modal);
   const [user, setUser] = useState()
   const dispatch = useDispatch()
@@ -78,6 +79,7 @@ const Profile = () => {
 
 
   const [displayContent, setDisplayContent] = useState('timeline')
+  const [toDeleteGalleryImage, setToDeleteGalleryImage] = useState(null)
 
 
   const changeTabContent = (data) => {
@@ -129,24 +131,9 @@ const Profile = () => {
     }
   };
 
-  const removeBackgroundImage = async (bgImageId) => {
-
-    try {
-
-      setFromDbBackgroundUrl('')
-      await removeImage(`/images/background/${bgImageId}`)
-    } catch (error) {
-      console.log(error)
-      setHasError(false)
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
 
 
-    }
-  }
-  const removeImage = async (url) => {
-    const response = await imageService.removeImage(url)
-    Utils.updToastsNewEle(response.data.message, 'success', dispatch)
-  }
+
   const cancelFileSelection = (type) => {
     setHasImage(!hasImage)
     setSelectedBackgroundImage('')
@@ -181,12 +168,17 @@ const Profile = () => {
 
       dispatch(updateModalIsDeleteDialogOpen(false))
       const images = galleryImages.filter(el => el._id !== id)
-      await removeImage(`/images/background/${id}`)
+      setGalleryImages(images);
+
+      const response = await imageService.removeImage(`/images/${id}`)
+      Utils.updToastsNewEle(response.data.message, 'success', dispatch)
     } catch (error) {
       console.log(error)
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
+
+
   return (
     <>
 
@@ -209,7 +201,14 @@ const Profile = () => {
             showButtons={true}
             firstButtonText='Remove'
             secondButtonText='Cancel'
-            firstBtnHandler={() => { }}
+            firstBtnHandler={() => {
+              if (toDeleteGalleryImage) {
+                console.log(toDeleteGalleryImage);
+
+                removeImageFromGallery(toDeleteGalleryImage._id)
+              }
+
+            }}
             secondBtnHandler={() => dispatch(updateModalIsDeleteDialogOpen(false))}
 
           />
@@ -235,7 +234,7 @@ const Profile = () => {
               onSelectFileImage={onSelectFileImage}
               onSaveImage={saveImage}
               cancelFileSelection={cancelFileSelection}
-              removeBackgroundImage={removeBackgroundImage}
+              removeBackgroundImage={() => { }}
               galleryImages={galleryImages}
 
             ></BackgroundHeader>
@@ -244,7 +243,7 @@ const Profile = () => {
 
           <div className="profile-content">
             {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
-            {displayContent === 'followers' && <FollowerCard useData={user}/>}
+            {displayContent === 'followers' && <FollowerCard useData={user} />}
             {displayContent === 'gallery' && <>
 
               {
@@ -258,8 +257,8 @@ const Profile = () => {
                         <div className="" key={el._id}>
                           <GalleryImage
                             post={el}
-                            showCaption={true}
-                            showDelete={true}
+                            showCaption={false}
+                            showDelete={username === profile?.username}
                             imgSrc={getShowingImageUrlFromPost(el)}
                             onClick={() => {
                               setCurImageUrl(getShowingImageUrlFromPost(el))
@@ -268,6 +267,7 @@ const Profile = () => {
 
                             onRemoveImage={(e) => {
                               e.stopPropagation()
+                              setToDeleteGalleryImage(el)
                               dispatch(updateModalIsDeleteDialogOpen(!isDeleteDialogOpen))
                             }}
                           >

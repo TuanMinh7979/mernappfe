@@ -1,7 +1,7 @@
-import doubleCheckmark from '@assets/images/double-checkmark.png';
+
 import Avatar from '@components/avatar/Avatar';
 import PropTypes from 'prop-types';
-import { FaCheck, FaCircle } from 'react-icons/fa';
+
 
 import '@components/message-sidebar/MessageSidebar.scss';
 import { Utils } from '@services/utils/utils.service';
