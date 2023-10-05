@@ -8,23 +8,23 @@ import { socketService } from '@services/socket/socket.service';
 export class FollowersUtils {
   static async followUser(user, dispatch) {
     const response = await followerService.followUser(user?._id);
-    Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+
   }
 
   static async unFollowUser(idol, profile, dispatch) {
     const response = await followerService.unFollowUser(idol?._id, profile?._id);
-    Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+
   }
 
 
   static async blockUserInServer(user, dispatch) {
     const response = await followerService.blockUser(user?._id);
-    Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+
   }
 
   static async unblockUser(user, dispatch) {
     const response = await followerService.unblockUser(user?._id);
-    Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+   
   }
 
 

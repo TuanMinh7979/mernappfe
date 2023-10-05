@@ -16,7 +16,7 @@ export default class NotificationUtils {
 
     socketService?.socket?.on("inserted notification", (allNotificationsToLoggedUser, userToData) => {
 
-      console.log("------------------------");
+
       // allNotificationsToLoggedUser(is list of current user's notification) and userToData from server
       if (profile?._id === userToData.userTo) {
         // if is notification to logged user

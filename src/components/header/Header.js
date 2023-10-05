@@ -141,7 +141,8 @@ const Header = () => {
       socketService.socket.off("updated notification");
       socketService.socket.off("deleted notification");
 
-    })
+    }
+    )
 
 
   }, [notifications, profile])
