@@ -165,7 +165,7 @@ const MessageDisplay = ({ chatMessages, profile }) => {
         {chatMessages.map((chat, index) => (
           <div
             key={Utils.generateString(10)}
-            style={{ border: "1px dashed black" }}
+          
             className="message-chat"
             data-testid="message-chat"
           >

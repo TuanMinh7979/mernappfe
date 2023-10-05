@@ -73,6 +73,7 @@ const ChatWindow = () => {
     return () => {
       socketService.socket.off("message received");
       socketService.socket.off("message read");
+      socketService.socket.off("message reaction");
     };
   }, [chatMessages]);
 
@@ -88,7 +89,7 @@ const ChatWindow = () => {
         chatMessages,
         gifUrl,
         selectedImage,
-   
+
       });
       const res = await chatService.saveChatMessage(messageData);
       if (

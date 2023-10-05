@@ -134,13 +134,13 @@ export class ChatUtils {
 
   static socketIOMessageReaction(
     chatMessages,
-    username,
+    targetUsername,
     setChatMessages
   ) {
     socketService?.socket?.on("message reaction", (data) => {
       if (
-        data.senderUsername.toLowerCase() === username ||
-        data.receiverUsername.toLowerCase() === username
+        data.senderUsername.toLowerCase() === targetUsername ||
+        data.receiverUsername.toLowerCase() === targetUsername
       ) {
         let newChatMessages = [...chatMessages];
 

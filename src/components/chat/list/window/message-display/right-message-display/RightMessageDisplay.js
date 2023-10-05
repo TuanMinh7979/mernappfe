@@ -1,11 +1,11 @@
 import Reactions from "@components/posts/reactions/Reactions";
 import PropTypes from "prop-types";
 import { timeAgo } from "@services/utils/time.ago.utils";
-import doubleCheckmark from "@assets/images/double-checkmark.png";
+
 import { reactionsMap } from "@services/utils/static.data";
 import RightMessageBubble from "./RightMessageBubble";
 import { useState } from "react";
-import { useRef } from "react";
+
 import { useEffect } from "react";
 const RightMessageDisplay = ({
   side,
@@ -40,7 +40,7 @@ const RightMessageDisplay = ({
     <div className={`message ${side}-message`} data-testid="right-message">
       <div
         className={`message-${side}-reactions-container`}
-        style={{ border: "1px dashed red" }}
+
       >
         {isShowReactionSelection &&
           isBeingHovered &&
@@ -64,10 +64,10 @@ const RightMessageDisplay = ({
       </div>
       <div
         className={`message-${side}-content-container-wrapper`}
-        style={{ border: "1px dashed yellow", position: "relative" }}
+        style={{  position: "relative" }}
       >
         <div
-          style={{ border: "1px solid yellow" }}
+
           data-testid="message-content"
           className="message-content message-content-right"
           onClick={() => {
@@ -117,9 +117,10 @@ const RightMessageDisplay = ({
 
           {isBeingHovered && !chat.deleteForEveryone && !deletedByMe && (
             <div
-              style={{ position: "absolute", left: 0, top: 0 }}
+              style={{ position: "absolute", left: "-10px", top: "center" }}
               className={`message-content-emoji-${side}-container`}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 setIsShowReactionSelection(true);
               }}
             >
@@ -132,7 +133,7 @@ const RightMessageDisplay = ({
       {/* time */}
       <div
         className="message-content-bottom"
-        style={{ border: "1px dashed green" }}
+   
       >
         {chat?.reaction &&
           chat?.reaction.length > 0 &&
@@ -164,7 +165,7 @@ const RightMessageDisplay = ({
             !chat?.deleteForEveryone && (
               <>
                 {isLastChatMessage && (
-                  // <img src={doubleCheckmark} alt="" className="message-read-icon" />
+
                   <span>received</span>
                 )}
               </>

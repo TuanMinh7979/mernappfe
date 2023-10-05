@@ -24,7 +24,7 @@ const Chat = () => {
       <div className="private-chat-wrapper-content">
         <div
           className="private-chat-wrapper-content-side"
-          style={{ border: "1px solid blue" }}
+
         >
           <ChatSidebar />
         </div>

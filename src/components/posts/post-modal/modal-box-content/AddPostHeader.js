@@ -18,7 +18,7 @@ const AddPostHeader = ({ privacyObject }) => {
 
   return (
     <div
-      style={{ border: "1px solid red" }}
+    
       className="modal-box-content"
       data-testid="modal-box-content"
     >

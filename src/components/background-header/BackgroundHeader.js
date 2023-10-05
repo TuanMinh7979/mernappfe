@@ -54,7 +54,7 @@ const BackgroundHeader = (
 
     const BackgroundSelectDropdown = () => {
         return (
-            <nav className='menu' style={{ border: "1px solid red" }}>
+            <nav className='menu' >
                 <ul>
                     {galleryImages.length > 0 && (
                         <li onClick={() => {

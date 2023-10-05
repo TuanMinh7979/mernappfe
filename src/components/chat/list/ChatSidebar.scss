@@ -98,10 +98,13 @@
 
       &:hover {
         cursor: pointer;
+       
       }
 
       .active {
-        background-color: var(--white-7);
+        background-color: #BAD7E9;
+        border-radius: 12px !important;
+     
       }
 
       .conversation-item {
@@ -173,8 +176,10 @@
         }
 
         &:hover {
-          background-color: var(--white-7);
+          background-color:#BAD7E9;
           cursor: pointer;
+          border-radius: 12px !important;
+
         }
       }
 

@@ -148,7 +148,7 @@ const ChatSidebar = () => {
       <div className="conversation-container">
         <div
           className="conversation-container-header"
-          style={{ border: "1px solid red" }}
+        
         >
           <div className="header-img">
             <Avatar
@@ -196,7 +196,7 @@ const ChatSidebar = () => {
         {/* search result list  */}
         <div
           className="conversation-container-body"
-          style={{ border: "1px solid red" }}
+        
         >
           {!userSearchText && (
             <div className="conversation">
@@ -257,7 +257,7 @@ const ChatSidebar = () => {
                     )}
                     {!data?.body && (
                       <div
-                        style={{ background: "red" }}
+                       
                         className="created-date"
                         onClick={(event) => {
                           event.stopPropagation();

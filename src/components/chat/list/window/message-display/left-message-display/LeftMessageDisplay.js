@@ -137,7 +137,10 @@ const LeftMessageDisplay = ({
                   )}
 
                   {isBeingHovered && !chat?.deleteForMe && (
-                    <div style={{ position: "absolute", left: 0, top: 0 }} className="message-content-emoji-container" onClick={() => setIsShowReactionSelection(true)}>
+                    <div style={{ position: "absolute", right: "-10px", top: "center" }} className="message-content-emoji-container" onClick={(e) => {
+                      e.stopPropagation()
+                      setIsShowReactionSelection(true)
+                    }}>
                       &#9786;
                     </div>
                   )}</>

@@ -35,7 +35,7 @@ const SearchList = ({
                 className="search-result-container-item"
                 key={user._id}
                 onClick={() => onSearchedUserClick(user)}
-                style={{ background: "cyan" }}
+                style={{ background: "whitesmoke" }}
               >
                 <Avatar
                   name={user.username}
