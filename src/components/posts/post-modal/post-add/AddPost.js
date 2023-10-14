@@ -203,7 +203,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
                       contentEditable={true}
                       onInput={(event) => onInputPostText(event)}
                       onKeyDown={onKeyDownPostText}
-                      data-placeholder="What's on your mind?..."
+                      data-placeholder="What's on your mind?"
                     ></div>
                   </div>
                 </div>

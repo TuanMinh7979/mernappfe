@@ -1,20 +1,12 @@
 import { useRoutes } from 'react-router-dom';
-import { AuthTabs, ForgotPassword, ResetPassword } from './pages/auth';
-// import Streams from '@pages/social/streams/Streams';
-// import Social from '@pages/social/Socical';
-// import Follower from '@pages/social/follower/Follower';
-// import Following from '@pages/social/following/Following';
-// import Photos from '@pages/social/photos/Photos';
-// import Profile from '@pages/social/profile/Profile';
-// import Chat from '@pages/social/chat/Chat';
-// import People from '@pages/social/people/People';
-// import Notifications from '@pages/social/notifications/Notifications';
+import Login from '@pages/auth/login/Login';
 import ProtectedRoute from '@pages/ProtectedRoute';
 import Error from '@pages/error/Error';
 import { Suspense, lazy } from 'react';
 import StreamsSkeleton from '@pages/social/streams/StreamsSkeleton';
 import NotificationSkeleton from '@pages/social/notifications/NotificationsSkeleon';
 import CardSkeleton from '@components/card-element/CardSkeleton';
+import Register from '@pages/auth/register/Register';
 const Social = lazy(() => import('@pages/social/Socical'));
 const Chat = lazy(() => import('@pages/social/chat/Chat'));
 const Follower = lazy(() => import('@pages/social/follower/Follower'));
@@ -30,16 +22,13 @@ const AppRouter = () => {
     const elements = useRoutes([
         {
             path: '/',
-            element: <AuthTabs />
+            element: <Login />
         },
         {
-            path: '/forgot-password',
-            element: <ForgotPassword />
+            path: '/signup',
+            element: <Register />
         },
-        {
-            path: '/reset-password',
-            element: <ResetPassword />
-        },
+   
 
         {
             path: "/app/social",

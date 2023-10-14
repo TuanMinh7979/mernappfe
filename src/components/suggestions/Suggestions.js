@@ -35,7 +35,7 @@ const Suggestions = () => {
   return (
     <div className="suggestions-list-container" data-testid="suggestions-container">
       <div className="suggestions-header">
-        <div className="title-text">Suggestions</div>
+        <div className="title-text">Other people</div>
       </div>
       <hr />
       <div className="suggestions-container">

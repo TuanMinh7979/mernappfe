@@ -25,7 +25,7 @@ const Login = () => {
         });
     }
 
- 
+
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [user, setUser] = useState('')
@@ -73,58 +73,85 @@ const Login = () => {
         }
     }, [loading, user])
     return (
-        <div className="auth-inner">
+        <div className="signin">
 
-            {errorMessage && (
-                <div className={`alerts alert-error}`} role="alert">
-                    {errorMessage}
+
+
+
+            <div class="split-screen">
+                <div class="left">
+                    <section class="copy">
+                        <h1>Connect together</h1>
+                        <p>with Social App</p>
+                    </section>
                 </div>
-            )}
+                <div class="right">
+                    <form onSubmit={loginUser}>
 
-            <form className="auth-form" onSubmit={loginUser} >
-                <div className="form-input-container">
-                    <Input
-                        id="username"
-                        name="username"
-                        type="text"
-                        value={formData.username}
-                        labelText="Username"
-                        placeholder="Enter Username"
-                        style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
-                        handleChange={onInputChange}
-                    ></Input>
-                    <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        labelText="Password"
-                        placeholder="Enter Password"
-                        style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
-                        handleChange={onInputChange}
-                    />
-                    <label className="checkmark-container" htmlFor="checkbox">
-                        <Input
-                            id="checkbox"
-                            name="checkbox"
-                            type="checkbox"
-                            handleChange={onInputChange}
+
+                        <section class="copy title">
+                            <h2>Sign In</h2>
+                        </section>
+
+
+                        <div className="form-input">
+                            
+                                {errorMessage &&
+                                    <div className={`alerts alert-error`} role='alert'>
+                                        {errorMessage}
+                                    </div>
+                                }
+                     
+
+                            <Input
+                                id="username"
+                                name="username"
+                                type="text"
+                                value={formData.username}
+                                labelText="Username"
+                                placeholder="Enter Username"
+                                style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
+                                handleChange={onInputChange}
+                            ></Input>
+
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={formData.password}
+                                labelText="Password"
+                                placeholder="Enter Password"
+                                style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
+                                handleChange={onInputChange}
+                            />
+
+
+
+                        </div>
+
+
+
+                        <Button
+                            label={`${loading ? 'SIGN IN IN PROGRESS..' : 'SIGN IN'}`}
+                            className="signup-btn"
+
                         />
-                        Keep me signed in
-                    </label>
+
+
+                        <section class="copy">
+
+                            <div class="login-container">
+                                <p>New user,  Create an account? <span className='link' onClick={()=>navigate("/signup")}> <strong>Sign up</strong></span></p>
+            
+                            </div>
+                        </section>
+
+
+
+
+                    </form>
                 </div>
-
-                <Button
-                    label={`${loading ? 'SIGNIN IN PROGRESS..' : 'SIGNIN'}`}
-                    className="auth-button button"
-
-                />
-                <Link to={'/forgot-password'}>
-                    <span className="forgot-password">
-                        Forgot password? <FaArrowRight className="arrow-right" />
-                    </span>
-                </Link>
-            </form>
+            </div>
         </div>
     );
 };

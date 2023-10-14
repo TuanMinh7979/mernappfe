@@ -3,9 +3,14 @@ import logo from "@assets/images/logo.svg";
 import {
   FaCaretDown,
   FaCaretUp,
-  FaRegBell,
+
   FaRegEnvelope,
+
+
 } from "react-icons/fa";
+
+
+import { RiNotification2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import MessageSidebar from "@components/message-sidebar/MessageSidebar";
 import "@components/header/Header.scss";
@@ -102,7 +107,7 @@ const Header = () => {
   useEffectOnce(() => {
     setSettings([{
       topText: "Profile",
-      subText: "View personal profile.",
+      subText: "Your Profile",
     }])
     initNotifications()
   });
@@ -265,9 +270,9 @@ const Header = () => {
                 navigate('/app/social/streams')
               }}
             >
-              <img src={logo} className="img-fluid" alt="" />
+
               <div className="app-name">
-                Myapp
+                <span id="logo">Social App</span>
 
               </div>
             </div>
@@ -288,7 +293,7 @@ const Header = () => {
                 }}
               >
                 <span className="header-list-name">
-                  <FaRegBell className="header-list-icon" />
+                  <RiNotification2Line className="header-list-icon" />
                   {notificationCount > 0 && (
                     <span className="bg-danger-dots dots" data-testid="notification-dots">
                       {notificationCount}
@@ -326,10 +331,11 @@ const Header = () => {
                 <span className="header-list-name">
                   <FaRegEnvelope className="header-list-icon" />
 
-                  <span
+                  {messageCount > 0 && <span
                     className="bg-danger-dots dots"
                     data-testid="messages-dots"
-                  ></span>
+                  ></span>}
+
                 </span>
                 &nbsp;
               </li>
