@@ -44,7 +44,7 @@ const Profile = () => {
       setUser(res.data.user)
     } catch (error) {
 
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }, [dispatch, searchParams, username])
@@ -57,7 +57,7 @@ const Profile = () => {
 
       setGalleryImages(res.data.images)
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }, [dispatch, searchParams, username])
@@ -111,7 +111,7 @@ const Profile = () => {
         setHasImage(false);
       }
     } catch (error) {
-      console.log(error);
+   
       setHasError(true);
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
@@ -173,7 +173,7 @@ const Profile = () => {
       const response = await imageService.removeImage(`/images/${id}`)
       Utils.updToastsNewEle(response.data.message, 'success', dispatch)
     } catch (error) {
-      console.log(error)
+  
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
@@ -203,7 +203,7 @@ const Profile = () => {
             secondButtonText='Cancel'
             firstBtnHandler={() => {
               if (toDeleteGalleryImage) {
-                console.log(toDeleteGalleryImage);
+         
 
                 removeImageFromGallery(toDeleteGalleryImage._id)
               }

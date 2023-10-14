@@ -34,7 +34,7 @@ const ChatWindow = () => {
         setChatMessages([...response.data.messages]);
       }
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
@@ -102,7 +102,7 @@ const ChatWindow = () => {
         ChatUtils.joinConversation(profile, res.data.conversationId);
       }
     } catch (error) {
-      console.log(error);
+
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };

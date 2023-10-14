@@ -100,7 +100,7 @@ const ChatSidebar = () => {
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
-      console.log(error);
+
       Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
     }
   };

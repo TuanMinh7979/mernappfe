@@ -57,7 +57,7 @@ const NotificationSetting = () => {
       dispatch(updateLoggedUserProfile(newProfile));
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };

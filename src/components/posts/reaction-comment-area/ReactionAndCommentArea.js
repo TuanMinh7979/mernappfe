@@ -107,7 +107,7 @@ const ReactionAndCommentArea = ({ post }) => {
         }
       }
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
     }
   };

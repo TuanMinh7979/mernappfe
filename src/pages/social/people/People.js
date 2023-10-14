@@ -107,7 +107,7 @@ const People = () => {
     // users is list use now, myidols is user is folled by logged user 
     FollowersUtils.socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers)
   }, [myIdols, users])
-  console.log(users);
+
   return (
     <div className="card-container" ref={bodyRef}>
       <div className="people">People</div>

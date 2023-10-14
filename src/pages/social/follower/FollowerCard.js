@@ -27,7 +27,7 @@ const FollowerCard = ({ userData }) => {
       setFollowers(response.data.followers);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
@@ -40,7 +40,7 @@ const FollowerCard = ({ userData }) => {
       );
       setUser(response.data.user);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
@@ -51,7 +51,7 @@ const FollowerCard = ({ userData }) => {
         blockedBy: user?._id });
       FollowersUtils.blockUserInServer(userInfo, dispatch);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
@@ -61,7 +61,7 @@ const FollowerCard = ({ userData }) => {
       socketService?.socket?.emit('unblock user', { blockedUser: userInfo._id, blockedBy: user?._id });
       FollowersUtils.unblockUser(userInfo, dispatch);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };

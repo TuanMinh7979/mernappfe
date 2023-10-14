@@ -25,7 +25,7 @@ const MessageDisplay = ({ chatMessages, profile }) => {
     try {
       await chatService.updateMessageReaction(body);
     } catch (error) {
-      console.log(error);
+   
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
