@@ -50,7 +50,7 @@ const ProtectedRoute = ({ children }) => {
   if (logged || (profile && token)) {
     if (!tokenIsValid) {
       //when reload refresh login session user time if logged == true => render empty
-      return <>REFRESH NEW TOKEN FOR LOGIN SESSION USER</>;
+      return <></>;
     } else {
       return <>{children}</>;
     }
