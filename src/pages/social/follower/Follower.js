@@ -28,7 +28,7 @@ const Follower = () => {
   const getMyFans = useCallback(async () => {
     try {
       if (profile) {
-        const response = await followerService.getLoggedUserFans(profile?._id);
+        const response = await followerService.getLoggedUserFans(profile?._id, token);
         setFollowers(response.data.followers);
         setLoading(false);
       }
@@ -64,7 +64,8 @@ const Follower = () => {
         blockedUser: toBlockUser._id, blockedBy: profile._id
       })
       //  service
-      FollowersUtils.blockUserInServer(toBlockUser, dispatch)
+
+      await followerService.blockUser(toBlockUser?._id, token);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
@@ -75,7 +76,8 @@ const Follower = () => {
       socketService?.socket?.emit('unblock user', {
         blockedUser: user._id, blockedBy: profile._id
       })
-      FollowersUtils.unblockUser(user, dispatch)
+
+      await followerService.unblockUser(user?._id, token);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }

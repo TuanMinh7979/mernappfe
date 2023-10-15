@@ -1,57 +1,59 @@
 import axios from "@services/axios";
+import { getAPI, postAPI, putAPI } from "@services/utils/fetchData";
 
 class UserService {
-  async fetchUpdSugUsers() {
-    const response = await axios.get("/user/profile/user/suggestions");
-    return response;
+  async fetchUpdSugUsers(accessToken) {
+    return await getAPI("/user/profile/user/suggestions", accessToken);
+
   }
 
-  async logoutUser() {
-    const response = await axios.post('/signout');
-    return response;
+  async logoutUser(accessToken) {
+    return await postAPI('/signout', {}, accessToken);
+
   }
 
-  async getAllUsers(page) {
-    const response = await axios.get(`/user/all/${page}`);
-    return response;
+  async getAllUsers(page, accessToken) {
+    return await getAPI(`/user/all/${page}`, accessToken);
+
   }
 
   // search user for chat
-  async searchUsers(query) {
-    const response = await axios.get(`/user/profile/search/${query}`);
-    return response;
+  async searchUsers(query, accessToken) {
+    return await getAPI(`/user/profile/search/${query}`, accessToken);
+
   }
 
-  async getUserProfileByUserId(userId) {
-    const response = await axios.get(`/user/profile/${userId}`);
-    return response;
+  async getUserProfileByUserId(userId, accessToken) {
+    return await getAPI(`/user/profile/${userId}`, accessToken);
+
   }
 
 
-  async getUserProfileAndPosts(username, userId) {
-    const response = await axios.get(`/user/profile/posts/${username}/${userId}`);
-    return response;
+  async getUserProfileAndPosts(username, userId, accessToken) {
+    console.log("access token------------", accessToken);
+    return await getAPI(`/user/profile/posts/${username}/${userId}`, accessToken);
+
   }
 
   // update
-  async changePassword(body) {
-    const response = await axios.put('/user/profile/change-password', body);
-    return response;
+  async changePassword(body, accessToken) {
+    return await putAPI('/user/profile/change-password', body, accessToken);
+
   }
 
-  async updateNotificationSettings(settings) {
-    const response = await axios.put('/user/profile/settings', settings);
-    return response;
+  async updateNotificationSettings(settings, accessToken) {
+    return await putAPI('/user/profile/settings', settings, accessToken);
+
   }
 
-  async updateBasicInfo(info) {
-    const response = await axios.put('/user/profile/basic-info', info);
-    return response;
+  async updateBasicInfo(info, accessToken) {
+    return await putAPI('/user/profile/basic-info', info, accessToken);
+
   }
 
-  async updateSocialLinks(info) {
-    const response = await axios.put('/user/profile/social-links', info);
-    return response;
+  async updateSocialLinks(info, accessToken) {
+    return await putAPI('/user/profile/social-links', info, accessToken);
+
   }
 
 

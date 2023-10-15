@@ -8,9 +8,9 @@ import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { getConversationList } from '@redux/api/chat';
-import { getAPI } from '@services/utils/fetchData';
-import { BASE_URL } from '@services/axios';
+import { fetchConversationList } from '@redux/api/chat';
+import { authService } from '@services/api/auth/auth.service';
+
 
 
 const ProtectedRoute = ({ children }) => {
@@ -26,8 +26,9 @@ const ProtectedRoute = ({ children }) => {
 
   const refreshToken = useCallback(async () => {
     try {
-      const response = await getAPI(`/refresh_token`, token)
-      // dispatch(getConversationList())
+      const response = await authService.refreshToken(token)
+      dispatch(fetchConversationList(token))
+      
       setTokenIsValid(true);
       console.log(response.data);
       dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
@@ -36,7 +37,7 @@ const ProtectedRoute = ({ children }) => {
       setTokenIsValid(false);
       setTimeout(async () => {
         Utils.clearStore({ dispatch, deleteSessionPageReload, });
-        await userService.logoutUser();
+        await userService.logoutUser(token);
         navigate('/');
       }, 1000);
     }

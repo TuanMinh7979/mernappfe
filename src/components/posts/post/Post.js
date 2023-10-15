@@ -24,8 +24,9 @@ const Post = ({ post, showIcons }) => {
   const dispatch = useDispatch()
   // ?comment
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
-  const { _id } = useSelector(state => state.post)
+
   const reduxPost = useSelector(state => state.post)
+  const { token } = useSelector((state) => state.user);
   // ? end comment
 
   const getFeeling = (name) => {
@@ -68,7 +69,7 @@ const Post = ({ post, showIcons }) => {
 
   const deletePost = async () => {
     try {
-      const response = await postService.deletePost(reduxPost._id);
+      const response = await postService.deletePost(reduxPost._id, token);
       if (response) {
         Utils.updToastsNewEle(response.data.message, 'success', dispatch);
         dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));

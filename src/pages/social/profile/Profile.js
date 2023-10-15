@@ -20,7 +20,7 @@ import "./Profile.scss"
 import Dialog from '@components/dialog/Dialog';
 const Profile = () => {
 
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
 
   const { isDeleteDialogOpen } = useSelector((state) => state.modal);
   const [user, setUser] = useState()
@@ -35,7 +35,8 @@ const Profile = () => {
     try {
       const res = await userService.getUserProfileAndPosts(username,
         searchParams.get('id'),
-        searchParams.get('uId')
+      
+        token
       )
 
       setFromDbBackgroundUrl(Utils.getImage(res?.data?.user?.bgImageId, res?.data?.user?.bgImageVersion))
@@ -44,7 +45,7 @@ const Profile = () => {
       setUser(res.data.user)
     } catch (error) {
 
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }, [dispatch, searchParams, username])
@@ -52,12 +53,12 @@ const Profile = () => {
   const getUserImages = useCallback(async () => {
     try {
       const res = await imageService.getUserImages(
-        searchParams.get('id')
+        searchParams.get('id'), token
       )
 
       setGalleryImages(res.data.images)
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }, [dispatch, searchParams, username])
@@ -104,14 +105,14 @@ const Profile = () => {
     try {
       const url = type === 'background' ? '/images/background' : '/images/profile';
 
-      const response = await imageService.addImage(url, result);
+      const response = await imageService.addImage(url, result, token);
       if (response) {
         Utils.updToastsNewEle(response.data.message, 'success', dispatch);
         setHasError(false);
         setHasImage(false);
       }
     } catch (error) {
-   
+
       setHasError(true);
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
@@ -170,10 +171,10 @@ const Profile = () => {
       const images = galleryImages.filter(el => el._id !== id)
       setGalleryImages(images);
 
-      const response = await imageService.removeImage(`/images/${id}`)
+      const response = await imageService.removeImage(`/images/${id}`, token)
       Utils.updToastsNewEle(response.data.message, 'success', dispatch)
     } catch (error) {
-  
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   }
@@ -203,7 +204,7 @@ const Profile = () => {
             secondButtonText='Cancel'
             firstBtnHandler={() => {
               if (toDeleteGalleryImage) {
-         
+
 
                 removeImageFromGallery(toDeleteGalleryImage._id)
               }

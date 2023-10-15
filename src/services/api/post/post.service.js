@@ -1,87 +1,89 @@
 import axios from "@services/axios";
+import { deleteAPI, getAPI, postAPI, putAPI } from "@services/utils/fetchData";
 
 class PostService {
   // create post without image
-  async createPost(body) {
-    const response = await axios.post("/post", body);
-    return response;
+  async createPost(body, accessToken) {
+    return await postAPI("/post", body, accessToken);
+
   }
   // create post with image
-  async createPostWithImage(body) {
-    const response = await axios.post("/post/image/post", body);
-    return response;
+  async createPostWithImage(body, accessToken) {
+    return await postAPI("/post/image/post", body, accessToken);
+
   }
 
-  async getAllPosts(page) {
-    const response = await axios.get(`/post/all/${page}`);
-    return response;
+  async getAllPosts(page, accessToken) {
+    return await getAPI(`/post/all/${page}`, accessToken);
+
   }
 
-  async getReactionsByUsername(username) {
-    const response = await axios.get(`/post/reactions/username/${username}`);
-    return response;
+  async getReactionsByUsername(username, accessToken) {
+    return await getAPI(`/post/reactions/username/${username}`, accessToken);
+
   }
-  async getSinglePostReactionByUsername(postId, username) {
-    const response = await axios.get(
-      `/post/single/reactions/username/${username}/${postId}`
+  async getSinglePostReactionByUsername(postId, username, accessToken) {
+    return await getAPI(
+      `/post/single/reactions/username/${username}/${postId}`, accessToken
     );
-    return response;
+
   }
 
-  async addReaction(body) {
-    const response = await axios.post("/post/reaction", body);
-    return response;
+  async addReaction(body, accessToken) {
+    return await postAPI("/post/reaction", body, accessToken);
+
   }
 
-  async removeReaction(postId, previousReaction, postReactions) {
-    const response = await axios.delete(
+  async removeReaction(postId, previousReaction, postReactions, accessToken) {
+    return await deleteAPI(
       `/post/reaction/${postId}/${previousReaction}/${JSON.stringify(
         postReactions
-      )}`
+      )}`,
+      accessToken
     );
-    return response;
+
   }
 
-  async getReactionDocsOfAPost(postId) {
-    const response = await axios.get(`/post/reactions/${postId}`);
-    return response;
+  async getReactionDocsOfAPost(postId, accessToken) {
+    return await getAPI(`/post/reactions/${postId}`, accessToken);
+
   }
 
 
-  async createComment(body) {
-    const response = await axios.post('/post/comment', body);
-    return response;
+  async createComment(body, accessToken) {
+    return await postAPI('/post/comment', body, accessToken);
+
   }
 
-  async getPostCommentsNames(postId) {
-    const response = await axios.get(`/post/commentsnames/${postId}`);
-    return response;
+  async getPostCommentsNames(postId, accessToken) {
+    return await getAPI(`/post/commentsnames/${postId}`, accessToken);
+
   }
 
-  async getPostComments(postId) {
-    const response = await axios.get(`/post/comments/${postId}`);
-    return response;
+  async getPostComments(postId, accessToken) {
+    return await getAPI(`/post/comments/${postId}`, accessToken);
+
   }
 
 
   // update post
-  async updatePostWithNewImage(postId, body) {
-    const response = await axios.put(`/post/image/${postId}`, body);
-    return response;
+  async updatePostWithNewImage(postId, body, accessToken) {
+    return await putAPI(`/post/image/${postId}`, body, accessToken);
+
   }
-  async updatePost(postId, body) {
-    const response = await axios.put(`/post/${postId}`, body);
-    return response;
+  async updatePost(postId, body, accessToken) {
+    return await putAPI(`/post/${postId}`, body, accessToken);
+
   }
 
-  async deletePost(postId) {
-    const response = await axios.delete(`/post/${postId}`);
-    return response;
+  async deletePost(postId, accessToken) {
+    return await deleteAPI(`/post/${postId}`, accessToken);
+
   }
 
-  async getPostsWithImages(page) {
-    const response = await axios.get(`/post/images/${page}`);
-    return response;
+  async getPostsWithImages(page, accessToken) {
+    return await getAPI(`/post/images/${page}`, accessToken);
+
   }
 
 

@@ -12,7 +12,7 @@ import { reactionsMap } from "@services/utils/static.data";
 import { postService } from "@services/api/post/post.service";
 import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import useLocalStorage from "@hooks/useLocalStorage";
+
 import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 const ReactionAndCommentArea = ({ post }) => {
   const dispatch = useDispatch();
@@ -21,14 +21,14 @@ const ReactionAndCommentArea = ({ post }) => {
 
   const toggleCommentInput = () => {
     if (!_id || _id !== post?._id) {
-      dispatch(updatePost({...post}))
+      dispatch(updatePost({ ...post }))
     } else {
       dispatch(emptyPost())
     }
   }
   // comment
 
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   // ? init reaction of this user in current post
   const loggedUserReactions = useSelector(
     (state) => state.userPostReaction.reactions
@@ -55,7 +55,8 @@ const ReactionAndCommentArea = ({ post }) => {
       const existingReactionDocOfCurPostByLoggedUserInDB =
         await postService.getSinglePostReactionByUsername(
           post?._id,
-          profile?.username
+          profile?.username,
+          token
         );
 
       const gettedExistingReactionDocument =
@@ -91,7 +92,7 @@ const ReactionAndCommentArea = ({ post }) => {
       //  call api update
       if (!Object.keys(gettedExistingReactionDocument).length) {
         // add if exist
-        await postService.addReaction(reactionDataToServer);
+        await postService.addReaction(reactionDataToServer, token);
       } else {
         reactionDataToServer.previousReaction =
           gettedExistingReactionDocument?.type;
@@ -99,15 +100,16 @@ const ReactionAndCommentArea = ({ post }) => {
           await postService.removeReaction(
             post?._id,
             reactionDataToServer.previousReaction,
-            post.reactions
+            post.reactions,
+            token
           );
         } else {
           //  create new
-          await postService.addReaction(reactionDataToServer);
+          await postService.addReaction(reactionDataToServer, token);
         }
       }
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
     }
   };
@@ -116,7 +118,7 @@ const ReactionAndCommentArea = ({ post }) => {
     existOldReactionFromDB,
     previousReactionText
   ) => {
-   
+
 
     let newPost = { ...post };
 

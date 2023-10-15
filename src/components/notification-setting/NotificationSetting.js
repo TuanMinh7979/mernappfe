@@ -11,7 +11,7 @@ import { userService } from '@services/api/user/user.service'
 import { Utils } from '@services/utils/utils.service'
 import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer'
 const NotificationSetting = () => {
-  let { profile } = useSelector((state) => state.user);
+  let { profile, token } = useSelector((state) => state.user);
   const [toggles, setToggles] = useState([]);
   let [notificationSettings, setNotificationSettings] = useState(profile?.notifications);
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const NotificationSetting = () => {
       for (let el of toggles) {
         settingsFromToggles[el.type] = el.toggle
       }
-      const response = await userService.updateNotificationSettings(settingsFromToggles);
+      const response = await userService.updateNotificationSettings(settingsFromToggles, token);
       let newProfile = { ...profile, notifications: settingsFromToggles };
 
       dispatch(updateLoggedUserProfile(newProfile));

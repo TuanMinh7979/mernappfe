@@ -10,7 +10,7 @@ import { postService } from '@services/api/post/post.service';
 import "./CommentInputBox.scss"
 const CommentInputBox = ({ post }) => {
 
-    const { profile } = useSelector((state) => state.user);
+    const { profile, token } = useSelector((state) => state.user);
     const [comment, setComment] = useState('');
     const commentInputRef = useRef(null);
     const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const CommentInputBox = ({ post }) => {
             };
             //   in post.socket
             socketService?.socket?.emit('comment', commentBody);
-            await postService.createComment(commentBody);
+            await postService.createComment(commentBody, token);
             setComment('');
         } catch (error) {
          

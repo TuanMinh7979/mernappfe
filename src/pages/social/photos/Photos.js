@@ -10,7 +10,7 @@ import GalleryImage from '@components/gallery-image/GalleryImage'
 import "./Photos.scss"
 import ImageModal from '@components/image-modal/ImageModal'
 const Photos = () => {
-  const { profile } = useSelector(state => state.user)
+  const { profile, token } = useSelector(state => state.user)
   const [posts, setPosts] = useState([])
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const [loading, setLoading] = useState(false)
@@ -19,7 +19,7 @@ const Photos = () => {
   const getPostWithImages = async () => {
     try {
 
-      const response = await postService.getPostsWithImages(1)
+      const response = await postService.getPostsWithImages(1, token)
       setPosts(response.data.posts)
       setLoading(false)
     } catch (error) {
@@ -30,7 +30,7 @@ const Photos = () => {
   const getMyIdols = async () => {
     try {
 
-      const response = await followerService.getLoggedUserIdols()
+      const response = await followerService.getLoggedUserIdols(token)
       setLoggedUserIdols(response.data.following)
       setLoading(false)
     } catch (error) {

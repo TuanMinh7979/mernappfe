@@ -14,6 +14,9 @@ import { closeModal } from '@redux/reducers/modal/modal.reducer'
 import { emptyPost } from '@redux/reducers/post/post.reducer'
 import { reactionsColor } from '@services/utils/static.data'
 const ReactionModal = () => {
+
+    const { profile, token } = useSelector((state) => state.user);
+
     const dispatch = useDispatch()
     const { _id, reactions } = useSelector(state => state.post)
     const [activeViewAllTab, setActiveViewAllTab] = useState(true)
@@ -26,7 +29,7 @@ const ReactionModal = () => {
     const [allReactionsOfCurPost, setAllReactionsOfCurPost] = useState([])
     const getReactionDocsOfCurPost = async () => {
         try {
-            const response = await postService.getReactionDocsOfAPost(_id);
+            const response = await postService.getReactionDocsOfAPost(_id, token);
 
             const orderedPosts = orderBy(response.data?.reactions, ['createdAt'], ['desc']);
             setActiveReactionsOfCurPost(orderedPosts);
@@ -91,7 +94,7 @@ const ReactionModal = () => {
                 </ul>
 
             </div>
-               {/* body [1] */}
+            {/* body [1] */}
             <div className='modal-reactions-list'>
                 <ReactionList postReactions={activeReactionsOfCurPost} />
             </div>

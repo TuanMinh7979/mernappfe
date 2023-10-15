@@ -1,37 +1,38 @@
 import axios from "@services/axios";
+import { getAPI, putAPI } from "@services/utils/fetchData";
 
 class FollowerService {
-  async followUser(followerId) {
-    const response = await axios.put(`/user/follow/${followerId}`);
-    return response;
+  async followUser(followerId, accessToken) {
+    console.log("followUser>>>>>", followerId);
+    return await putAPI(`/user/follow/${followerId}`, {}, accessToken);
+
   }
 
-  async unFollowUser(idolId, fanId) {
-    const response = await axios.put(`/user/unfollow/${idolId}/${fanId}`);
-    return response;
+  async unFollowUser(idolId, fanId, accessToken) {
+    return await putAPI(`/user/unfollow/${idolId}/${fanId}`,{},  accessToken);
+
   }
 
-  async getLoggedUserIdols() {
+  async getLoggedUserIdols(accessToken) {
     // get my idols
-    const response = await axios.get('/user/following');
-    return response;
+    return await getAPI('/user/following', accessToken);
   }
 
-  async getLoggedUserFans(userId) {
+  async getLoggedUserFans(userId, accessToken) {
     // get my fans
-    const response = await axios.get(`/user/followers/${userId}`);
-    return response;
+    return await getAPI(`/user/followers/${userId}`, accessToken);
+
   }
 
 
-  async blockUser(targetId) {
-    const response = await axios.put(`/user/block/${targetId}`);
-    return response;
+  async blockUser(targetId, accessToken) {
+    return await putAPI(`/user/block/${targetId}`,{},  accessToken);
+
   }
 
-  async unblockUser(targetId) {
-    const response = await axios.put(`/user/unblock/${targetId}`);
-    return response;
+  async unblockUser(targetId, accessToken) {
+    await putAPI(`/user/unblock/${targetId}`,{},  accessToken);
+
   }
 
 

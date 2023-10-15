@@ -14,7 +14,7 @@ import NotificationUtils from "@services/utils/notification-utils.service";
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 const Notification = () => {
-  const { profile } = useSelector(state => state.user)
+  const { profile, token } = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const Notification = () => {
   })
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications()
+      const rs = await notificationService.getUserNotifications(token)
       setNotifications(rs.data.notifications)
 
     } catch (error) {
@@ -44,7 +44,7 @@ const Notification = () => {
     try {
       // to show dialog
       NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
-      await notificationService.markNotificationAsRead(notification._id);
+      await notificationService.markNotificationAsRead(notification._id, token);
     } catch (error) {
 
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -54,7 +54,7 @@ const Notification = () => {
   const deleteNotification = async (event, notificationId) => {
     event.stopPropagation()
     try {
-      const response = await notificationService.deleteNotification(notificationId);
+      const response = await notificationService.deleteNotification(notificationId, token);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);

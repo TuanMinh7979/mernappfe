@@ -5,7 +5,7 @@ import ChatSidebar from "@components/chat/list/ChatSidebar";
 import ChatWindow from "@components/chat/list/window/ChatWindow";
 import { useEffect } from "react";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-import { getConversationList } from "@redux/api/chat";
+import { fetchConversationList } from "@redux/api/chat";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 const Chat = () => {
@@ -13,8 +13,9 @@ const Chat = () => {
 
   const reduxChat = useSelector((state) => state.chat);
 
+  const { profile, token } = useSelector((state) => state.user);
   useEffect(() => {
-    dispatch(getConversationList());
+    dispatch(fetchConversationList(token));
   }, []);
 
   const [searchParams] = useSearchParams();

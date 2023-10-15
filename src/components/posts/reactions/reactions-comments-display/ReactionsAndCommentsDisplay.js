@@ -12,13 +12,13 @@ import { useSelector } from 'react-redux';
 import { feelingsList } from '@services/utils/static.data';
 import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
-
+  const { profile, token } = useSelector((state) => state.user);
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
   const getReactionDocsOfCurPost = async () => {
     try {
-      const response = await postService.getReactionDocsOfAPost(post?._id);
+      const response = await postService.getReactionDocsOfAPost(post?._id, token);
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
@@ -52,7 +52,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   // 1 person can comment multiple times so we need to use Set
   const getPostCommentNames = async () => {
     try {
-      const response = await postService.getPostCommentsNames(post._id)
+      const response = await postService.getPostCommentsNames(post._id, token)
       setPostCommentNames([...new Set(response.data.comments.names)])
     } catch (e) {
       Utils.updToastsNewEle(e?.response?.data?.message, 'error', dispatch);

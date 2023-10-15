@@ -53,7 +53,7 @@ const EditPost = () => {
     const reduxPost = useSelector((state) => state.post);
 
     // ? use for create new post (only read)
-    const { profile } = useSelector((state) => state.user);
+    const { token } = useSelector((state) => state.user);
     // ? use for create new post
 
     // * Limit character
@@ -197,9 +197,9 @@ const EditPost = () => {
 
             let response = ""
             if (postData.image && !postData.imgId && !postData.imgVersion) {
-                response = await postService.updatePostWithNewImage(reduxPost._id, postData);
+                response = await postService.updatePostWithNewImage(reduxPost._id, postData, token);
             } else {
-                response = await postService.updatePost(reduxPost._id, postData);
+                response = await postService.updatePost(reduxPost._id, postData, token);
             }
 
             setLoading(false);

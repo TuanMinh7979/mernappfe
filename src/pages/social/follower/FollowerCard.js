@@ -13,7 +13,7 @@ import { socketService } from '@services/socket/socket.service';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { followerService } from '@services/api/follow/follow.service';
 const FollowerCard = ({ userData }) => {
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
   const [user, setUser] = useState(userData);
   const [loading, setLoading] = useState(true);
@@ -23,11 +23,11 @@ const FollowerCard = ({ userData }) => {
 
   const getUserFollowers = async () => {
     try {
-      const response = await followerService.getLoggedUserFans(searchParams.get('id'));
+      const response = await followerService.getLoggedUserFans(searchParams.get('id'), token);
       setFollowers(response.data.followers);
       setLoading(false);
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
@@ -36,32 +36,38 @@ const FollowerCard = ({ userData }) => {
     try {
       const response = await userService.getUserProfileAndPosts(
         username,
-        searchParams.get('id')
+        searchParams.get('id'), 
+        token
       );
       setUser(response.data.user);
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
 
-  const blockUser = (userInfo) => {
+  const blockUser = async (userInfo) => {
     try {
-      socketService?.socket?.emit('block user', { blockedUser: userInfo._id, 
-        blockedBy: user?._id });
-      FollowersUtils.blockUserInServer(userInfo, dispatch);
+      socketService?.socket?.emit('block user', {
+        blockedUser: userInfo._id,
+        blockedBy: user?._id
+      });
+
+      await followerService.blockUser(userInfo?._id, token);
+
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
 
-  const unblockUser = (userInfo) => {
+  const unblockUser = async (userInfo) => {
     try {
       socketService?.socket?.emit('unblock user', { blockedUser: userInfo._id, blockedBy: user?._id });
-      FollowersUtils.unblockUser(userInfo, dispatch);
+
+      await followerService.unblockUser(userInfo?._id);
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };

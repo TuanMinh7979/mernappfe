@@ -17,18 +17,19 @@ import { userService } from "@services/api/user/user.service";
 
 import { chatService } from "@services/api/chat/chat.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-import { socketService } from "@services/socket/socket.service";
+
 
 import { timeAgo } from "@services/utils/time.ago.utils";
 import PreviewChatMessage from "./PreviewChatMessage";
 import { createSearchParams } from "react-router-dom";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
+
 const ChatSidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   const { conversationList } = useSelector((state) => state.chat);
 
   //  for SearchListComponent
@@ -46,7 +47,7 @@ const ChatSidebar = () => {
       try {
         setIsSearching(true);
         if (query) {
-          const response = await userService.searchUsers(query);
+          const response = await userService.searchUsers(query, token);
 
           setUserSearchResult(response.data.search);
           setIsSearching(false);
@@ -97,7 +98,7 @@ const ChatSidebar = () => {
         newestMessageCvsData?.receiverUsername === profile?.username &&
         !newestMessageCvsData.isRead
       ) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId);
+        await chatService.markMessagesAsRead(profile?._id, receiverId, token);
       }
     } catch (error) {
 
@@ -148,7 +149,7 @@ const ChatSidebar = () => {
       <div className="conversation-container">
         <div
           className="conversation-container-header"
-        
+
         >
           <div className="header-img">
             <Avatar
@@ -196,7 +197,7 @@ const ChatSidebar = () => {
         {/* search result list  */}
         <div
           className="conversation-container-body"
-        
+
         >
           {!userSearchText && (
             <div className="conversation">
@@ -257,7 +258,7 @@ const ChatSidebar = () => {
                     )}
                     {!data?.body && (
                       <div
-                       
+
                         className="created-date"
                         onClick={(event) => {
                           event.stopPropagation();

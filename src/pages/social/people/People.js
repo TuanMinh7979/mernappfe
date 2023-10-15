@@ -16,13 +16,13 @@ import { userService } from '@services/api/user/user.service'
 import useEffectOnce from '@hooks/useEffectOnce'
 import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
-import { socketService } from '@services/socket/socket.service'
+import { followerService } from '@services/api/follow/follow.service'
 import { useEffect } from 'react'
 
 const People = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { profile } = useSelector((state) => state.user);
+  const { profile , token} = useSelector((state) => state.user);
 
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const People = () => {
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {
     try {
-      const response = await userService.getAllUsers(currentPage);
+      const response = await userService.getAllUsers(currentPage, token);
       if (response.data.users.length > 0) {
         setUsers((data) => {
           const result = [...data, ...response.data.users];
@@ -86,7 +86,7 @@ const People = () => {
   //  follow and unfollow
   const followUser = async (user) => {
     try {
-      FollowersUtils.followUser(user, dispatch);
+      await followerService.followUser(user?._id, token);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
@@ -95,7 +95,8 @@ const People = () => {
   const unFollowUser = async (idol) => {
 
     try {
-      FollowersUtils.unFollowUser(idol, profile, dispatch);
+     
+      await followerService.unFollowUser(idol?._id, profile?._id, token);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }

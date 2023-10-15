@@ -9,7 +9,10 @@ import useLocalStorage from '@hooks/useLocalStorage'
 import useSessionStorage from '@hooks/useSessionStorage'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 const ChangePassword = () => {
+
+  const { profile, token } = useSelector((state) => state.user);
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -30,8 +33,10 @@ const ChangePassword = () => {
       const res = await userService.changePassword({
         currentPassword,
         newPassword,
-        confirmPassword
-      }
+        confirmPassword,
+
+      },
+        token
 
       )
       setCurrentPassword('')
@@ -44,9 +49,9 @@ const ChangePassword = () => {
           Utils.clearStore({
             dispatch,
             deleteSessionPageReload,
-       
+
           });
-          await userService.logoutUser();
+          await userService.logoutUser(token);
           navigate('/');
         }, 3000);
       }

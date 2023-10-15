@@ -22,7 +22,7 @@ const Sidebar = () => {
   };
   const navigateToPage = (name, url) => {
     if (name === 'Profile') {
-      url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id, uId: profile?.uId })}`;
+      url = `${url}/${profile?.username}?${createSearchParams({ id: profile?._id})}`;
     }
     if (name !== 'Chat') {
       //  leave chat room

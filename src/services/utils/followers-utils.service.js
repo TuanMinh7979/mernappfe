@@ -6,26 +6,10 @@ import { socketService } from '@services/socket/socket.service';
 
 
 export class FollowersUtils {
-  static async followUser(user, dispatch) {
-    const response = await followerService.followUser(user?._id);
-
-  }
-
-  static async unFollowUser(idol, profile, dispatch) {
-    const response = await followerService.unFollowUser(idol?._id, profile?._id);
-
-  }
+ 
 
 
-  static async blockUserInServer(user, dispatch) {
-    const response = await followerService.blockUser(user?._id);
 
-  }
-
-  static async unblockUser(user, dispatch) {
-    const response = await followerService.unblockUser(user?._id);
-   
-  }
 
 
   //  use in People page

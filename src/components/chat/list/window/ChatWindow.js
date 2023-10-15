@@ -18,7 +18,7 @@ import { socketService } from "@services/socket/socket.service";
 const ChatWindow = () => {
   const reduxChat = useSelector((state) => state.chat);
   const dispatch = useDispatch();
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
 
   const [receiver, setReceiver] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
@@ -29,12 +29,12 @@ const ChatWindow = () => {
       if (searchParams.get("id") && searchParams.get("username")) {
         setChatMessages([]);
         const response = await chatService.getChatMessages(
-          searchParams.get("id")
+          searchParams.get("id"), token
         );
         setChatMessages([...response.data.messages]);
       }
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
@@ -43,7 +43,7 @@ const ChatWindow = () => {
   const getTargetUserProfileById = async () => {
     try {
       const response = await userService.getUserProfileByUserId(
-        searchParams.get("id")
+        searchParams.get("id"), token
       );
       setReceiver(response.data.user);
     } catch (error) {
@@ -91,7 +91,7 @@ const ChatWindow = () => {
         selectedImage,
 
       });
-      const res = await chatService.saveChatMessage(messageData);
+      const res = await chatService.saveChatMessage(messageData, token);
       if (
         !chatMessages.find(
           (chat) =>
@@ -131,6 +131,7 @@ const ChatWindow = () => {
             <MessageDisplay
               chatMessages={chatMessages}
               profile={profile}
+              token={token}
             ></MessageDisplay>
           </div>
           <div className="chat-window-input">

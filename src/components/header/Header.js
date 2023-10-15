@@ -41,7 +41,7 @@ import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 const Header = () => {
 
-  const { profile } = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
   const settingsRef = useRef(null);
@@ -72,7 +72,7 @@ const Header = () => {
 
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications()
+      const rs = await notificationService.getUserNotifications(token)
       const mapNotis = NotificationUtils.mapNotificationDropdownItems(rs.data.notifications,
         setNotificationCount
       )
@@ -87,7 +87,7 @@ const Header = () => {
     try {
       // to show dialog
       NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
-      await notificationService.markNotificationAsRead(notification._id);
+      await notificationService.markNotificationAsRead(notification._id, token);
     } catch (error) {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
@@ -96,7 +96,7 @@ const Header = () => {
   const onDeleteNotification = async (notificationId) => {
 
     try {
-      const response = await notificationService.deleteNotification(notificationId);
+      const response = await notificationService.deleteNotification(notificationId, token);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
@@ -171,12 +171,12 @@ const Header = () => {
         notification?.receiverUsername === profile?.username &&
         !notification.isRead
       ) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId);
+        await chatService.markMessagesAsRead(profile?._id, receiverId, token);
       }
 
 
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };
@@ -186,10 +186,10 @@ const Header = () => {
     try {
 
       Utils.clearStore({ dispatch, deleteSessionPageReload });
-      await userService.logoutUser();
+      await userService.logoutUser(token);
       navigate('/');
     } catch (error) {
-   
+
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
   };

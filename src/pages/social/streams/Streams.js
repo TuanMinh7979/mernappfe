@@ -14,16 +14,16 @@ import { PostUtils } from "@services/utils/post-utils.service";
 import { Utils } from "@services/utils/utils.service";
 import { useState } from "react";
 import { postService } from "@services/api/post/post.service";
-import { getPosts } from "@redux/api/post";
-import { getActiveElement } from "@testing-library/user-event/dist/utils";
-import { orderBy, uniqBy } from 'lodash';
+import { fetchPosts } from "@redux/api/post";
+
+import {  uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
-import useLocalStorage from "@hooks/useLocalStorage";
-import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import { ChatUtils } from "@services/utils/chat-utils.service.";
-const Streams = () => {
 
+import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
+
+const Streams = () => {
+  const { profile, token } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false)
 
   // ? app post
@@ -41,7 +41,7 @@ const Streams = () => {
   const getPostByPage = async () => {
     try {
       setLoading(true)
-      const response = await postService.getAllPosts(currentPage);
+      const response = await postService.getAllPosts(currentPage, token);
 
       if (response.data.posts.length > 0) {
         appPosts = [...posts, ...response.data.posts];
@@ -60,7 +60,7 @@ const Streams = () => {
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
+      const response = await followerService.getLoggedUserIdols(token);
       setLoggedUserIdols(response.data.following);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
@@ -86,10 +86,10 @@ const Streams = () => {
   const [postsCnt, setPostsCnt] = useState(1);
   // ? end  post
   useEffectOnce(() => {
-    dispatch(fetchUpdSugUsers());
+    dispatch(fetchUpdSugUsers(token));
     getUserFollowing();
     getReactionsByUsername()
-    dispatch(getPosts())
+    dispatch(fetchPosts(token))
 
   });
 
@@ -105,12 +105,12 @@ const Streams = () => {
   }, [posts]);
 
   // ? get all reactions of current user
-  const { profile } = useSelector((state) => state.user);
+
 
   const getReactionsByUsername = async () => {
     try {
 
-      const rs = await postService.getReactionsByUsername(profile.username)
+      const rs = await postService.getReactionsByUsername(profile.username,token)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
       Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);

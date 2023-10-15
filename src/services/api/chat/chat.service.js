@@ -1,42 +1,36 @@
-import axios from '@services/axios';
-import userEvent from '@testing-library/user-event';
+
+import { deleteAPI, getAPI, postAPI, putAPI } from '@services/utils/fetchData';
+
 
 class ChatService {
-  async getConversationList() {
-    const response = await axios.get('/chat/message/conversations');
-    return response;
+  async getConversationListService(accessToken) {
+    return await getAPI('/chat/message/conversations', accessToken)
   }
 
-
-
-
-
-
-  async markMessagesAsRead(senderId, receiverId) {
-    const response = await axios.put(`/chat/message/mark-as-readed`, { senderId, receiverId });
-    return response;
+  async markMessagesAsRead(senderId, receiverId, accessToken) {
+    return await putAPI(`/chat/message/mark-as-readed`, { senderId, receiverId }, accessToken);
   }
 
   // get chat messages
-  async getChatMessages(receiverId) {
-    const response = await axios.get(`/chat/message/user/${receiverId}`);
-    return response;
+  async getChatMessages(receiverId, accessToken) {
+    return await getAPI(`/chat/message/user/${receiverId}`, accessToken);
+
   }
 
   // 
-  async saveChatMessage(body) {
-    const response = await axios.post('/chat/message', body);
-    return response;
+  async saveChatMessage(body, accessToken) {
+    return await postAPI('/chat/message', body, accessToken);
+
   }
 
-  async updateMessageReaction(body) {
+  async updateMessageReaction(body, accessToken) {
 
-    const response = await axios.put('/chat/message/reaction', body);
-    return response;
+    return await putAPI('/chat/message/reaction', body, accessToken);
+
   }
-  async markMessageAsDelete(messageId, senderId, receiverId, type) {
-    const response = await axios.delete(`/chat/message/mark-as-deleted/${messageId}/${senderId}/${receiverId}/${type}`);
-    return response;
+  async markMessageAsDelete(messageId, senderId, receiverId, type, accessToken) {
+    return await deleteAPI(`/chat/message/mark-as-deleted/${messageId}/${senderId}/${receiverId}/${type}`, accessToken);
+
   }
 
 }

@@ -1,20 +1,21 @@
 import axios from "@services/axios"
+import { deleteAPI, getAPI, putAPI } from "@services/utils/fetchData";
 class NotificationService {
 
-    async getUserNotifications() {
-        const response = await axios.get('/notification')
-        return response
+    async getUserNotifications(accessToken) {
+        return await getAPI('/notification', accessToken)
+
 
     }
 
-    async markNotificationAsRead(messageId) {
-        const response = await axios.put(`/notification/${messageId}`);
-        return response;
+    async markNotificationAsRead(messageId, accessToken) {
+        return await putAPI(`/notification/${messageId}`,{},  accessToken);
+
     }
 
-    async deleteNotification(messageId) {
-        const response = await axios.delete(`/notification/${messageId}`);
-        return response;
+    async deleteNotification(messageId, accessToken) {
+        return await deleteAPI(`/notification/${messageId}`, accessToken);
+
     }
 }
 

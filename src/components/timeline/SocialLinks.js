@@ -4,7 +4,7 @@ import { userService } from '@services/api/user/user.service';
 import { Utils } from '@services/utils/utils.service';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEditableSocialInputs }) => {
   const dispatch = useDispatch();
   const noBasicInfo = {
@@ -43,11 +43,10 @@ const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEdit
     facebookPlacehoder: 'Add your Facebook account link',
     youtubePlacehoder: 'Add your YouTube account link'
   };
-
+  let { token } = useSelector((state) => state.user);
   const updateSocialLinks = async () => {
     try {
-  
-      const response = await userService.updateSocialLinks(editableSocialInputs);
+      const response = await userService.updateSocialLinks(editableSocialInputs, token);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
