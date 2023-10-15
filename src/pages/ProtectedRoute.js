@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getConversationList } from '@redux/api/chat';
+import { getAPI } from '@services/utils/fetchData';
+import { BASE_URL } from '@services/axios';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -22,15 +24,15 @@ const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const checkUser = useCallback(async () => {
+  const refreshToken = useCallback(async () => {
     try {
-      const response = await userService.checkCurrentUser();
-      dispatch(getConversationList())
-
+      const response = await getAPI(`/refresh_token`, token)
+      // dispatch(getConversationList())
       setTokenIsValid(true);
+      console.log(response.data);
       dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
     } catch (error) {
-
+      console.log(error);
       setTokenIsValid(false);
       setTimeout(async () => {
         Utils.clearStore({ dispatch, deleteSessionPageReload, });
@@ -38,19 +40,18 @@ const ProtectedRoute = ({ children }) => {
         navigate('/');
       }, 1000);
     }
-  }, [dispatch, navigate, , deleteSessionPageReload,]);
+  }, [dispatch, navigate, deleteSessionPageReload,]);
 
   useEffectOnce(() => {
-    
 
-      checkUser();
-    
+
+    refreshToken();
+
   });
 
   if (logged || (profile && token)) {
     if (!tokenIsValid) {
-      //when reload refresh login session user time if logged == true => render empty
-      return <></>;
+
     } else {
       return <>{children}</>;
     }

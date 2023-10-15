@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { authService } from '@services/api/auth/auth.service';
 import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
-import useLocalStorage from '@hooks/useLocalStorage';
+
 import useSessionStorage from '@hooks/useSessionStorage';
 const Login = () => {
     const [formData, setFormData] = useState({
