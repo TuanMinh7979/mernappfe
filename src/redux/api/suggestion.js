@@ -6,7 +6,7 @@ const fetchUpdSugUsers = createAsyncThunk('user/getSuggestions', async (accessTo
 
   try {
     const response = await userService.fetchUpdSugUsers(accessToken);
-    console.log("????????????????????", response);
+
     return response.data;
   } catch (error) {
     Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);

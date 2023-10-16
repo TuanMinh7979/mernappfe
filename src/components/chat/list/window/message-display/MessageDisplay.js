@@ -89,6 +89,11 @@ const MessageDisplay = ({ chatMessages, profile, token }) => {
     };
   }, [isShowReactionSelection, reactionRef]);
 
+
+  useEffect(() => {
+    chatService.setDispatch(dispatch)
+  }, [dispatch])
+
   return (
     <>
       {showImageModal && (

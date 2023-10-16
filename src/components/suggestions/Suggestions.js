@@ -18,7 +18,7 @@ const Suggestions = () => {
 
   const followUser = async (user) => {
     try {
-      console.log("-------------------->>>", user);
+
       await followerService.followUser(user?._id, token);
       const result = filter(users, (data) => data?._id !== user?._id);
       setUsers(result);

@@ -144,6 +144,11 @@ const ChatSidebar = () => {
 
     return navigate("/app/social/chat/messages");
   };
+
+
+  useEffect(() => {
+    chatService.setDispatch(dispatch)
+  }, [dispatch])
   return (
     <div data-testid="conversationList">
       <div className="conversation-container">

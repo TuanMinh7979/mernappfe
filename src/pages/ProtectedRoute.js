@@ -16,7 +16,7 @@ import { authService } from '@services/api/auth/auth.service';
 const ProtectedRoute = ({ children }) => {
   const { profile, token } = useSelector((state) => state.user);
 
-  const [tokenIsValid, setTokenIsValid] = useState(false);
+  const [tokenIsValid, setTokenIsValid] = useState(true);
 
   const logged = useSessionStorage('logged', 'get');
 
@@ -24,31 +24,9 @@ const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const refreshToken = useCallback(async () => {
-    try {
-      const response = await authService.refreshToken(token)
-      dispatch(fetchConversationList(token))
-      
-      setTokenIsValid(true);
-      console.log(response.data);
-      dispatch(updateLoggedUser({ token: response.data.token, profile: response.data.user }));
-    } catch (error) {
-      console.log(error);
-      setTokenIsValid(false);
-      setTimeout(async () => {
-        Utils.clearStore({ dispatch, deleteSessionPageReload, });
-        await userService.logoutUser(token);
-        navigate('/');
-      }, 1000);
-    }
-  }, [dispatch, navigate, deleteSessionPageReload,]);
-
-  useEffectOnce(() => {
 
 
-    refreshToken();
 
-  });
 
   if (logged || (profile && token)) {
     if (!tokenIsValid) {

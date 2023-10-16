@@ -217,6 +217,12 @@ const Header = () => {
     socketService?.socket?.emit("join room", profile);
   }, [])
 
+
+
+  useEffect(() => {
+    chatService.setDispatch(dispatch)
+  }, [dispatch])
+
   return (
 
     <>

@@ -30,7 +30,7 @@ class UserService {
 
 
   async getUserProfileAndPosts(username, userId, accessToken) {
-    console.log("access token------------", accessToken);
+
     return await getAPI(`/user/profile/posts/${username}/${userId}`, accessToken);
 
   }

@@ -16,7 +16,7 @@ const Chat = () => {
   const { profile, token } = useSelector((state) => state.user);
   useEffect(() => {
     dispatch(fetchConversationList(token));
-  }, []);
+  }, [dispatch]);
 
   const [searchParams] = useSearchParams();
 

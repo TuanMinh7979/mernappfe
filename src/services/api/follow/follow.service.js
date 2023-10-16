@@ -3,7 +3,7 @@ import { getAPI, putAPI } from "@services/utils/fetchData";
 
 class FollowerService {
   async followUser(followerId, accessToken) {
-    console.log("followUser>>>>>", followerId);
+
     return await putAPI(`/user/follow/${followerId}`, {}, accessToken);
 
   }
