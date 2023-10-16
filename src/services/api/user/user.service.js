@@ -1,62 +1,63 @@
 import axios from "@services/axios";
 import { getAPI, postAPI, putAPI } from "@services/utils/fetchData";
+import { freshAccessToken } from "@services/utils/tokenUtils";
+export const userService = {
+  dispatch: null,
 
-class UserService {
-  async fetchUpdSugUsers(accessToken) {
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
+
+  fetchUpdSugUsers: async function (accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI("/user/profile/user/suggestions", accessToken);
+  },
+  logoutUser: async function (accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await postAPI("/signout", {}, accessToken);
+  },
 
-  }
-
-  async logoutUser(accessToken) {
-    return await postAPI('/signout', {}, accessToken);
-
-  }
-
-  async getAllUsers(page, accessToken) {
+  getAllUsers: async function (page, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/user/all/${page}`, accessToken);
-
-  }
+  },
 
   // search user for chat
-  async searchUsers(query, accessToken) {
+  searchUsers: async function (query, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/user/profile/search/${query}`, accessToken);
+  },
 
-  }
-
-  async getUserProfileByUserId(userId, accessToken) {
+  getUserProfileByUserId: async function (userId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/user/profile/${userId}`, accessToken);
-
-  }
-
-
-  async getUserProfileAndPosts(username, userId, accessToken) {
-
-    return await getAPI(`/user/profile/posts/${username}/${userId}`, accessToken);
-
-  }
+  },
+  getUserProfileAndPosts: async function (username, userId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await getAPI(
+      `/user/profile/posts/${username}/${userId}`,
+      accessToken
+    );
+  },
 
   // update
-  async changePassword(body, accessToken) {
-    return await putAPI('/user/profile/change-password', body, accessToken);
+  changePassword: async function (body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await putAPI("/user/profile/change-password", body, accessToken);
+  },
 
-  }
+  updateNotificationSettings: async function (settings, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await putAPI("/user/profile/settings", settings, accessToken);
+  },
 
-  async updateNotificationSettings(settings, accessToken) {
-    return await putAPI('/user/profile/settings', settings, accessToken);
+  updateBasicInfo: async function (info, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await putAPI("/user/profile/basic-info", info, accessToken);
+  },
 
-  }
-
-  async updateBasicInfo(info, accessToken) {
-    return await putAPI('/user/profile/basic-info', info, accessToken);
-
-  }
-
-  async updateSocialLinks(info, accessToken) {
-    return await putAPI('/user/profile/social-links', info, accessToken);
-
-  }
-
-
-}
-
-export const userService = new UserService();
+  updateSocialLinks: async function (info, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await putAPI("/user/profile/social-links", info, accessToken);
+  },
+};

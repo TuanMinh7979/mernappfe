@@ -109,9 +109,7 @@ const ChatWindow = () => {
 
 
 
-  useEffect(() => {
-    chatService.setDispatch(dispatch)
-  }, [dispatch])
+
 
   return (
     <div className="chat-window-container" data-testid="chatWindowContainer">

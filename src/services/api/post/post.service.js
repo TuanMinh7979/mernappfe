@@ -1,95 +1,92 @@
 import axios from "@services/axios";
 import { deleteAPI, getAPI, postAPI, putAPI } from "@services/utils/fetchData";
+import { freshAccessToken } from "@services/utils/tokenUtils";
+export const postService = {
+  dispatch: null,
 
-class PostService {
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
+
   // create post without image
-  async createPost(body, accessToken) {
+  createPost: async function (body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await postAPI("/post", body, accessToken);
-
-  }
+  },
   // create post with image
-  async createPostWithImage(body, accessToken) {
+  createPostWithImage: async function (body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await postAPI("/post/image/post", body, accessToken);
+  },
 
-  }
-
-  async getAllPosts(page, accessToken) {
+  getAllPosts: async function (page, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/all/${page}`, accessToken);
-
-  }
-
-  async getReactionsByUsername(username, accessToken) {
+  },
+  getReactionsByUsername: async function (username, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/reactions/username/${username}`, accessToken);
-
-  }
-  async getSinglePostReactionByUsername(postId, username, accessToken) {
+  },
+  getSinglePostReactionByUsername: async function (
+    postId,
+    username,
+    accessToken
+  ) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(
-      `/post/single/reactions/username/${username}/${postId}`, accessToken
+      `/post/single/reactions/username/${username}/${postId}`,
+      accessToken
     );
-
-  }
-
-  async addReaction(body, accessToken) {
+  },
+  addReaction: async function (body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await postAPI("/post/reaction", body, accessToken);
-
-  }
-
-  async removeReaction(postId, previousReaction, postReactions, accessToken) {
+  },
+  removeReaction: async function (
+    postId,
+    previousReaction,
+    postReactions,
+    accessToken
+  ) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await deleteAPI(
       `/post/reaction/${postId}/${previousReaction}/${JSON.stringify(
         postReactions
       )}`,
       accessToken
     );
-
-  }
-
-  async getReactionDocsOfAPost(postId, accessToken) {
+  },
+  getReactionDocsOfAPost: async function (postId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/reactions/${postId}`, accessToken);
-
-  }
-
-
-  async createComment(body, accessToken) {
-    return await postAPI('/post/comment', body, accessToken);
-
-  }
-
-  async getPostCommentsNames(postId, accessToken) {
+  },
+  createComment: async function (body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
+    return await postAPI("/post/comment", body, accessToken);
+  },
+  getPostCommentsNames: async function (postId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/commentsnames/${postId}`, accessToken);
-
-  }
-
-  async getPostComments(postId, accessToken) {
+  },
+  getPostComments: async function (postId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/comments/${postId}`, accessToken);
-
-  }
-
-
+  },
   // update post
-  async updatePostWithNewImage(postId, body, accessToken) {
+  updatePostWithNewImage: async function (postId, body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await putAPI(`/post/image/${postId}`, body, accessToken);
-
-  }
-  async updatePost(postId, body, accessToken) {
+  },
+  updatePost: async function (postId, body, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await putAPI(`/post/${postId}`, body, accessToken);
-
-  }
-
-  async deletePost(postId, accessToken) {
+  },
+  deletePost: async function (postId, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await deleteAPI(`/post/${postId}`, accessToken);
-
-  }
-
-  async getPostsWithImages(page, accessToken) {
+  },
+  getPostsWithImages: async function (page, accessToken) {
+    accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/post/images/${page}`, accessToken);
-
-  }
-
-
-
-
-
-}
-
-export const postService = new PostService();
+  },
+};

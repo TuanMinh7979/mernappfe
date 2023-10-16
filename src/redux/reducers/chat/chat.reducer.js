@@ -29,10 +29,10 @@ const chatSlice = createSlice({
     });
     builder.addCase(fetchConversationList.fulfilled, (state, action) => {
 
-      // const { list } = action.payload;
-      // state.isLoading = false;
-      // const sortedList = orderBy(list, ["createdAt"], ["desc"]);
-      // state.conversationList = [...sortedList];
+      const { list } = action.payload;
+      state.isLoading = false;
+      const sortedList = orderBy(list, ["createdAt"], ["desc"]);
+      state.conversationList = [...sortedList];
     
     });
     builder.addCase(fetchConversationList.rejected, (state) => {

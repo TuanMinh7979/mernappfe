@@ -20,8 +20,8 @@ export const freshAccessToken = async (
     if (res.data && res.data.token) return res.data.token;
   } catch (e) {
     console.log("errrrrrrrrrrrrrrrrrrrrr rf err", e);
-    // dispatch(emptyLoggedUser());
-    // sessionStorage.removeItem("logged");
-    // return;
+    dispatch(emptyLoggedUser());
+    sessionStorage.removeItem("logged");
+    return;
   }
 };

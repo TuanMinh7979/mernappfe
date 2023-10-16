@@ -23,9 +23,9 @@ const suggestionsSlice = createSlice({
     builder.addCase(fetchUpdSugUsers.fulfilled, (state, action) => {
       
       state.isLoading = false;
-      const { users } = action.payload;
+      // const { users } = action.payload;
 
-      state.users = [...users];
+      state.users = [...action.payload?.users];
     });
     builder.addCase(fetchUpdSugUsers.rejected, (state) => {
       state.isLoading = false;

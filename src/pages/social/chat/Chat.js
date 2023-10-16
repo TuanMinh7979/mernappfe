@@ -8,25 +8,23 @@ import { ChatUtils } from "@services/utils/chat-utils.service.";
 import { fetchConversationList } from "@redux/api/chat";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import useEffectOnce from "@hooks/useEffectOnce";
 const Chat = () => {
   const dispatch = useDispatch();
 
   const reduxChat = useSelector((state) => state.chat);
 
   const { profile, token } = useSelector((state) => state.user);
-  useEffect(() => {
+  useEffectOnce(() => {
     dispatch(fetchConversationList(token));
-  }, [dispatch]);
+  });
 
   const [searchParams] = useSearchParams();
 
   return (
     <div className="private-chat-wrapper">
       <div className="private-chat-wrapper-content">
-        <div
-          className="private-chat-wrapper-content-side"
-
-        >
+        <div className="private-chat-wrapper-content-side">
           <ChatSidebar />
         </div>
         <div className="private-chat-wrapper-content-conversation">

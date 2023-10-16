@@ -146,9 +146,7 @@ const ChatSidebar = () => {
   };
 
 
-  useEffect(() => {
-    chatService.setDispatch(dispatch)
-  }, [dispatch])
+
   return (
     <div data-testid="conversationList">
       <div className="conversation-container">

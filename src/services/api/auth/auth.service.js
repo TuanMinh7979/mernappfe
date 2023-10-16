@@ -10,10 +10,7 @@ class AuthService {
 
     }
 
-    async refreshToken(accessToken) {
-        return await getAPI(`/refresh_token`, accessToken)
 
-    }
 
 
 }
