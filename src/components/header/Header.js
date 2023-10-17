@@ -146,6 +146,10 @@ const Header = () => {
     };
   }, [notifications, profile]);
 
+
+
+  useEffect(() => { 
+    console.log("ACCESSSSSSSSSSSSSTOken ",token);imageService.setAccessToken(token) }, [token])
   const openChatPage = async (notification) => {
     try {
       const params = ChatUtils.makeDetailConversationUrlParam(

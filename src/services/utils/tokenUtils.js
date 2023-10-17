@@ -15,11 +15,12 @@ export const freshAccessToken = async (
   try {
     const res = await getAPI(`/refresh_token`)
 
+    console.log("REEEEEEEEEFRESHT TOKEN RS", res.data);
     dispatch(updateLoggedUser({ token: res.data.token, profile: res.data.user }));
     console.log("...............rf DATA token", res.data.token);
     if (res.data && res.data.token) return res.data.token;
   } catch (e) {
-    console.log("errrrrrrrrrrrrrrrrrrrrr rf err", e);
+    console.log("REEEEEEEEEFRESHT TOKEN ERR", e);
     dispatch(emptyLoggedUser());
     sessionStorage.removeItem("logged");
     return;

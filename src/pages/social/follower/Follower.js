@@ -15,6 +15,7 @@ import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
 import { followerService } from '@services/api/follow/follow.service'
 import { useEffect } from 'react'
+import useEffectOnce from '@hooks/useEffectOnce'
 const Follower = () => {
   const { profile, token } = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
@@ -42,11 +43,13 @@ const Follower = () => {
   //  new user data when scroll 
 
 
-  useEffect(() => {
+  useEffectOnce(() => {
     getMyFans();
-    setMyBlockedUsers(profile.blocked)
+  });
 
-  }, [getMyFans, profile]);
+  useEffect(() => {
+    setMyBlockedUsers(profile.blocked)
+  }, [profile])
   useEffect(() => {
     FollowersUtils.socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch)
 

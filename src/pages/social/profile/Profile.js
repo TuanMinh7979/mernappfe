@@ -7,7 +7,7 @@ import { Utils } from '@services/utils/utils.service';
 import { userService } from '@services/api/user/user.service';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { tabItems } from '@services/utils/static.data';
-import { useEffect } from 'react';
+
 import { imageService } from '@services/api/image/image.service';
 import TimeLine from '@components/timeline/TimeLine';
 import FollowerCard from '../follower/FollowerCard';
@@ -18,6 +18,7 @@ import { updateModalIsDeleteDialogOpen } from '@redux/reducers/modal/modal.reduc
 import ImageModal from '@components/image-modal/ImageModal';
 import "./Profile.scss"
 import Dialog from '@components/dialog/Dialog';
+import useEffectOnce from '@hooks/useEffectOnce';
 const Profile = () => {
 
   const { profile, token } = useSelector((state) => state.user);
@@ -30,12 +31,13 @@ const Profile = () => {
 
   const [rendered, setRendered] = useState(false)
   // * get user background image  , profile image and posts
-  const getUserProfileAndPosts = useCallback(async () => {
+  const getUserProfileAndPosts = async () => {
 
     try {
+
       const res = await userService.getUserProfileAndPosts(username,
         searchParams.get('id'),
-      
+
         token
       )
 
@@ -43,25 +45,36 @@ const Profile = () => {
 
       setUserProfileData(res.data)
       setUser(res.data.user)
-    } catch (error) {
 
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
-    }
-  }, [dispatch, searchParams, username])
-
-  const getUserImages = useCallback(async () => {
-    try {
-      const res = await imageService.getUserImages(
+      const res1 = await imageService.getUserImages(
         searchParams.get('id'), token
       )
 
-      setGalleryImages(res.data.images)
+
+      setGalleryImages(res1.data.images)
+
+
+    } catch (error) {
+
+
+      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+    }
+  }
+
+  const getUserImages = async () => {
+    try {
+      // const res = await imageService.getUserImages(
+      //   searchParams.get('id'), token
+      // )
+
+
+      // setGalleryImages(res.data.images)
     } catch (error) {
 
       Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
     }
-  }, [dispatch, searchParams, username])
+  }
 
 
 
@@ -143,15 +156,11 @@ const Profile = () => {
   }
 
 
-  useEffect(() => {
-    if (!rendered) setRendered(true)
-    if (rendered) {
-      getUserProfileAndPosts()
-      getUserImages()
-      setLoading(false)
-    }
-
-  }, [rendered, getUserProfileAndPosts, getUserImages])
+  useEffectOnce(() => {
+    getUserProfileAndPosts()
+    getUserImages()
+    // setLoading(false)
+  })
 
 
   const getShowingImageUrlFromPost = (post) => {
@@ -244,7 +253,7 @@ const Profile = () => {
 
           <div className="profile-content">
             {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
-            {displayContent === 'followers' && <FollowerCard useData={user} />}
+            {/* {displayContent === 'followers' && <FollowerCard useData={user} />}
             {displayContent === 'gallery' && <>
 
               {
@@ -284,7 +293,7 @@ const Profile = () => {
                   </>
                 )
               }
-            </>}
+            </>} */}
 
             {displayContent === 'change password' && <ChangePassword />}
             {displayContent === 'notifications' && <NotificationSetting />}

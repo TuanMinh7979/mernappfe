@@ -33,6 +33,7 @@ export const userService = {
     return await getAPI(`/user/profile/${userId}`, accessToken);
   },
   getUserProfileAndPosts: async function (username, userId, accessToken) {
+    console.log("--------------access token in getUserProfileAndPosts",accessToken);
     accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(
       `/user/profile/posts/${username}/${userId}`,

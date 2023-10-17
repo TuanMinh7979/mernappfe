@@ -42,7 +42,7 @@ const Photos = () => {
   useEffectOnce(() => {
     getPostWithImages()
     getMyIdols()
-  }, [])
+  })
 
 
 

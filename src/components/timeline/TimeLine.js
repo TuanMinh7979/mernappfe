@@ -35,7 +35,7 @@ const TimeLine = ({ userProfileData, loading }) => {
   });
 
   const dispatch = useDispatch()
-  const { profile,token} = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null)
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
@@ -70,6 +70,7 @@ const TimeLine = ({ userProfileData, loading }) => {
     }
   }
 
+
   useEffectOnce(() => {
     getMyIdols()
     getReactionsByUsername();
@@ -81,14 +82,15 @@ const TimeLine = ({ userProfileData, loading }) => {
 
 
 
-  const getReactionsByUsername = async () => {
-    try {
-      const reactionsResponse = await postService.getReactionsByUsername(username, token);
-      dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
-    } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+  const getReactionsByUsername =
+    async () => {
+      try {
+        const reactionsResponse = await postService.getReactionsByUsername(username, token);
+        dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
+      } catch (error) {
+        Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      }
     }
-  };
 
 
 
