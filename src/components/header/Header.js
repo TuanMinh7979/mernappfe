@@ -65,7 +65,6 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [deleteSessionPageReload] = useSessionStorage("logged", "delete");
   const { conversationList } = useSelector((state) => state.chat);
 
   const initNotifications = async () => {
@@ -149,7 +148,10 @@ const Header = () => {
 
 
   useEffect(() => { 
-    console.log("ACCESSSSSSSSSSSSSTOken ",token);imageService.setAccessToken(token) }, [token])
+    console.log(">>>>>header update token ",token.substring(token.length-6));
+    // imageService.setAccessToken(token)
+    // userService.setAccessToken(token)
+   }, [token])
   const openChatPage = async (notification) => {
     try {
       const params = ChatUtils.makeDetailConversationUrlParam(
@@ -178,7 +180,7 @@ const Header = () => {
 
   const onLogout = async () => {
     try {
-      Utils.clearStore({ dispatch, deleteSessionPageReload });
+      Utils.clearStore({ dispatch });
       await userService.logoutUser(token);
       navigate("/");
     } catch (error) {

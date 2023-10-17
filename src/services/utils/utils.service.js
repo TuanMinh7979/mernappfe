@@ -36,14 +36,15 @@ export class Utils {
 
 
   static clearStore = ({
-    dispatch,
-   
-    deleteSessionPageReload,
+    dispatch
 
   }) => {
     dispatch(emptyLoggedUser());
 
-    deleteSessionPageReload();
+
+
+    sessionStorage.removeItem('accessToken')
+    sessionStorage.removeItem('logged')
 
   };
 

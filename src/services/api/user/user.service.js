@@ -32,9 +32,15 @@ export const userService = {
     accessToken = await freshAccessToken(accessToken, this.dispatch);
     return await getAPI(`/user/profile/${userId}`, accessToken);
   },
-  getUserProfileAndPosts: async function (username, userId, accessToken) {
-    console.log("--------------access token in getUserProfileAndPosts",accessToken);
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  getUserProfileAndPosts: async function (username, userId) {
+    let accessToken = await freshAccessToken(
+      sessionStorage.getItem("accessToken"),
+      this.dispatch
+    );
+    console.log(
+      "--------------)))))getUserProfileAndPosts after rf",
+      accessToken
+    );
     return await getAPI(
       `/user/profile/posts/${username}/${userId}`,
       accessToken

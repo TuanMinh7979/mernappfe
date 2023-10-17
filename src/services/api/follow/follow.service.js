@@ -19,7 +19,7 @@ export const followerService = {
 
   getLoggedUserIdols: async function (accessToken) {
     // get my idols
-    accessToken = await freshAccessToken(accessToken, this.dispatch)
+    accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch)
     return await getAPI("/user/following", accessToken);
   },
   getLoggedUserFans: async function (userId, accessToken) {

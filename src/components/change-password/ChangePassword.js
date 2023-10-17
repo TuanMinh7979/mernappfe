@@ -24,8 +24,8 @@ const ChangePassword = () => {
 
 
 
-  const [setLoggedIn] = useLocalStorage('keepLoggedIn', 'set');
-  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
+
+
   const changePassword = async (event) => {
     event.preventDefault()
     try {
@@ -47,8 +47,7 @@ const ChangePassword = () => {
         Utils.updToastsNewEle(res.data.message, 'success', dispatch);
         setTimeout(async () => {
           Utils.clearStore({
-            dispatch,
-            deleteSessionPageReload,
+            dispatch
 
           });
           await userService.logoutUser(token);
