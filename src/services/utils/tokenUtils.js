@@ -3,6 +3,7 @@ import { updateLoggedUser } from "@redux/reducers/user/user.reducer";
 import { emptyLoggedUser } from "@redux/reducers/user/user.reducer";
 import { getAPI } from "./fetchData";
 export const freshAccessToken = async (access_token, dispatch) => {
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", dispatch);
   if (!access_token) return access_token;
   const access_tokenDecode = jwt_decode(access_token);
   if (access_tokenDecode.exp >= Date.now() / 1000) {

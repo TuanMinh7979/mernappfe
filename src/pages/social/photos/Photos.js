@@ -19,18 +19,20 @@ const Photos = () => {
   const getPostWithImages = async () => {
     try {
 
-      const response = await postService.getPostsWithImages(1, token)
+      const response = await postService.getPostsWithImages(1)
       setPosts(response.data.posts)
       setLoading(false)
     } catch (error) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", error);
       setLoading(false)
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      // Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.msg, 'error', dispatch);
     }
   }
   const getMyIdols = async () => {
     try {
 
-      const response = await followerService.getLoggedUserIdols(token)
+      const response = await followerService.getLoggedUserIdols()
       setLoggedUserIdols(response.data.following)
       setLoading(false)
     } catch (error) {

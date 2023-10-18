@@ -124,14 +124,14 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
       if (reduxPost.image) {
         postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
 
-        const response = await postService.createPostWithImage(postData, token);
+        const response = await postService.createPostWithImage(postData);
 
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());
       } else {
 
-        const response = await postService.createPost(postData, token);
+        const response = await postService.createPost(postData);
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());

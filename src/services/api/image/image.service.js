@@ -8,29 +8,21 @@ export const imageService = {
     this.dispatch = newDispatch;
   },
 
-  // accessToken: null,
 
-  // setAccessToken: function (newtk) {
-  //   this.accessToken = newtk;
-  // },
+  getUserImages: async function (userId) {
 
-  getUserImages: async function (userId, accessToken) {
-    console.log(
-      "--------------<<<<<<getUserImages be force refresh",
-      accessToken
-    );
-    accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     console.log("-------------->>>>>>getUserImages after refresh", accessToken);
     return getAPI(`/images/${userId}`, accessToken);
   },
 
-  addImage: async function (url, data, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  addImage: async function (url, data) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     return await postAPI(url, { image: data }, accessToken);
   },
 
-  removeImage: async function (url, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  removeImage: async function (url) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     return await deleteAPI(url, accessToken);
   },
 };

@@ -37,7 +37,7 @@ const People = () => {
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {
     try {
-      const response = await userService.getAllUsers(currentPage, token);
+      const response = await userService.getAllUsers(currentPage);
       if (response.data.users.length > 0) {
         setUsers((data) => {
           const result = [...data, ...response.data.users];
@@ -79,7 +79,7 @@ const People = () => {
   //  follow and unfollow
   const followUser = async (user) => {
     try {
-      await followerService.followUser(user?._id, token);
+      await followerService.followUser(user?._id);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
@@ -87,7 +87,7 @@ const People = () => {
 
   const unFollowUser = async (idol) => {
     try {
-      await followerService.unFollowUser(idol?._id, profile?._id, token);
+      await followerService.unFollowUser(idol?._id, profile?._id);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }

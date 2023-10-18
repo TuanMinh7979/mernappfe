@@ -23,12 +23,12 @@ const FollowerCard = ({ userData }) => {
 
   const getUserFollowers = async () => {
     try {
-      const response = await followerService.getLoggedUserFans(searchParams.get('id'), token);
+      const response = await followerService.getLoggedUserFans(searchParams.get('id'));
       setFollowers(response.data.followers);
       setLoading(false);
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 
@@ -36,13 +36,12 @@ const FollowerCard = ({ userData }) => {
     try {
       const response = await userService.getUserProfileAndPosts(
         username,
-        searchParams.get('id'), 
-        token
+        searchParams.get('id')
       );
       setUser(response.data.user);
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 
@@ -53,11 +52,11 @@ const FollowerCard = ({ userData }) => {
         blockedBy: user?._id
       });
 
-      await followerService.blockUser(userInfo?._id, token);
+      await followerService.blockUser(userInfo?._id);
 
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 
@@ -68,7 +67,7 @@ const FollowerCard = ({ userData }) => {
       await followerService.unblockUser(userInfo?._id);
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 

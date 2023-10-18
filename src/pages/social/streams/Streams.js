@@ -41,7 +41,7 @@ const Streams = () => {
   const getPostByPage = async () => {
     try {
       setLoading(true)
-      const response = await postService.getAllPosts(currentPage, token);
+      const response = await postService.getAllPosts(currentPage);
 
       if (response.data.posts.length > 0) {
         appPosts = [...posts, ...response.data.posts];
@@ -51,7 +51,7 @@ const Streams = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
   // ? end app post
@@ -60,7 +60,7 @@ const Streams = () => {
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols(token);
+      const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
@@ -86,10 +86,10 @@ const Streams = () => {
   const [postsCnt, setPostsCnt] = useState(1);
   // ? end  post
   useEffectOnce(() => {
-    dispatch(fetchUpdSugUsers(token));
+    dispatch(fetchUpdSugUsers());
     getUserFollowing();
     getReactionsByUsername()
-    dispatch(fetchPosts(token))
+    dispatch(fetchPosts())
 
   });
 
@@ -110,10 +110,12 @@ const Streams = () => {
   const getReactionsByUsername = async () => {
     try {
 
-      const rs = await postService.getReactionsByUsername(profile.username,token)
+      const rs = await postService.getReactionsByUsername(profile?.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
-      Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
+      console.log(e);
+      // Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
+      Utils.updToastsNewEle(e.msg, 'error', dispatch);
 
     }
   }

@@ -15,14 +15,14 @@ import { useEffect } from "react";
 import ImageModal from "@components/image-modal/ImageModal";
 import Dialog from "@components/dialog/Dialog";
 import ThreeButtonDialog from "@components/dialog/ThreeButtonDialog";
-const MessageDisplay = ({ chatMessages, profile, token }) => {
+const MessageDisplay = ({ chatMessages, profile }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [showImageModal, setShowImageModal] = useState(false);
   const dispatch = useDispatch();
 
   const postMessageReaction = async (body) => {
     try {
-      await chatService.updateMessageReaction(body, token);
+      await chatService.updateMessageReaction(body);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
@@ -55,8 +55,7 @@ const MessageDisplay = ({ chatMessages, profile, token }) => {
         messageId,
         senderId,
         receiverId,
-        type,
-        token
+        type
       );
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);

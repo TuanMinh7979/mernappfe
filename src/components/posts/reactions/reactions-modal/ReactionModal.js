@@ -29,14 +29,14 @@ const ReactionModal = () => {
     const [allReactionsOfCurPost, setAllReactionsOfCurPost] = useState([])
     const getReactionDocsOfCurPost = async () => {
         try {
-            const response = await postService.getReactionDocsOfAPost(_id, token);
+            const response = await postService.getReactionDocsOfAPost(_id);
 
             const orderedPosts = orderBy(response.data?.reactions, ['createdAt'], ['desc']);
             setActiveReactionsOfCurPost(orderedPosts);
             setAllReactionsOfCurPost(orderedPosts);
 
         } catch (error) {
-            Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
         }
     };
     useEffectOnce(() => {

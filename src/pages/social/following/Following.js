@@ -22,7 +22,7 @@ const Following = () => {
 
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols(token);
+      const response = await followerService.getLoggedUserIdols();
       setFollowing(response.data.following);
       setLoading(false);
     } catch (error) {
@@ -33,7 +33,7 @@ const Following = () => {
 
   const followUser = async (user) => {
     try {
-      await followerService.followUser(user?._id, token);
+      await followerService.followUser(user?._id);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
@@ -42,7 +42,7 @@ const Following = () => {
   const unFollowUser = async (user) => {
     try {
 
-      await followerService.unFollowUser(user?._id, profile?._id, token);
+      await followerService.unFollowUser(user?._id, profile?._id);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }

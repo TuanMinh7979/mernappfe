@@ -16,7 +16,7 @@ const CommentsModal = () => {
   const dispatch = useDispatch();
   const getPostComments = async () => {
     try {
-      const response = await postService.getPostComments(post?._id, token);
+      const response = await postService.getPostComments(post?._id);
       setPostComments(response.data?.comments);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);

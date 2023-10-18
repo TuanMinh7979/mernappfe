@@ -8,28 +8,28 @@ export const userService = {
     this.dispatch = newDispatch;
   },
 
-  fetchUpdSugUsers: async function (accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  fetchUpdSugUsers: async function () {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await getAPI("/user/profile/user/suggestions", accessToken);
   },
-  logoutUser: async function (accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  logoutUser: async function () {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await postAPI("/signout", {}, accessToken);
   },
 
-  getAllUsers: async function (page, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  getAllUsers: async function (page) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await getAPI(`/user/all/${page}`, accessToken);
   },
 
   // search user for chat
-  searchUsers: async function (query, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  searchUsers: async function (query) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await getAPI(`/user/profile/search/${query}`, accessToken);
   },
 
-  getUserProfileByUserId: async function (userId, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  getUserProfileByUserId: async function (userId) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await getAPI(`/user/profile/${userId}`, accessToken);
   },
   getUserProfileAndPosts: async function (username, userId) {
@@ -37,10 +37,7 @@ export const userService = {
       sessionStorage.getItem("accessToken"),
       this.dispatch
     );
-    console.log(
-      "--------------)))))getUserProfileAndPosts after rf",
-      accessToken
-    );
+
     return await getAPI(
       `/user/profile/posts/${username}/${userId}`,
       accessToken
@@ -48,23 +45,23 @@ export const userService = {
   },
 
   // update
-  changePassword: async function (body, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  changePassword: async function (body) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await putAPI("/user/profile/change-password", body, accessToken);
   },
 
-  updateNotificationSettings: async function (settings, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  updateNotificationSettings: async function (settings) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await putAPI("/user/profile/settings", settings, accessToken);
   },
 
-  updateBasicInfo: async function (info, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  updateBasicInfo: async function (info) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await putAPI("/user/profile/basic-info", info, accessToken);
   },
 
-  updateSocialLinks: async function (info, accessToken) {
-    accessToken = await freshAccessToken(accessToken, this.dispatch);
+  updateSocialLinks: async function (info) {
+    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
     return await putAPI("/user/profile/social-links", info, accessToken);
   },
 };

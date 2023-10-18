@@ -2,7 +2,7 @@ import React from "react";
 import BackgroundHeader from "@components/background-header/BackgroundHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { useCallback } from "react";
+
 import { Utils } from "@services/utils/utils.service";
 import { userService } from "@services/api/user/user.service";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -34,9 +34,7 @@ const Profile = () => {
     try {
       const res = await userService.getUserProfileAndPosts(
         username,
-        searchParams.get("id"),
-
-        ""
+        searchParams.get("id")
       );
 
       setFromDbBackgroundUrl(
@@ -49,17 +47,19 @@ const Profile = () => {
       setUserProfileData(res.data);
       setUser(res.data.user);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      console.log("---------------------------------<<<>>>", error);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
   const fetchUserImages = async () => {
     try {
-      const res = await imageService.getUserImages(searchParams.get("id"), "");
+      const res = await imageService.getUserImages(searchParams.get("id"));
 
       setGalleryImages(res.data.images);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      console.log(error);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
@@ -95,7 +95,7 @@ const Profile = () => {
       const url =
         type === "background" ? "/images/background" : "/images/profile";
 
-      const response = await imageService.addImage(url, result, token);
+      const response = await imageService.addImage(url, result);
       if (response) {
         Utils.updToastsNewEle(response.data.message, "success", dispatch);
         setHasError(false);
@@ -139,19 +139,14 @@ const Profile = () => {
 
   useEffectOnce(() => {
     // asynchonus getUserProfileAndPosts and getUserImages start as the same
+    const fetchInitData = async () => {
+      await freshAccessToken(token, dispatch);
+      fetchUserProfileAndPost();
+      fetchUserImages();
+      setLoading(false);
+    };
+    fetchInitData();
 
-    // const fetchInitData = async () => {
-    //   // await freshAccessToken(token, dispatch);
-    //   fetchUserProfileAndPost();
-    //   fetchUserImages();
-    //   setLoading(false);
-    // };
-    // fetchInitData();
-
-
-    fetchUserProfileAndPost();
-    fetchUserImages();
-    setLoading(false);
   });
 
   const getShowingImageUrlFromPost = (post) => {
@@ -169,10 +164,10 @@ const Profile = () => {
       const images = galleryImages.filter((el) => el._id !== id);
       setGalleryImages(images);
 
-      const response = await imageService.removeImage(`/images/${id}`, token);
+      const response = await imageService.removeImage(`/images/${id}`);
       Utils.updToastsNewEle(response.data.message, "success", dispatch);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
@@ -205,7 +200,7 @@ const Profile = () => {
       <div className="profile-wrapper">
         <div className="profile-wrapper-container">
           <div className="profile-header">
-            <BackgroundHeader
+            {/* <BackgroundHeader
               user={user}
               loading={loading}
               fromDbBackgroundUrl={fromDbBackgroundUrl}
@@ -221,12 +216,12 @@ const Profile = () => {
               onSelectFileImage={onSelectFileImage}
               onSaveImage={saveImage}
               cancelFileSelection={cancelFileSelection}
-              removeBackgroundImage={() => {}}
+              removeBackgroundImage={() => { }}
               galleryImages={galleryImages}
-            ></BackgroundHeader>
+            ></BackgroundHeader> */}
           </div>
 
-          <div className="profile-content">
+          {/* <div className="profile-content">
             {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
             {displayContent === 'followers' && <FollowerCard useData={user} />}
             {displayContent === 'gallery' && <>
@@ -272,7 +267,7 @@ const Profile = () => {
 
             {displayContent === "change password" && <ChangePassword />}
             {displayContent === "notifications" && <NotificationSetting />}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

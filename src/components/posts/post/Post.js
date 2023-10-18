@@ -69,7 +69,7 @@ const Post = ({ post, showIcons }) => {
 
   const deletePost = async () => {
     try {
-      const response = await postService.deletePost(reduxPost._id, token);
+      const response = await postService.deletePost(reduxPost._id);
       if (response) {
         Utils.updToastsNewEle(response.data.message, 'success', dispatch);
         dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));

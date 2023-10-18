@@ -55,8 +55,7 @@ const ReactionAndCommentArea = ({ post }) => {
       const existingReactionDocOfCurPostByLoggedUserInDB =
         await postService.getSinglePostReactionByUsername(
           post?._id,
-          profile?.username,
-          token
+          profile?.username
         );
 
       const gettedExistingReactionDocument =
@@ -92,7 +91,7 @@ const ReactionAndCommentArea = ({ post }) => {
       //  call api update
       if (!Object.keys(gettedExistingReactionDocument).length) {
         // add if exist
-        await postService.addReaction(reactionDataToServer, token);
+        await postService.addReaction(reactionDataToServer);
       } else {
         reactionDataToServer.previousReaction =
           gettedExistingReactionDocument?.type;
@@ -100,17 +99,16 @@ const ReactionAndCommentArea = ({ post }) => {
           await postService.removeReaction(
             post?._id,
             reactionDataToServer.previousReaction,
-            post.reactions,
-            token
+            post.reactions
           );
         } else {
           //  create new
-          await postService.addReaction(reactionDataToServer, token);
+          await postService.addReaction(reactionDataToServer);
         }
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
   const updateReactionsPropertyOfCurrentPost = (

@@ -40,7 +40,7 @@ const BasicInfo = ({ editableInputs, username, profile, loading, setEditableInpu
   const { token } = useSelector((state) => state.user);
   const updateBasicInfo = async () => {
     try {
-      const response = await userService.updateBasicInfo(editableInputs, token);
+      const response = await userService.updateBasicInfo(editableInputs);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);

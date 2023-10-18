@@ -31,7 +31,7 @@ const CommentInputBox = ({ post }) => {
             };
             //   in post.socket
             socketService?.socket?.emit('comment', commentBody);
-            await postService.createComment(commentBody, token);
+            await postService.createComment(commentBody);
             setComment('');
         } catch (error) {
          

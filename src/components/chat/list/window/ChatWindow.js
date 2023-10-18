@@ -29,7 +29,7 @@ const ChatWindow = () => {
       if (searchParams.get("id") && searchParams.get("username")) {
         setChatMessages([]);
         const response = await chatService.getChatMessages(
-          searchParams.get("id"), token
+          searchParams.get("id")
         );
         setChatMessages([...response.data.messages]);
       }
@@ -43,7 +43,7 @@ const ChatWindow = () => {
   const getTargetUserProfileById = async () => {
     try {
       const response = await userService.getUserProfileByUserId(
-        searchParams.get("id"), token
+        searchParams.get("id")
       );
       setReceiver(response.data.user);
     } catch (error) {
@@ -91,7 +91,7 @@ const ChatWindow = () => {
         selectedImage,
 
       });
-      const res = await chatService.saveChatMessage(messageData, token);
+      const res = await chatService.saveChatMessage(messageData);
       if (
         !chatMessages.find(
           (chat) =>
@@ -135,7 +135,7 @@ const ChatWindow = () => {
             <MessageDisplay
               chatMessages={chatMessages}
               profile={profile}
-              token={token}
+
             ></MessageDisplay>
           </div>
           <div className="chat-window-input">

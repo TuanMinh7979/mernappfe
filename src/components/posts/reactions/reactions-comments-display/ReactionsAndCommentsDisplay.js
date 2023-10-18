@@ -18,11 +18,11 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   const dispatch = useDispatch()
   const getReactionDocsOfCurPost = async () => {
     try {
-      const response = await postService.getReactionDocsOfAPost(post?._id, token);
+      const response = await postService.getReactionDocsOfAPost(post?._id);
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 
@@ -52,10 +52,10 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   // 1 person can comment multiple times so we need to use Set
   const getPostCommentNames = async () => {
     try {
-      const response = await postService.getPostCommentsNames(post._id, token)
+      const response = await postService.getPostCommentsNames(post._id)
       setPostCommentNames([...new Set(response.data.comments.names)])
     } catch (e) {
-      Utils.updToastsNewEle(e?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
 
     }
   }

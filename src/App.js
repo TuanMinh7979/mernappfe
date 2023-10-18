@@ -5,12 +5,32 @@ import { useEffect } from 'react';
 import { socketService } from '@services/socket/socket.service';
 import Toast from '@components/toast/Toast';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { chatService } from '@services/api/chat/chat.service';
+import { followerService } from '@services/api/follow/follow.service';
+import { imageService } from '@services/api/image/image.service';
+import { notificationService } from '@services/api/notification/notification.service';
+import { postService } from '@services/api/post/post.service';
+import { userService } from '@services/api/user/user.service';
+import { freshAccessToken } from '@services/utils/tokenUtils';
 const App = () => {
-  const reduxToasts = useSelector((state) => state.toasts);  
+  const dispatch = useDispatch()
+  const reduxToasts = useSelector((state) => state.toasts);
   useEffect(() => {
     socketService.setupSocketConnection()
   }, [])
+  useEffect(() => {
+    chatService.setDispatch(dispatch);
+    followerService.setDispatch(dispatch);
+    imageService.setDispatch(dispatch)
+    notificationService.setDispatch(dispatch)
+    postService.setDispatch(dispatch)
+    userService.setDispatch(dispatch)
+
+
+   
+  }, [dispatch]);
+
   return <>
     {reduxToasts && reduxToasts.length > 0 &&
       <Toast

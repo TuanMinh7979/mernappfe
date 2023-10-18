@@ -69,14 +69,16 @@ const Header = () => {
 
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications(token);
+      const rs = await notificationService.getUserNotifications();
       const mapNotis = NotificationUtils.mapNotificationDropdownItems(
         rs.data.notifications,
         setNotificationCount
       );
       setNotifications(mapNotis);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+
+      console.log(error);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
   const onMarkAsRead = async (notification) => {
@@ -86,21 +88,20 @@ const Header = () => {
         notification,
         setNotificationDialogContent
       );
-      await notificationService.markNotificationAsRead(notification._id, token);
+      await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
   const onDeleteNotification = async (notificationId) => {
     try {
       const response = await notificationService.deleteNotification(
-        notificationId,
-        token
+        notificationId
       );
       Utils.updToastsNewEle(response.data.message, "success", dispatch);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
@@ -147,11 +148,11 @@ const Header = () => {
 
 
 
-  useEffect(() => { 
-    console.log(">>>>>header update token ",token.substring(token.length-6));
+  useEffect(() => {
+    console.log(">>>>>header update token ", token.substring(token.length - 6));
     // imageService.setAccessToken(token)
     // userService.setAccessToken(token)
-   }, [token])
+  }, [token])
   const openChatPage = async (notification) => {
     try {
       const params = ChatUtils.makeDetailConversationUrlParam(
@@ -171,20 +172,20 @@ const Header = () => {
         notification?.receiverUsername === profile?.username &&
         !notification.isRead
       ) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId, token);
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
   const onLogout = async () => {
     try {
       Utils.clearStore({ dispatch });
-      await userService.logoutUser(token);
+      await userService.logoutUser();
       navigate("/");
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
@@ -204,17 +205,12 @@ const Header = () => {
   }, [conversationList, profile]);
 
   useEffect(() => {
-    socketService?.socket?.emit("join room", profile);
+    if (profile) {
+      socketService?.socket?.emit("join room", profile);
+    }
+
   }, []);
 
-  useEffect(() => {
-    chatService.setDispatch(dispatch);
-    followerService.setDispatch(dispatch);
-    imageService.setDispatch(dispatch)
-    notificationService.setDispatch(dispatch)
-    postService.setDispatch(dispatch)
-    userService.setDispatch(dispatch)
-  }, [dispatch]);
 
   return (
     <>

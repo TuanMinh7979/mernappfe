@@ -36,7 +36,7 @@ const ChangePassword = () => {
         confirmPassword,
 
       },
-        token
+       
 
       )
       setCurrentPassword('')
@@ -50,12 +50,12 @@ const ChangePassword = () => {
             dispatch
 
           });
-          await userService.logoutUser(token);
+          await userService.logoutUser();
           navigate('/');
         }, 3000);
       }
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
 
     }
 

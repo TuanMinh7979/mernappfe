@@ -51,14 +51,14 @@ const NotificationSetting = () => {
       for (let el of toggles) {
         settingsFromToggles[el.type] = el.toggle
       }
-      const response = await userService.updateNotificationSettings(settingsFromToggles, token);
+      const response = await userService.updateNotificationSettings(settingsFromToggles);
       let newProfile = { ...profile, notifications: settingsFromToggles };
 
       dispatch(updateLoggedUserProfile(newProfile));
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
    
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   };
 

@@ -57,7 +57,7 @@ const TimeLine = ({ userProfileData, loading }) => {
 
   const getMyIdols = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols(token);
+      const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
@@ -80,8 +80,7 @@ const TimeLine = ({ userProfileData, loading }) => {
   const getReactionsByUsername = async () => {
     try {
       const reactionsResponse = await postService.getReactionsByUsername(
-        username,
-        token
+        username
       );
       dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
     } catch (error) {

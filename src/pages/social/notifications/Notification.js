@@ -27,12 +27,12 @@ const Notification = () => {
   })
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications(token)
+      const rs = await notificationService.getUserNotifications()
       setNotifications(rs.data.notifications)
 
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   }
 
@@ -44,20 +44,20 @@ const Notification = () => {
     try {
       // to show dialog
       NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
-      await notificationService.markNotificationAsRead(notification._id, token);
+      await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   }
 
   const deleteNotification = async (event, notificationId) => {
     event.stopPropagation()
     try {
-      const response = await notificationService.deleteNotification(notificationId, token);
+      const response = await notificationService.deleteNotification(notificationId);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
     }
   }
   useEffect(() => {

@@ -197,9 +197,9 @@ const EditPost = () => {
 
             let response = ""
             if (postData.image && !postData.imgId && !postData.imgVersion) {
-                response = await postService.updatePostWithNewImage(reduxPost._id, postData, token);
+                response = await postService.updatePostWithNewImage(reduxPost._id, postData);
             } else {
-                response = await postService.updatePost(reduxPost._id, postData, token);
+                response = await postService.updatePost(reduxPost._id, postData);
             }
 
             setLoading(false);
@@ -212,7 +212,7 @@ const EditPost = () => {
         } catch (error) {
             setLoading(false);
             console.log("ERR", error);
-            Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+            Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
         }
     };
 

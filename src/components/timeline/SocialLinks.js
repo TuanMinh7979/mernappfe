@@ -46,7 +46,7 @@ const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEdit
   let { token } = useSelector((state) => state.user);
   const updateSocialLinks = async () => {
     try {
-      const response = await userService.updateSocialLinks(editableSocialInputs, token);
+      const response = await userService.updateSocialLinks(editableSocialInputs);
       Utils.updToastsNewEle(response.data.message, 'success', dispatch);
     } catch (error) {
       Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);

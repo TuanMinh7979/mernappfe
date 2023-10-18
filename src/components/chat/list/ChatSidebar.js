@@ -47,7 +47,7 @@ const ChatSidebar = () => {
       try {
         setIsSearching(true);
         if (query) {
-          const response = await userService.searchUsers(query, token);
+          const response = await userService.searchUsers(query);
 
           setUserSearchResult(response.data.search);
           setIsSearching(false);
@@ -98,11 +98,11 @@ const ChatSidebar = () => {
         newestMessageCvsData?.receiverUsername === profile?.username &&
         !newestMessageCvsData.isRead
       ) {
-        await chatService.markMessagesAsRead(profile?._id, receiverId, token);
+        await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
     }
   };
 
