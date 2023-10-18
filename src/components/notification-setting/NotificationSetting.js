@@ -9,7 +9,7 @@ import Toggle from '@components/toggle/Toggle'
 import { notificationItems } from '@services/utils/static.data'
 import { userService } from '@services/api/user/user.service'
 import { Utils } from '@services/utils/utils.service'
-import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer'
+import {  updateLoggedUserProfile } from '@redux/reducers/user/user.reducer'
 const NotificationSetting = () => {
   let { profile, token } = useSelector((state) => state.user);
   const [toggles, setToggles] = useState([]);

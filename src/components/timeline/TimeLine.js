@@ -19,7 +19,7 @@ import BasicInfo from "./BasicInfo";
 import SocialLinks from "./SocialLinks";
 import { postService } from "@services/api/post/post.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import { freshAccessToken } from "@services/utils/tokenUtils";
+import { newestAccessToken } from "@services/utils/tokenUtils";
 const TimeLine = ({ userProfileData, loading }) => {
   const [editableInputs, setEditableInputs] = useState({
     quote: "",
@@ -66,7 +66,7 @@ const TimeLine = ({ userProfileData, loading }) => {
 
   useEffectOnce(() => {
     const fetchInitData = async () => {
-      await freshAccessToken(token, dispatch);
+      await newestAccessToken(token, dispatch);
       getMyIdols();
       getReactionsByUsername();
     };

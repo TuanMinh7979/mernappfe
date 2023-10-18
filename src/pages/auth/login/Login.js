@@ -7,7 +7,7 @@ import "./Login.scss"
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { authService } from '@services/api/auth/auth.service';
-import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
+import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
 
 import useSessionStorage from '@hooks/useSessionStorage';
@@ -34,7 +34,7 @@ const Login = () => {
 
 
     // true is logged in and get current user by jwt
-    const [setSessionStoreLogged] = useSessionStorage('logged', 'set')
+
 
 
 
@@ -50,16 +50,16 @@ const Login = () => {
 
             // set to localStorage
 
-            setSessionStoreLogged(true);
+       
             sessionStorage.setItem('accessToken', rs.data.token)
-            // * set logged in local storage
-            // * set usename in local storage
+    
+
             // * dispatch user to redux
             setLoading(false)
             setUser(rs.data.user)
         
             dispatch(
-                updateLoggedUser({ token: rs.data.token, profile: rs.data.user })
+                updateLoggedUserProfile(rs.data.user)
             );
         } catch (error) {
             setLoading(false);

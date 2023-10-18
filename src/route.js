@@ -39,7 +39,11 @@ const AppRouter = () => {
             children: [
                 {
                     path: "streams",
-                    element: <Suspense fallback={<StreamsSkeleton />}><Streams></Streams></Suspense>
+                    element: 
+                    <Suspense fallback={<StreamsSkeleton />}>
+                        <Streams></Streams>
+                        
+                        </Suspense>
                 },
                 {
                     path: "chat/messages",

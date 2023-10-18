@@ -46,10 +46,10 @@ const ChangePassword = () => {
       if (res) {
         Utils.updToastsNewEle(res.data.message, 'success', dispatch);
         setTimeout(async () => {
-          Utils.clearStore({
+          Utils.clearStore(
             dispatch
 
-          });
+          );
           await userService.logoutUser();
           navigate('/');
         }, 3000);

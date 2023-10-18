@@ -19,7 +19,7 @@ import ImageModal from "@components/image-modal/ImageModal";
 import "./Profile.scss";
 import Dialog from "@components/dialog/Dialog";
 import useEffectOnce from "@hooks/useEffectOnce";
-import { freshAccessToken } from "@services/utils/tokenUtils";
+import { newestAccessToken } from "@services/utils/tokenUtils";
 const Profile = () => {
   const { profile, token } = useSelector((state) => state.user);
 
@@ -140,7 +140,7 @@ const Profile = () => {
   useEffectOnce(() => {
     // asynchonus getUserProfileAndPosts and getUserImages start as the same
     const fetchInitData = async () => {
-      await freshAccessToken(token, dispatch);
+      await newestAccessToken(token, dispatch);
       fetchUserProfileAndPost();
       fetchUserImages();
       setLoading(false);
@@ -200,7 +200,7 @@ const Profile = () => {
       <div className="profile-wrapper">
         <div className="profile-wrapper-container">
           <div className="profile-header">
-            {/* <BackgroundHeader
+            <BackgroundHeader
               user={user}
               loading={loading}
               fromDbBackgroundUrl={fromDbBackgroundUrl}
@@ -218,10 +218,10 @@ const Profile = () => {
               cancelFileSelection={cancelFileSelection}
               removeBackgroundImage={() => { }}
               galleryImages={galleryImages}
-            ></BackgroundHeader> */}
+            ></BackgroundHeader>
           </div>
 
-          {/* <div className="profile-content">
+          <div className="profile-content">
             {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
             {displayContent === 'followers' && <FollowerCard useData={user} />}
             {displayContent === 'gallery' && <>
@@ -267,7 +267,7 @@ const Profile = () => {
 
             {displayContent === "change password" && <ChangePassword />}
             {displayContent === "notifications" && <NotificationSetting />}
-          </div> */}
+          </div>
         </div>
       </div>
     </>

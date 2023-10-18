@@ -1,58 +1,67 @@
 
-import useSessionStorage from '@hooks/useSessionStorage';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { freshAccessToken } from '@services/utils/tokenUtils';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import useEffectOnce from '@hooks/useEffectOnce';
-import { useCallback } from 'react';
+import { useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
-
-
-
-
-
+import {
+  isAccessTokenExist,
+  isAccessTokenValid,
+  newestAccessToken,
+} from "@services/utils/tokenUtils";
+import { getAPI } from "@services/utils/fetchData";
+import { updateLoggedUserProfile } from "@redux/reducers/user/user.reducer";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 const ProtectedRoute = ({ children }) => {
-  const { profile, token } = useSelector((state) => state.user);
   const dispatch = useDispatch()
-  const [tkValid, setTkValid] = useState(false)
-
-
-
-
-  const checkUser = async () => {
-    try {
-      if (!sessionStorage.getItem("accessToken")) return
-      const a= await freshAccessToken(sessionStorage.getItem("accessToken"), dispatch)
-      console.log("abccccccccccccccccc");
-      setTkValid(true);
-
-    } catch (error) {
-      setTkValid(false)
-
-
+  const [tokenIsValid, setTokenIsValid] = useState(false);
+  const freshLoggedUserData = async () => {
+    let existAccessToken = sessionStorage.getItem("accessToken");
+    if (!profile && isAccessTokenExist(existAccessToken)) {
+      if (isAccessTokenValid(existAccessToken)) {
+        try {
+          //  fresh current profile
+          const res = await getAPI("/current-user", existAccessToken);
+          console.log(res);
+          dispatch(updateLoggedUserProfile(res.data.user));
+          setTokenIsValid(true)
+        } catch (e) {
+          console.log(e);
+        }
+      } else if (isAccessTokenExist(existAccessToken)) {
+        try {
+          //  fresh new token and profile
+          const res = await getAPI("/refresh_token");
+          dispatch(updateLoggedUserProfile(res.data.user));
+          sessionStorage.setItem("accessToken", res.data.token);
+        } catch (e) { }
+      }
     }
   };
 
-  useEffectOnce(() => {
-
-
-    checkUser();
-
-  });
+  useEffect(() => {
+    freshLoggedUserData()
+  }, [])
 
 
 
+  const { profile } = useSelector((state) => state.user);
+  const [loggedProfileId, setLoggedProfileId] = useState(null)
+  useEffect(() => {
+    if (profile) {
+      setLoggedProfileId(profile._id)
+    }
+
+  }, [profile])
 
 
 
-  if (sessionStorage.getItem('accessToken')) {
-    if (!tkValid ) {
+  if (sessionStorage.getItem('accessToken') && isAccessTokenValid(sessionStorage.getItem('accessToken'))) {
+    if (!loggedProfileId && !tokenIsValid) {
       //when reload refresh login session user time if logged == true => render empty
-      return <>REFRESH NEW TOKEN FOR LOGIN SESSION USER</>;
+      return <></>;
     } else {
       return <>{children}</>;
     }
@@ -60,10 +69,9 @@ const ProtectedRoute = ({ children }) => {
     return <>{<Navigate to="/" />}</>;
   }
 
-
 };
 ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoute;

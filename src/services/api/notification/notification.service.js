@@ -1,6 +1,6 @@
 import axios from "@services/axios";
 import { deleteAPI, getAPI, putAPI } from "@services/utils/fetchData";
-import { freshAccessToken } from "@services/utils/tokenUtils";
+import { newestAccessToken } from "@services/utils/tokenUtils";
 export const notificationService = {
   dispatch: null,
   // notificationService.setDispatch
@@ -9,15 +9,15 @@ export const notificationService = {
   },
 
   getUserNotifications: async function () {
-    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI("/notification", accessToken);
   },
   markNotificationAsRead: async function (messageId) {
-    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await putAPI(`/notification/${messageId}`, {}, accessToken);
   },
   deleteNotification: async function (messageId) {
-    let accessToken = await freshAccessToken(sessionStorage.getItem('accessToken'), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await deleteAPI(`/notification/${messageId}`, accessToken);
   },
 };

@@ -1,5 +1,5 @@
 import {
-  updateLoggedUser,
+  updateLoggedUserProfile,
   emptyLoggedUser,
 } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
@@ -35,16 +35,13 @@ export class Utils {
   }
 
 
-  static clearStore = ({
+  static clearStore = (
     dispatch
 
-  }) => {
+  ) => {
     dispatch(emptyLoggedUser());
-
-
-
     sessionStorage.removeItem('accessToken')
-    sessionStorage.removeItem('logged')
+
 
   };
 

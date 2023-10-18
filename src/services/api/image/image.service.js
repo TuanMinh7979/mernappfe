@@ -1,6 +1,6 @@
 import axios from "@services/axios";
 import { deleteAPI, getAPI, postAPI } from "@services/utils/fetchData";
-import { freshAccessToken } from "@services/utils/tokenUtils";
+import { newestAccessToken } from "@services/utils/tokenUtils";
 export const imageService = {
   dispatch: null,
 
@@ -11,18 +11,18 @@ export const imageService = {
 
   getUserImages: async function (userId) {
 
-    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     console.log("-------------->>>>>>getUserImages after refresh", accessToken);
     return getAPI(`/images/${userId}`, accessToken);
   },
 
   addImage: async function (url, data) {
-    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     return await postAPI(url, { image: data }, accessToken);
   },
 
   removeImage: async function (url) {
-    let accessToken = await freshAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
     return await deleteAPI(url, accessToken);
   },
 };

@@ -34,7 +34,7 @@ import { followerService } from "@services/api/follow/follow.service";
 import { imageService } from "@services/api/image/image.service";
 import { postService } from "@services/api/post/post.service";
 const Header = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
   const settingsRef = useRef(null);
@@ -148,11 +148,7 @@ const Header = () => {
 
 
 
-  useEffect(() => {
-    console.log(">>>>>header update token ", token.substring(token.length - 6));
-    // imageService.setAccessToken(token)
-    // userService.setAccessToken(token)
-  }, [token])
+
   const openChatPage = async (notification) => {
     try {
       const params = ChatUtils.makeDetailConversationUrlParam(
@@ -181,7 +177,7 @@ const Header = () => {
 
   const onLogout = async () => {
     try {
-      Utils.clearStore({ dispatch });
+      Utils.clearStore( dispatch );
       await userService.logoutUser();
       navigate("/");
     } catch (error) {

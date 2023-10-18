@@ -1,4 +1,4 @@
-import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
+import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
 import { followerService } from '@services/api/follow/follow.service';
 
 import { Utils } from '@services/utils/utils.service';
@@ -78,7 +78,7 @@ export class FollowersUtils {
       // update blocked list in state
       setMyBlockedUsers(newProfile?.blocked);
       // update profile in redux
-      dispatch(updateLoggedUser({ token, profile: newProfile }));
+      dispatch(updateLoggedUserProfile(newProfile ));
     });
 
     socketService?.socket?.on('unblocked user id', (data) => {
@@ -87,7 +87,7 @@ export class FollowersUtils {
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
       setMyBlockedUsers(newProfile?.blocked);
-      dispatch(updateLoggedUser({ token, profile: newProfile }));
+      dispatch(updateLoggedUserProfile( newProfile ));
     });
   }
 
