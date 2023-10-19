@@ -13,8 +13,8 @@ const toastIcons = [
   { success: checkIcon, color: "#5cb85c" },
   { error: errorIcon, color: "#d9534f" },
   { info: infoIcon, color: "#5bc0de" },
-  { warning: warningIcon, color: "#f0ad4e" },
-  { clientError: errorIcon, color: "crimson" },
+
+  { clientError: errorIcon, color: "orange" },
 ];
 
 const toastsSlice = createSlice({

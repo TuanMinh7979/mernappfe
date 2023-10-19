@@ -12,13 +12,16 @@ export const newestAccessToken = async (dispatch) => {
     return existAccessToken;
   } else {
     try {
+      Utils.displayError("Refresh token", dispatch)
       const res = await getAPI(`/refresh_token`);
       dispatch(updateLoggedUserProfile(res.data.user));
       sessionStorage.setItem("accessToken", res.data.token);
-      return;
+      return res.data.token;
     } catch (e) {
+      Utils.remToasts(dispatch)
+      Utils.displayError(e, dispatch)
       Utils.clearStore(dispatch);
-      return;
+      return existAccessToken;
     }
   }
 };

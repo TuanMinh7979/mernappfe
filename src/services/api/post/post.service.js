@@ -24,10 +24,7 @@ export const postService = {
     return await getAPI(`/post/all/${page}`, accessToken);
   },
   getReactionsByUsername: async function (username) {
-    let accessToken = await newestAccessToken(
-
-      this.dispatch
-    );
+    let accessToken = await newestAccessToken(this.dispatch);
     return await getAPI(`/post/reactions/username/${username}`, accessToken);
   },
   getSinglePostReactionByUsername: async function (

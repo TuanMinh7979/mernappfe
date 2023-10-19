@@ -35,6 +35,7 @@ export class Utils {
   };
 
   static displayError(error, dispatch) {
+    console.log("----------error", error);
     let message = "";
     let type = "error";
     if (error?.response?.data?.message) {

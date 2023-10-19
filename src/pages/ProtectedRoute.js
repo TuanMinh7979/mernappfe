@@ -8,7 +8,7 @@ import { useState } from "react";
 import {
   isAccessTokenExist,
   isAccessTokenValid,
-  newestAccessToken,
+
 } from "@services/utils/tokenUtils";
 import { getAPI } from "@services/utils/fetchData";
 import { updateLoggedUserProfile } from "@redux/reducers/user/user.reducer";
