@@ -60,13 +60,13 @@ const TimeLine = ({ userProfileData, loading }) => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
   useEffectOnce(() => {
     const fetchInitData = async () => {
-      await newestAccessToken(token, dispatch);
+      await newestAccessToken( dispatch);
       getMyIdols();
       getReactionsByUsername();
     };
@@ -84,7 +84,7 @@ const TimeLine = ({ userProfileData, loading }) => {
       );
       dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

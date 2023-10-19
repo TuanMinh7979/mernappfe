@@ -17,12 +17,12 @@ export const imageService = {
   },
 
   addImage: async function (url, data) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await postAPI(url, { image: data }, accessToken);
   },
 
   removeImage: async function (url) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await deleteAPI(url, accessToken);
   },
 };

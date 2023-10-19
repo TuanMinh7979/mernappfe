@@ -139,7 +139,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
 
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

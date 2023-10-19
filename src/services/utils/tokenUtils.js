@@ -11,9 +11,17 @@ export const newestAccessToken = async (dispatch) => {
   if (isAccessTokenValid(existAccessToken)) {
     return existAccessToken;
   } else {
-    const res = await getAPI(`/refresh_token`);
-    dispatch(updateLoggedUserProfile(res.data.user));
-    sessionStorage.setItem("accessToken", res.data.token);
+    try {
+      const res = await getAPI(`/refresh_token`);
+      dispatch(updateLoggedUserProfile(res.data.user));
+      sessionStorage.setItem("accessToken", res.data.token);
+      return
+    } catch (e) {
+      console.log("???????????????????????---------------------------ERROR 3", e);
+      Utils.clearStore(dispatch)
+      return
+    }
+
   }
 };
 
@@ -23,5 +31,6 @@ export const isAccessTokenExist = (tk) => {
 
 export const isAccessTokenValid = (tk) => {
   const access_tokenDecode = jwt_decode(tk);
+  console.log(access_tokenDecode.exp, "__________", Date.now() / 1000);
   return access_tokenDecode.exp >= Date.now() / 1000;
 };

@@ -14,6 +14,7 @@ const toastIcons = [
   { error: errorIcon, color: "#d9534f" },
   { info: infoIcon, color: "#5bc0de" },
   { warning: warningIcon, color: "#f0ad4e" },
+  { clientError: errorIcon, color: "crimson" },
 ];
 
 const toastsSlice = createSlice({
@@ -23,7 +24,7 @@ const toastsSlice = createSlice({
     updateToastsNewEle: (state, action) => {
       const { message, type } = action.payload;
       const toastIconObject = toastIcons.find((item) => item[type]);
-      
+
       const toastItem = {
         id: state.length,
         description: message,

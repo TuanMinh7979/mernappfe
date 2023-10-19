@@ -55,10 +55,11 @@ const NotificationSetting = () => {
       let newProfile = { ...profile, notifications: settingsFromToggles };
 
       dispatch(updateLoggedUserProfile(newProfile));
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
    
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+
+     Utils.displayError(error ,dispatch);
     }
   };
 

@@ -26,7 +26,7 @@ const Suggestions = () => {
     } catch (error) {
       alert(error)
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

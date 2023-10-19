@@ -28,7 +28,7 @@ const FollowerCard = ({ userData }) => {
       setLoading(false);
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -41,7 +41,7 @@ const FollowerCard = ({ userData }) => {
       setUser(response.data.user);
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -56,7 +56,7 @@ const FollowerCard = ({ userData }) => {
 
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -67,7 +67,7 @@ const FollowerCard = ({ userData }) => {
       await followerService.unblockUser(userInfo?._id);
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

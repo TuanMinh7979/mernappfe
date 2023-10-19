@@ -35,7 +35,7 @@ const CommentInputBox = ({ post }) => {
             setComment('');
         } catch (error) {
          
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+            Utils.displayError(error ,dispatch);
         }
     };
 

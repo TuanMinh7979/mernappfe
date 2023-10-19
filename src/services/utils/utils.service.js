@@ -1,13 +1,13 @@
 import {
-  updateLoggedUserProfile,
+
   emptyLoggedUser,
 } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
 import {
-  updateToastsNewEle,
   removeToasts,
 } from "@redux/reducers/notifications/toasts.reducer";
+import { updateToastsNewEle } from "@redux/reducers/notifications/toasts.reducer";
 import millify from "millify";
 export class Utils {
   static avatarColor() {
@@ -41,14 +41,30 @@ export class Utils {
   ) => {
     dispatch(emptyLoggedUser());
     sessionStorage.removeItem('accessToken')
-
-
   };
 
 
 
-  static updToastsNewEle(message, type, dispatch) {
-    dispatch(updateToastsNewEle({ message, type }));
+  static displayError(error, dispatch) {
+    let message = ""
+    let type = "error"
+    if (error?.response?.data?.message) {
+      message = error.response.data.message
+    } else if (typeof error === 'string') {
+      message = error
+      type = "clientError"
+    }
+
+    if (message) {
+      dispatch(updateToastsNewEle(message, type))
+    }
+
+
+  }
+  static displaySuccess(message, dispatch) {
+
+    dispatch(updateToastsNewEle(message, 'success'));
+
   }
   static remToasts(dispatch) {
     dispatch(removeToasts());
@@ -127,9 +143,6 @@ export class Utils {
   }
 
 
-  static checkIfUserIsOnline(username, onlineUsers) {
-    return onlineUsers.some((user) => user === username?.toLowerCase());
-  }
 
 
 

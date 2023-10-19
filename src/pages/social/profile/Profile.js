@@ -48,7 +48,7 @@ const Profile = () => {
       setUser(res.data.user);
     } catch (error) {
       console.log("---------------------------------<<<>>>", error);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -59,7 +59,7 @@ const Profile = () => {
       setGalleryImages(res.data.images);
     } catch (error) {
       console.log(error);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -97,13 +97,13 @@ const Profile = () => {
 
       const response = await imageService.addImage(url, result);
       if (response) {
-        Utils.updToastsNewEle(response.data.message, "success", dispatch);
+        Utils.displaySuccess(res.data.message, dispatch)
         setHasError(false);
         setHasImage(false);
       }
     } catch (error) {
       setHasError(true);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
   const saveImage = (type) => {
@@ -165,9 +165,9 @@ const Profile = () => {
       setGalleryImages(images);
 
       const response = await imageService.removeImage(`/images/${id}`);
-      Utils.updToastsNewEle(response.data.message, "success", dispatch);
+      Utils.displaySuccess(res.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

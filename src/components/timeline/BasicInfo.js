@@ -41,9 +41,9 @@ const BasicInfo = ({ editableInputs, username, profile, loading, setEditableInpu
   const updateBasicInfo = async () => {
     try {
       const response = await userService.updateBasicInfo(editableInputs);
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      Utils.displaySuccess(res.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

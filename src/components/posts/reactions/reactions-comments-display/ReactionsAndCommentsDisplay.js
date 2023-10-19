@@ -22,7 +22,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -55,7 +55,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
       const response = await postService.getPostCommentsNames(post._id)
       setPostCommentNames([...new Set(response.data.comments.names)])
     } catch (e) {
-      Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
+     Utils.displayError(error ,dispatch);
 
     }
   }

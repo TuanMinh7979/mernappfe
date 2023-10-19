@@ -5,8 +5,7 @@ import Button from '@components/button/Button'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
 import { Utils } from '@services/utils/utils.service'
 import { userService } from '@services/api/user/user.service'
-import useLocalStorage from '@hooks/useLocalStorage'
-import useSessionStorage from '@hooks/useSessionStorage'
+
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -36,7 +35,7 @@ const ChangePassword = () => {
         confirmPassword,
 
       },
-       
+
 
       )
       setCurrentPassword('')
@@ -44,7 +43,7 @@ const ChangePassword = () => {
       setConfirmPassword('')
 
       if (res) {
-        Utils.updToastsNewEle(res.data.message, 'success', dispatch);
+        Utils.displaySuccess(res.data.message, dispatch)
         setTimeout(async () => {
           Utils.clearStore(
             dispatch
@@ -55,7 +54,7 @@ const ChangePassword = () => {
         }, 3000);
       }
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
 
     }
 

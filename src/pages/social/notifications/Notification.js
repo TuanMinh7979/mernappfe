@@ -32,7 +32,7 @@ const Notification = () => {
 
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
 
@@ -47,7 +47,7 @@ const Notification = () => {
       await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
 
@@ -55,9 +55,9 @@ const Notification = () => {
     event.stopPropagation()
     try {
       const response = await notificationService.deleteNotification(notificationId);
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      Utils.displaySuccess(res.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
   useEffect(() => {

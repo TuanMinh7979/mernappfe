@@ -93,7 +93,8 @@ export class ChatUtils {
         setToShowConversationList([...newtoShowConversationList]);
 
         if (!data.isRead && data.receiverUsername === profile.username) {
-          Utils.updToastsNewEle('You have a new message', 'success', dispatch);
+  
+         Utils.displaySuccess('You have a new message', dispatch)
         }
 
 

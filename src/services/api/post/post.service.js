@@ -25,7 +25,7 @@ export const postService = {
   },
   getReactionsByUsername: async function (username) {
     let accessToken = await newestAccessToken(
-      sessionStorage.getItem("accessToken"),
+
       this.dispatch
     );
     return await getAPI(`/post/reactions/username/${username}`, accessToken);
@@ -58,36 +58,36 @@ export const postService = {
     );
   },
   getReactionDocsOfAPost: async function (postId) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI(`/post/reactions/${postId}`, accessToken);
   },
   createComment: async function (body) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await postAPI("/post/comment", body, accessToken);
   },
   getPostCommentsNames: async function (postId) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI(`/post/commentsnames/${postId}`, accessToken);
   },
   getPostComments: async function (postId) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI(`/post/comments/${postId}`, accessToken);
   },
   // update post
   updatePostWithNewImage: async function (postId, body) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await putAPI(`/post/image/${postId}`, body, accessToken);
   },
   updatePost: async function (postId, body) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await putAPI(`/post/${postId}`, body, accessToken);
   },
   deletePost: async function (postId) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await deleteAPI(`/post/${postId}`, accessToken);
   },
   getPostsWithImages: async function (page) {
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI(`/post/images/${page}`, accessToken);
   },
 };

@@ -205,14 +205,14 @@ const EditPost = () => {
             setLoading(false);
             dispatch(closeModal());
             dispatch(emptyPost());
-            Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+            Utils.displaySuccess(res.data.message, dispatch)
 
 
 
         } catch (error) {
             setLoading(false);
             console.log("ERR", error);
-            Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+           Utils.displayError(error ,dispatch);
         }
     };
 

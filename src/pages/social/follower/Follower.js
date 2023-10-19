@@ -35,7 +35,7 @@ const Follower = () => {
       }
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }, [profile, dispatch]);
 
@@ -70,7 +70,7 @@ const Follower = () => {
 
       await followerService.blockUser(toBlockUser?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -82,7 +82,7 @@ const Follower = () => {
 
       await followerService.unblockUser(user?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
   //  END block and unBlock

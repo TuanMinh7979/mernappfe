@@ -50,7 +50,7 @@ const People = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }, [currentPage, dispatch]);
 
@@ -81,7 +81,7 @@ const People = () => {
     try {
       await followerService.followUser(user?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -89,7 +89,7 @@ const People = () => {
     try {
       await followerService.unFollowUser(idol?._id, profile?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
   //  END follow and unfollow

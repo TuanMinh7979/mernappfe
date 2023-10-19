@@ -24,7 +24,7 @@ const MessageDisplay = ({ chatMessages, profile }) => {
     try {
       await chatService.updateMessageReaction(body);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -58,7 +58,7 @@ const MessageDisplay = ({ chatMessages, profile }) => {
         type
       );
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

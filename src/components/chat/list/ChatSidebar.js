@@ -54,7 +54,7 @@ const ChatSidebar = () => {
         }
       } catch (error) {
         setIsSearching(false);
-        Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+        Utils.displayError(error ,dispatch);
       }
     },
     [dispatch]
@@ -102,7 +102,7 @@ const ChatSidebar = () => {
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

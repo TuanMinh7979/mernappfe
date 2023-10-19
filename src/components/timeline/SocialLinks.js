@@ -47,9 +47,9 @@ const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEdit
   const updateSocialLinks = async () => {
     try {
       const response = await userService.updateSocialLinks(editableSocialInputs);
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      Utils.displaySuccess(res.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

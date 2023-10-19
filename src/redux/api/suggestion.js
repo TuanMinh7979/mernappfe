@@ -9,7 +9,7 @@ const fetchUpdSugUsers = createAsyncThunk('user/getSuggestions', async (name, { 
 
     return response.data;
   } catch (error) {
-    Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+    Utils.displayError(error ,dispatch);
   }
 });
 

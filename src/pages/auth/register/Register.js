@@ -52,7 +52,7 @@ const Register = () => {
                 avatarImage
             })
             setLoading(false)
-            Utils.updToastsNewEle("Success", 'success', dispatch);
+            Utils.displaySuccess(res.data.message, dispatch)
 
 
         } catch (error) {

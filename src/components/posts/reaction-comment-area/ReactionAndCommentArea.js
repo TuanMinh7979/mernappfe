@@ -108,7 +108,7 @@ const ReactionAndCommentArea = ({ post }) => {
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
   const updateReactionsPropertyOfCurrentPost = (

@@ -25,8 +25,7 @@ const Photos = () => {
     } catch (error) {
       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", error);
       setLoading(false)
-      // Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
-      Utils.updToastsNewEle(error.msg, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
   const getMyIdols = async () => {
@@ -37,7 +36,7 @@ const Photos = () => {
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
 

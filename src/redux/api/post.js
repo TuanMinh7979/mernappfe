@@ -7,7 +7,7 @@ const fetchPosts = createAsyncThunk('post/fetchPosts', async (name, { dispatch }
     const response = await postService.getAllPosts(1);
     return response.data;
   } catch (error) {
-    Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+    Utils.displayError(error ,dispatch);
   }
 });
 

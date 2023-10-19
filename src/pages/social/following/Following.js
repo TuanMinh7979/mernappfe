@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Following = () => {
-  const { profile, token} = useSelector((state) => state.user);
+  const { profile, token } = useSelector((state) => state.user);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -26,8 +26,9 @@ const Following = () => {
       setFollowing(response.data.following);
       setLoading(false);
     } catch (error) {
+      console.log("--------------", error);
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -35,7 +36,7 @@ const Following = () => {
     try {
       await followerService.followUser(user?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -44,7 +45,7 @@ const Following = () => {
 
       await followerService.unFollowUser(user?._id, profile?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

@@ -35,7 +35,7 @@ const ChatWindow = () => {
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -47,7 +47,7 @@ const ChatWindow = () => {
       );
       setReceiver(response.data.user);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -103,7 +103,7 @@ const ChatWindow = () => {
       }
     } catch (error) {
 
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

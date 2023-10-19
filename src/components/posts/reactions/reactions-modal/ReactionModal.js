@@ -36,7 +36,7 @@ const ReactionModal = () => {
             setAllReactionsOfCurPost(orderedPosts);
 
         } catch (error) {
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+            Utils.displayError(error ,dispatch);
         }
     };
     useEffectOnce(() => {

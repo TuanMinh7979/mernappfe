@@ -78,7 +78,7 @@ const Header = () => {
     } catch (error) {
 
       console.log(error);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
   const onMarkAsRead = async (notification) => {
@@ -90,7 +90,7 @@ const Header = () => {
       );
       await notificationService.markNotificationAsRead(notification._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -99,9 +99,9 @@ const Header = () => {
       const response = await notificationService.deleteNotification(
         notificationId
       );
-      Utils.updToastsNewEle(response.data.message, "success", dispatch);
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -171,7 +171,7 @@ const Header = () => {
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -181,7 +181,7 @@ const Header = () => {
       await userService.logoutUser();
       navigate("/");
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 

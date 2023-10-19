@@ -34,7 +34,7 @@ export const userService = {
   },
   getUserProfileAndPosts: async function (username, userId) {
     let accessToken = await newestAccessToken(
-      sessionStorage.getItem("accessToken"),
+
       this.dispatch
     );
 

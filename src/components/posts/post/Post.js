@@ -71,12 +71,12 @@ const Post = ({ post, showIcons }) => {
     try {
       const response = await postService.deletePost(reduxPost._id);
       if (response) {
-        Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+        Utils.displaySuccess(res.data.message, dispatch)
         dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));
         dispatch(emptyPost());
       }
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

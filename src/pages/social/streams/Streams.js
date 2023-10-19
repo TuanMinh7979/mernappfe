@@ -16,7 +16,7 @@ import { useState } from "react";
 import { postService } from "@services/api/post/post.service";
 import { fetchPosts } from "@redux/api/post";
 
-import {  uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
 
@@ -51,7 +51,7 @@ const Streams = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   // ? end app post
@@ -63,7 +63,7 @@ const Streams = () => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   // ?  END get logged user idols
@@ -114,8 +114,8 @@ const Streams = () => {
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (e) {
       console.log(e);
-      // Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
-      Utils.updToastsNewEle(e.msg, 'error', dispatch);
+      //Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
 
     }
   }
