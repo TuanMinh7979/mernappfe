@@ -50,6 +50,7 @@ const Streams = () => {
       }
       setLoading(false);
     } catch (error) {
+
       setLoading(false);
       Utils.displayError(error, dispatch);
     }
@@ -63,6 +64,7 @@ const Streams = () => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
+  
       Utils.displayError(error, dispatch);
     }
   };
@@ -112,9 +114,9 @@ const Streams = () => {
 
       const rs = await postService.getReactionsByUsername(profile?.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
-    } catch (e) {
-      console.log(e);
-      //Utils.displayError(error ,dispatch);
+    } catch (error) {
+      
+
       Utils.displayError(error, dispatch);
 
     }

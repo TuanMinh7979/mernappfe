@@ -205,13 +205,13 @@ const EditPost = () => {
             setLoading(false);
             dispatch(closeModal());
             dispatch(emptyPost());
-            Utils.displaySuccess(res.data.message, dispatch)
+            Utils.displaySuccess(response.data.message, dispatch)
 
 
 
         } catch (error) {
             setLoading(false);
-            console.log("ERR", error);
+    
            Utils.displayError(error ,dispatch);
         }
     };

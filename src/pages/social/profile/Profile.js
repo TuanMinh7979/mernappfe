@@ -47,8 +47,8 @@ const Profile = () => {
       setUserProfileData(res.data);
       setUser(res.data.user);
     } catch (error) {
-      console.log("---------------------------------<<<>>>", error);
-     Utils.displayError(error ,dispatch);
+
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -58,8 +58,8 @@ const Profile = () => {
 
       setGalleryImages(res.data.images);
     } catch (error) {
-      console.log(error);
-     Utils.displayError(error ,dispatch);
+
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -97,13 +97,14 @@ const Profile = () => {
 
       const response = await imageService.addImage(url, result);
       if (response) {
-        Utils.displaySuccess(res.data.message, dispatch)
+        Utils.displaySuccess(response.data.message, dispatch);
         setHasError(false);
         setHasImage(false);
       }
     } catch (error) {
       setHasError(true);
-     Utils.displayError(error ,dispatch);
+
+      Utils.displayError(error, dispatch);
     }
   };
   const saveImage = (type) => {
@@ -140,13 +141,12 @@ const Profile = () => {
   useEffectOnce(() => {
     // asynchonus getUserProfileAndPosts and getUserImages start as the same
     const fetchInitData = async () => {
-      await newestAccessToken( dispatch);
+      await newestAccessToken(dispatch);
       fetchUserProfileAndPost();
       fetchUserImages();
       setLoading(false);
     };
     fetchInitData();
-
   });
 
   const getShowingImageUrlFromPost = (post) => {
@@ -165,9 +165,10 @@ const Profile = () => {
       setGalleryImages(images);
 
       const response = await imageService.removeImage(`/images/${id}`);
-      Utils.displaySuccess(res.data.message, dispatch)
+      Utils.displaySuccess(response.data.message, dispatch);
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -216,24 +217,22 @@ const Profile = () => {
               onSelectFileImage={onSelectFileImage}
               onSaveImage={saveImage}
               cancelFileSelection={cancelFileSelection}
-              removeBackgroundImage={() => { }}
+              removeBackgroundImage={() => {}}
               galleryImages={galleryImages}
             ></BackgroundHeader>
           </div>
 
           <div className="profile-content">
-            {displayContent === 'timeline' && <TimeLine userProfileData={userProfileData} loading={loading} />}
-            {displayContent === 'followers' && <FollowerCard useData={user} />}
-            {displayContent === 'gallery' && <>
-
-              {
-                galleryImages.length > 0 && (
+            {displayContent === "timeline" && (
+              <TimeLine userProfileData={userProfileData} loading={loading} />
+            )}
+            {displayContent === "followers" && <FollowerCard useData={user} />}
+            {displayContent === "gallery" && (
+              <>
+                {galleryImages.length > 0 && (
                   <>
                     <div className="imageGrid-container">
-
-
-
-                      {galleryImages.map((el) =>
+                      {galleryImages.map((el) => (
                         <div className="" key={el._id}>
                           <GalleryImage
                             post={el}
@@ -241,29 +240,26 @@ const Profile = () => {
                             showDelete={username === profile?.username}
                             imgSrc={getShowingImageUrlFromPost(el)}
                             onClick={() => {
-                              setCurImageUrl(getShowingImageUrlFromPost(el))
-                              setShowImageModal(!showImageModal)
+                              setCurImageUrl(getShowingImageUrlFromPost(el));
+                              setShowImageModal(!showImageModal);
                             }}
-
                             onRemoveImage={(e) => {
-                              e.stopPropagation()
-                              setToDeleteGalleryImage(el)
-                              dispatch(updateModalIsDeleteDialogOpen(!isDeleteDialogOpen))
+                              e.stopPropagation();
+                              setToDeleteGalleryImage(el);
+                              dispatch(
+                                updateModalIsDeleteDialogOpen(
+                                  !isDeleteDialogOpen
+                                )
+                              );
                             }}
-                          >
-                          </GalleryImage>
+                          ></GalleryImage>
                         </div>
-                      )}
-
-
-
+                      ))}
                     </div>
-
-
                   </>
-                )
-              }
-            </>}
+                )}
+              </>
+            )}
 
             {displayContent === "change password" && <ChangePassword />}
             {displayContent === "notifications" && <NotificationSetting />}

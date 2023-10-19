@@ -43,11 +43,11 @@ const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEdit
     facebookPlacehoder: 'Add your Facebook account link',
     youtubePlacehoder: 'Add your YouTube account link'
   };
-  let { token } = useSelector((state) => state.user);
+  
   const updateSocialLinks = async () => {
     try {
       const response = await userService.updateSocialLinks(editableSocialInputs);
-      Utils.displaySuccess(res.data.message, dispatch)
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
       Utils.displayError(error ,dispatch);
     }

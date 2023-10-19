@@ -37,11 +37,10 @@ const BasicInfo = ({ editableInputs, username, profile, loading, setEditableInpu
     facebookPlacehoder: '',
     youtubePlacehoder: ''
   };
-  const { token } = useSelector((state) => state.user);
   const updateBasicInfo = async () => {
     try {
       const response = await userService.updateBasicInfo(editableInputs);
-      Utils.displaySuccess(res.data.message, dispatch)
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
       Utils.displayError(error ,dispatch);
     }

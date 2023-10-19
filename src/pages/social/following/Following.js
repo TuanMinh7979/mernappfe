@@ -26,7 +26,7 @@ const Following = () => {
       setFollowing(response.data.following);
       setLoading(false);
     } catch (error) {
-      console.log("--------------", error);
+
       setLoading(false);
       Utils.displayError(error ,dispatch);
     }

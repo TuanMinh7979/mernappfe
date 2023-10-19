@@ -23,7 +23,7 @@ const Photos = () => {
       setPosts(response.data.posts)
       setLoading(false)
     } catch (error) {
-      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", error);
+
       setLoading(false)
       Utils.displayError(error ,dispatch);
     }

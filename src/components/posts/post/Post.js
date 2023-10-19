@@ -71,7 +71,7 @@ const Post = ({ post, showIcons }) => {
     try {
       const response = await postService.deletePost(reduxPost._id);
       if (response) {
-        Utils.displaySuccess(res.data.message, dispatch)
+        Utils.displaySuccess(response.data.message, dispatch)
         dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));
         dispatch(emptyPost());
       }

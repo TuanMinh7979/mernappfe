@@ -14,9 +14,9 @@ const Chat = () => {
 
   const reduxChat = useSelector((state) => state.chat);
 
-  const { profile, token } = useSelector((state) => state.user);
+
   useEffectOnce(() => {
-    dispatch(fetchConversationList(token));
+    dispatch(fetchConversationList());
   });
 
   const [searchParams] = useSearchParams();

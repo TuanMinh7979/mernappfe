@@ -44,7 +44,7 @@ const Register = () => {
             setLoading(true)
             const avatarColor = Utils.avatarColor()
             const avatarImage = Utils.generateAvatar(formData.username.charAt(0).toUpperCase(), avatarColor)
-            const rs = await authService.signUp({
+            const response = await authService.signUp({
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
@@ -52,7 +52,7 @@ const Register = () => {
                 avatarImage
             })
             setLoading(false)
-            Utils.displaySuccess(res.data.message, dispatch)
+            Utils.displaySuccess(response.data.message, dispatch)
 
 
         } catch (error) {

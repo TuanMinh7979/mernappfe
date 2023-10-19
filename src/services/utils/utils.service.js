@@ -1,12 +1,7 @@
-import {
-
-  emptyLoggedUser,
-} from "@redux/reducers/user/user.reducer";
+import { emptyLoggedUser } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
-import {
-  removeToasts,
-} from "@redux/reducers/notifications/toasts.reducer";
+import { removeToasts } from "@redux/reducers/notifications/toasts.reducer";
 import { updateToastsNewEle } from "@redux/reducers/notifications/toasts.reducer";
 import millify from "millify";
 export class Utils {
@@ -34,42 +29,33 @@ export class Utils {
     return canvas.toDataURL("image/png");
   }
 
-
-  static clearStore = (
-    dispatch
-
-  ) => {
+  static clearStore = (dispatch) => {
     dispatch(emptyLoggedUser());
-    sessionStorage.removeItem('accessToken')
+    sessionStorage.removeItem("accessToken");
   };
 
-
-
   static displayError(error, dispatch) {
-    let message = ""
-    let type = "error"
+    let message = "";
+    let type = "error";
     if (error?.response?.data?.message) {
-      message = error.response.data.message
-    } else if (typeof error === 'string') {
-      message = error
-      type = "clientError"
+      message = error.response.data.message;
+    } else if (error.message) {
+      message = error.message;
+    } else if (typeof error === "string") {
+      message = error;
+      type = "clientError";
     }
 
-    if (message) {
-      dispatch(updateToastsNewEle(message, type))
+    if (message && type) {
+      dispatch(updateToastsNewEle({ message, type }));
     }
-
-
   }
   static displaySuccess(message, dispatch) {
-
-    dispatch(updateToastsNewEle(message, 'success'));
-
+    dispatch(updateToastsNewEle({ message, type: "success" }));
   }
   static remToasts(dispatch) {
     dispatch(removeToasts());
   }
-
 
   static generateString(length) {
     const characters =
@@ -91,8 +77,11 @@ export class Utils {
   }
 
   static checkIfUserIsBlocked(myBlockedByArray, postAuthorUserId) {
-
-    return myBlockedByArray && myBlockedByArray.length >= 0 && myBlockedByArray.some((id) => id === postAuthorUserId);
+    return (
+      myBlockedByArray &&
+      myBlockedByArray.length >= 0 &&
+      myBlockedByArray.some((id) => id === postAuthorUserId)
+    );
   }
 
   static checkIfUserIsFollowed(idols, postCreatorId, loggedUserId) {
@@ -101,21 +90,22 @@ export class Utils {
     );
   }
 
-
   static getImage(imageId, imageVersion) {
-    return imageId && imageVersion ? this.appImageUrl(imageVersion, imageId) : '';
+    return imageId && imageVersion
+      ? this.appImageUrl(imageVersion, imageId)
+      : "";
   }
 
   static appImageUrl(version, id) {
-    if (typeof version === 'string' && typeof id === 'string') {
-      version = version.replace(/['"]+/g, '');
-      id = id.replace(/['"]+/g, '');
+    if (typeof version === "string" && typeof id === "string") {
+      version = version.replace(/['"]+/g, "");
+      id = id.replace(/['"]+/g, "");
     }
     return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
   }
 
   static firstLetterUpperCase(word) {
-    if (!word) return '';
+    if (!word) return "";
     return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
   }
 
@@ -126,7 +116,7 @@ export class Utils {
       if (value > 0) {
         const reactionObject = {
           type: key,
-          value
+          value,
         };
         postReactions.push(reactionObject);
       }
@@ -142,19 +132,14 @@ export class Utils {
     }
   }
 
-
-
-
-
   static renameFile(element) {
     // change to png image file
 
-    const fileName = element.name.split('.').slice(0, -1).join('.');
-    const blob = element.slice(0, element.size, 'image/png');
+    const fileName = element.name.split(".").slice(0, -1).join(".");
+    const blob = element.slice(0, element.size, "image/png");
 
-    const newFile = new File([blob], `${fileName}.png`, { type: 'image/png' });
+    const newFile = new File([blob], `${fileName}.png`, { type: "image/png" });
 
     return newFile;
   }
-
 }

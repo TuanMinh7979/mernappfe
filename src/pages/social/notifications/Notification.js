@@ -55,7 +55,7 @@ const Notification = () => {
     event.stopPropagation()
     try {
       const response = await notificationService.deleteNotification(notificationId);
-      Utils.displaySuccess(res.data.message, dispatch)
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
       Utils.displayError(error ,dispatch);
     }

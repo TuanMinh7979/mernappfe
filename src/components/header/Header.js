@@ -77,7 +77,6 @@ const Header = () => {
       setNotifications(mapNotis);
     } catch (error) {
 
-      console.log(error);
      Utils.displayError(error ,dispatch);
     }
   };

@@ -9,7 +9,7 @@ export const chatService = {
   },
   getConversationListService: async function () {
     let accessToken = await newestAccessToken(this.dispatch);
-    console.log("__________________>>>>>>", accessToken);
+
     return await getAPI("/chat/message/conversations", accessToken);
   },
   markMessagesAsRead: async function (senderId, receiverId) {

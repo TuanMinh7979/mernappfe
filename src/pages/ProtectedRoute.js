@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
 const ProtectedRoute = ({ children }) => {
   const dispatch = useDispatch()
+  const accessTk = sessionStorage.getItem('accessToken')
 
   const freshLoggedUserData = async () => {
     let existAccessToken = sessionStorage.getItem("accessToken");
@@ -25,11 +26,11 @@ const ProtectedRoute = ({ children }) => {
         try {
           //  fresh current profile
           const res = await getAPI("/current-user", existAccessToken);
-          console.log(res);
+      
           dispatch(updateLoggedUserProfile(res.data.user));
 
         } catch (e) {
-          console.log("???????????????????????ERROR 1", e);
+
           Utils.clearStore(dispatch)
         }
       } else {
@@ -39,7 +40,7 @@ const ProtectedRoute = ({ children }) => {
           dispatch(updateLoggedUserProfile(res.data.user));
           sessionStorage.setItem("accessToken", res.data.token);
         } catch (e) { 
-          console.log("???????????????????????ERROR 2", e);
+
           Utils.clearStore(dispatch)
 
 
@@ -65,7 +66,7 @@ const ProtectedRoute = ({ children }) => {
 
 
 
-  if (sessionStorage.getItem('accessToken') ) {
+  if (accessTk) {
     if (!loggedProfileId) {
       // loading profile or profile and new tokens
       //when reload refresh login session user time if logged == true => render empty

@@ -54,7 +54,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
     try {
       const response = await postService.getPostCommentsNames(post._id)
       setPostCommentNames([...new Set(response.data.comments.names)])
-    } catch (e) {
+    } catch (error) {
      Utils.displayError(error ,dispatch);
 
     }

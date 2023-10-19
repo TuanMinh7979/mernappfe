@@ -4,24 +4,16 @@ import { fetchConversationList } from "@redux/api/chat";
 const initialState = {
   conversationList: [],
 
-  isLoading: false
-
-
+  isLoading: false,
 };
 
 const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-
     updateConversationList: (state, action) => {
-
       state.conversationList = action.payload;
-
-    }
-
-
-
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchConversationList.pending, (state) => {
@@ -33,7 +25,6 @@ const chatSlice = createSlice({
       state.isLoading = false;
       const sortedList = orderBy(list, ["createdAt"], ["desc"]);
       state.conversationList = [...sortedList];
-    
     });
     builder.addCase(fetchConversationList.rejected, (state) => {
       state.isLoading = false;
@@ -41,7 +32,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const {
-  updateConversationList
-} = chatSlice.actions;
+export const { updateConversationList } = chatSlice.actions;
 export default chatSlice.reducer;
