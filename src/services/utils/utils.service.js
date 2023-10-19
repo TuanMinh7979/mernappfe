@@ -73,7 +73,7 @@ export class Utils {
       version = version.replace(/['"]+/g, "");
       id = id.replace(/['"]+/g, "");
     }
-    return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
+    return `${process.env.REACT_APP_CLOUD_IMAGE_URL}/image/upload/v${version}/${id}`;
   }
 
   static checkIfUserIsBlocked(myBlockedByArray, postAuthorUserId) {
@@ -101,7 +101,7 @@ export class Utils {
       version = version.replace(/['"]+/g, "");
       id = id.replace(/['"]+/g, "");
     }
-    return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
+    return `${process.env.REACT_APP_CLOUD_IMAGE_URL}/image/upload/v${version}/${id}`;
   }
 
   static firstLetterUpperCase(word) {
