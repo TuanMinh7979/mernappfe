@@ -11,7 +11,7 @@ export const imageService = {
 
   getUserImages: async function (userId) {
 
-    let accessToken = await newestAccessToken(sessionStorage.getItem("accessToken"), this.dispatch);
+    let accessToken = await newestAccessToken( this.dispatch);
     console.log("-------------->>>>>>getUserImages after refresh", accessToken);
     return getAPI(`/images/${userId}`, accessToken);
   },

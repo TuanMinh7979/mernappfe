@@ -140,7 +140,7 @@ const Profile = () => {
   useEffectOnce(() => {
     // asynchonus getUserProfileAndPosts and getUserImages start as the same
     const fetchInitData = async () => {
-      await newestAccessToken(token, dispatch);
+      await newestAccessToken( dispatch);
       fetchUserProfileAndPost();
       fetchUserImages();
       setLoading(false);
