@@ -20,15 +20,16 @@ const ProfileHeader = ({
   tabItems,
   hasError,
   hideSettings,
-  onSelectFileImage,
-  onSaveImage,
-  cancelFileSelection,
-  removeBackgroundImage,
+  onSelectFile,
+  saveImage,
+  cancelSaveChanges,
+
   galleryImages,
 }) => {
   const [selectedBackgroundUrl, setSelectedBackgroundUrl] = useState("");
   const [selectedProfileImageUrl, setSelectedProfileImageUrl] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
+
   const [isOpenBackgroundDropdown, setIsOpenBackgroundDropdown] =
     useState(false);
   const [showGalleryImagesModal, setShowGalleryImagesModal] = useState(false);
@@ -85,7 +86,7 @@ const ProfileHeader = ({
             setSelectedBackgroundUrl(
               Utils.getImage(data?.imgId, data?.imgVersion)
             );
-            onSelectFileImage( data, "updatebackground");
+            onSelectFile(data, "updatebackground");
           }}
         />
       )}
@@ -111,7 +112,7 @@ const ProfileHeader = ({
                       disabled={false}
                       handleClick={() => {
                         setShowSpinner(false);
-                        cancelFileSelection();
+                        cancelSaveChanges();
                         hideSaveChangesContainer();
                       }}
                     />
@@ -121,10 +122,7 @@ const ProfileHeader = ({
                       disabled={false}
                       handleClick={() => {
                         setShowSpinner(true);
-                        const type = selectedBackgroundUrl
-                          ? "savebackground"
-                          : "saveprofile";
-                        onSaveImage(type);
+                        saveImage()
                       }}
                     />
                   </div>
@@ -185,7 +183,7 @@ const ProfileHeader = ({
                         URL.createObjectURL(e.target.files[0])
                       );
 
-                      onSelectFileImage(e.target.files[0], "profile");
+                      onSelectFile(e.target.files[0], "profile");
                     }}
                   />
                   <label onClick={() => profileImageRef.current.click()}>
@@ -212,7 +210,7 @@ const ProfileHeader = ({
                       URL.createObjectURL(e.target.files[0])
                     );
 
-                    onSelectFileImage(e.target.files[0], "background");
+                    onSelectFile(e.target.files[0], "background");
                   }}
                 />
                 <label
@@ -234,9 +232,8 @@ const ProfileHeader = ({
                   {data.show && (
                     <li className="banner-nav-item">
                       <div
-                        className={`banner-nav-item-name ${
-                          tab === data.key.toLowerCase() ? "active" : ""
-                        }`}
+                        className={`banner-nav-item-name ${tab === data.key.toLowerCase() ? "active" : ""
+                          }`}
                         onClick={() => onClick(data.key.toLowerCase())}
                       >
                         {data.icon}
@@ -264,10 +261,10 @@ ProfileHeader.propTypes = {
   tabItems: PropTypes.array,
   hasError: PropTypes.bool,
   hideSettings: PropTypes.bool,
-  onSelectFileImage: PropTypes.func,
-  onSaveImage: PropTypes.func,
-  cancelFileSelection: PropTypes.func,
-  removeBackgroundImage: PropTypes.func,
+  onSelectFile: PropTypes.func,
+  saveImage: PropTypes.func,
+  cancelSaveChanges: PropTypes.func,
+
   galleryImages: PropTypes.array,
 };
 

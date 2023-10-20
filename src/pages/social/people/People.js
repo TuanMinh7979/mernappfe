@@ -20,7 +20,7 @@ import { followerService } from "@services/api/follow/follow.service";
 import { useEffect } from "react";
 import { chatService } from "@services/api/chat/chat.service";
 const People = () => {
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { profile, token } = useSelector((state) => state.user);
@@ -38,19 +38,17 @@ const People = () => {
   const getAllUsers = useCallback(async () => {
     try {
       const response = await userService.getAllUsers(currentPage);
+      console.log("------------>>>>>", response);
       if (response.data.users.length > 0) {
-        setUsers((data) => {
-          const result = [...data, ...response.data.users];
-          const allUsers = uniqBy(result, '_id');
-          return allUsers;
-        });
+
+        setUsers(response.data.users)
       }
       setTotalUserCnt(response.data.totalUsers);
       setMyIdols(response.data.followees)
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   }, [currentPage, dispatch]);
 
@@ -81,7 +79,7 @@ const People = () => {
     try {
       await followerService.followUser(user?._id);
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -89,7 +87,7 @@ const People = () => {
     try {
       await followerService.unFollowUser(idol?._id, profile?._id);
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   //  END follow and unfollow

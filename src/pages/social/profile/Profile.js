@@ -19,7 +19,7 @@ import ImageModal from "@components/image-modal/ImageModal";
 import "./Profile.scss";
 import Dialog from "@components/dialog/Dialog";
 import useEffectOnce from "@hooks/useEffectOnce";
-import { newestAccessToken } from "@services/utils/tokenUtils";
+
 const Profile = () => {
   const { profile } = useSelector((state) => state.user);
 
@@ -64,14 +64,15 @@ const Profile = () => {
   const [hasError, setHasError] = useState(false);
   const [hasImage, setHasImage] = useState(false);
   // type: File || string(url)
-  const [selectedBackgroundImage, setSelectedBackgroundImage] = useState("");
+  const [selectedBackgroundImage, setSelectedBackgroundImage] = useState(null);
+  //  type string(url)
   const [selectedBackgroundFromGallery, setSelectedBackgroundFromGallery] =
     useState({
       imgId: "",
       imgVersion: "",
     });
   // type: File
-  const [selectedProfileImage, setSelectedProfileImage] = useState("");
+  const [selectedProfileImageFile, setSelectedProfileImageFile] = useState(null);
 
   const [fromDbBackgroundUrl, setFromDbBackgroundUrl] = useState("");
   const [galleryImages, setGalleryImages] = useState([]);
@@ -82,11 +83,14 @@ const Profile = () => {
   const [displayContent, setDisplayContent] = useState("timeline");
   const [toDeleteGalleryImage, setToDeleteGalleryImage] = useState(null);
 
+  const [galleryImageToShow, setGalleryImageToShow] = useState("");
+  const [showGalleryImageModal, setShowGalleryImageModal] = useState(false);
+
   const changeTabContent = (data) => {
     setDisplayContent(data);
   };
 
-  const onSelectFileImage = (data, type) => {
+  const onSelectFile = (data, type) => {
     setHasImage(!hasImage);
     if (type == "background") {
       setSelectedBackgroundImage(data);
@@ -96,17 +100,16 @@ const Profile = () => {
         imgVersion: data.imgVersion,
       });
     } else {
-      setSelectedProfileImage(data);
+      setSelectedProfileImageFile(data);
     }
   };
 
-  const saveImageToDB = async (result, type) => {
-    console.log("-----------result to save", result);
+  const saveImageToDB = async (result) => {
+
     try {
-      const url =
-        type === "savebackground" ? "/images/background" : "/images/profile";
+      let url = selectedBackgroundImage ? "/images/background" : "/images/profile";
       let response;
-      if (selectedBackgroundFromGallery) {
+      if (selectedBackgroundFromGallery.imgId && selectedBackgroundFromGallery.imgVersion) {
         response = await userService.updateBackgroundImage({
           bgImageVersion: selectedBackgroundFromGallery.imgVersion,
           bgImageId: selectedBackgroundFromGallery.imgId,
@@ -122,16 +125,16 @@ const Profile = () => {
       }
     } catch (error) {
       setHasError(true);
-
       Utils.displayError(error, dispatch);
     }
   };
-  const saveImage = (type) => {
+  const saveImage = () => {
     const reader = new FileReader();
     // save base 64 to db
     reader.addEventListener(
       "load",
-      async () => saveImageToDB(reader.result, type),
+      async () => saveImageToDB(reader.result),
+
       false
     );
 
@@ -141,21 +144,24 @@ const Profile = () => {
     ) {
       reader.readAsDataURL(Utils.renameFile(selectedBackgroundImage));
     } else if (
-      selectedProfileImage &&
-      typeof selectedProfileImage !== "string"
+      selectedProfileImageFile &&
+      typeof selectedProfileImageFile !== "string"
     ) {
-      reader.readAsDataURL(Utils.renameFile(selectedProfileImage));
+      reader.readAsDataURL(Utils.renameFile(selectedProfileImageFile));
     } else {
       // it can be a link url (image that user has posted before in their post)
-      saveImageToDB(selectedBackgroundFromGallery, type);
+      saveImageToDB(selectedBackgroundFromGallery);
     }
   };
 
-  const cancelFileSelection = (type) => {
+  const cancelSaveChanges = () => {
     setHasImage(!hasImage);
     setSelectedBackgroundImage("");
-    setSelectedProfileImage("");
-    setSelectedBackgroundFromGallery("");
+    setSelectedProfileImageFile("");
+    setSelectedBackgroundFromGallery({
+      imgId: "",
+      imgVersion: ""
+    });
     setHasError(false);
   };
 
@@ -165,8 +171,7 @@ const Profile = () => {
       : Utils.getImage(post?.imgId, post?.imgVersion);
   };
 
-  const [curImageUrl, setCurImageUrl] = useState("");
-  const [showImageModal, setShowImageModal] = useState(false);
+
 
   const removeImageFromGallery = async (id) => {
     try {
@@ -192,10 +197,10 @@ const Profile = () => {
   });
   return (
     <>
-      {showImageModal && (
+      {showGalleryImageModal && (
         <ImageModal
-          image={curImageUrl}
-          onCancel={() => setShowImageModal(!showImageModal)}
+          image={galleryImageToShow}
+          onCancel={() => setShowGalleryImageModal(!showGalleryImageModal)}
           showArrow={false}
         />
       )}
@@ -232,10 +237,10 @@ const Profile = () => {
               )}
               hasError={hasError}
               hideSettings={username === profile?.username}
-              onSelectFileImage={onSelectFileImage}
-              onSaveImage={saveImage}
-              cancelFileSelection={cancelFileSelection}
-              removeBackgroundImage={() => {}}
+              onSelectFile={onSelectFile}
+              saveImage={saveImage}
+              cancelSaveChanges={cancelSaveChanges}
+
               galleryImages={galleryImages}
             ></ProfileHeader>
           </div>
@@ -258,8 +263,8 @@ const Profile = () => {
                             showDelete={username === profile?.username}
                             imgSrc={getShowingImageUrlFromPost(el)}
                             onClick={() => {
-                              setCurImageUrl(getShowingImageUrlFromPost(el));
-                              setShowImageModal(!showImageModal);
+                              setGalleryImageToShow(getShowingImageUrlFromPost(el));
+                              setShowGalleryImageModal(!showGalleryImageModal);
                             }}
                             onRemoveImage={(e) => {
                               e.stopPropagation();

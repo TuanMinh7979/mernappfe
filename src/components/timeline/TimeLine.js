@@ -35,7 +35,7 @@ const TimeLine = ({ userProfileData, loading }) => {
   });
 
   const dispatch = useDispatch();
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);

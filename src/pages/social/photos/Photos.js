@@ -10,7 +10,7 @@ import GalleryImage from '@components/gallery-image/GalleryImage'
 import "./Photos.scss"
 import ImageModal from '@components/image-modal/ImageModal'
 const Photos = () => {
-  const { profile, token } = useSelector(state => state.user)
+  const { profile } = useSelector(state => state.user)
   const [posts, setPosts] = useState([])
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const [loading, setLoading] = useState(false)
@@ -53,7 +53,7 @@ const Photos = () => {
     );
   };
 
-  const [curImageUrl, setCurImageUrl] = useState('')
+  const [galleryImageToShow, setGalleryImageToShow] = useState('')
   const [showImageModal, setShowImageModal] = useState(false)
 
 
@@ -64,11 +64,11 @@ const Photos = () => {
 
   const onClickRight = () => {
     setCurrentShowImageIdx(prev => prev + 1)
-    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
+    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
     setCurrentShowImageIdx(prev => prev - 1)
-    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
+    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
 
   const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
@@ -77,7 +77,7 @@ const Photos = () => {
       <div className="photos-container">
 
         {showImageModal && <ImageModal
-          image={curImageUrl}
+          image={galleryImageToShow}
           showArrow={true}
           onClickRight={onClickRight}
           onClickLeft={onClickLeft}
@@ -109,7 +109,7 @@ const Photos = () => {
                               onClick={() => {
                                 setCurrentShowImageIdx(idx)
                                 setShowImageModal(!showImageModal)
-                                setCurImageUrl(getShowingImageUrlFromPost(el))
+                                setGalleryImageToShow(getShowingImageUrlFromPost(el))
                               }}
 
                             />
