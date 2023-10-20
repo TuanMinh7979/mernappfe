@@ -34,11 +34,15 @@ export class Utils {
     sessionStorage.removeItem("accessToken");
   };
 
-  static displayError(error, dispatch) {
-    console.log("----------error", error);
+  static displayError(error, dispatch, removeOlds) {
+    if (removeOlds ) {
+      dispatch(removeToasts());
+    }
+
     let message = "";
     let type = "error";
     if (error?.response?.data?.message) {
+      if (error.response.data.statusCode === 401) return;
       message = error.response.data.message;
     } else if (error.message) {
       message = error.message;
@@ -51,8 +55,17 @@ export class Utils {
       dispatch(updateToastsNewEle({ message, type }));
     }
   }
-  static displaySuccess(message, dispatch) {
+  static displaySuccess(message, dispatch, removeOlds) {
+    if (removeOlds) {
+      dispatch(removeToasts());
+    }
     dispatch(updateToastsNewEle({ message, type: "success" }));
+  }
+  static displayInfo(message, dispatch, removeOlds) {
+    if (removeOlds) {
+      dispatch(removeToasts());
+    }
+    dispatch(updateToastsNewEle({ message, type: "info" }));
   }
   static remToasts(dispatch) {
     dispatch(removeToasts());
@@ -143,4 +156,7 @@ export class Utils {
 
     return newFile;
   }
+
+
+  
 }

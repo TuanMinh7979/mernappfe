@@ -24,3 +24,8 @@ USE REDUX STATE:
 
   "reset"->call setState("") for object
   , "clean"->call setState ([]) for list
+
+
+
+
+  

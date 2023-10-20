@@ -1,5 +1,5 @@
 import React from "react";
-import BackgroundHeader from "@components/background-header/BackgroundHeader";
+import ProfileHeader from "@components/profile-header/ProfileHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
@@ -21,7 +21,7 @@ import Dialog from "@components/dialog/Dialog";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { newestAccessToken } from "@services/utils/tokenUtils";
 const Profile = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
 
   const { isDeleteDialogOpen } = useSelector((state) => state.modal);
   const [user, setUser] = useState();
@@ -47,29 +47,34 @@ const Profile = () => {
       setUserProfileData(res.data);
       setUser(res.data.user);
     } catch (error) {
-
       Utils.displayError(error, dispatch);
     }
   };
 
   const fetchUserImages = async () => {
     try {
-      const res = await imageService.getUserImages(searchParams.get("id"));
+      const res = await imageService.getsByUser(searchParams.get("id"));
 
       setGalleryImages(res.data.images);
     } catch (error) {
-
       Utils.displayError(error, dispatch);
     }
   };
 
   const [hasError, setHasError] = useState(false);
   const [hasImage, setHasImage] = useState(false);
+  // type: File || string(url)
   const [selectedBackgroundImage, setSelectedBackgroundImage] = useState("");
+  const [selectedBackgroundFromGallery, setSelectedBackgroundFromGallery] =
+    useState({
+      imgId: "",
+      imgVersion: "",
+    });
+  // type: File
   const [selectedProfileImage, setSelectedProfileImage] = useState("");
+
   const [fromDbBackgroundUrl, setFromDbBackgroundUrl] = useState("");
   const [galleryImages, setGalleryImages] = useState([]);
-  // const [imageUrl, setImageUrl] = useState('')
 
   const [loading, setLoading] = useState(true);
   const [userProfileData, setUserProfileData] = useState(null);
@@ -85,17 +90,31 @@ const Profile = () => {
     setHasImage(!hasImage);
     if (type == "background") {
       setSelectedBackgroundImage(data);
+    } else if (type == "updatebackground") {
+      setSelectedBackgroundFromGallery({
+        imgId: data.imgId,
+        imgVersion: data.imgVersion,
+      });
     } else {
       setSelectedProfileImage(data);
     }
   };
 
   const saveImageToDB = async (result, type) => {
+    console.log("-----------result to save", result);
     try {
       const url =
-        type === "background" ? "/images/background" : "/images/profile";
+        type === "savebackground" ? "/images/background" : "/images/profile";
+      let response;
+      if (selectedBackgroundFromGallery) {
+        response = await userService.updateBackgroundImage({
+          bgImageVersion: selectedBackgroundFromGallery.imgVersion,
+          bgImageId: selectedBackgroundFromGallery.imgId,
+        });
+      } else {
+        response = await imageService.save(url, result);
+      }
 
-      const response = await imageService.addImage(url, result);
       if (response) {
         Utils.displaySuccess(response.data.message, dispatch);
         setHasError(false);
@@ -109,6 +128,7 @@ const Profile = () => {
   };
   const saveImage = (type) => {
     const reader = new FileReader();
+    // save base 64 to db
     reader.addEventListener(
       "load",
       async () => saveImageToDB(reader.result, type),
@@ -127,7 +147,7 @@ const Profile = () => {
       reader.readAsDataURL(Utils.renameFile(selectedProfileImage));
     } else {
       // it can be a link url (image that user has posted before in their post)
-      saveImageToDB(selectedBackgroundImage, type);
+      saveImageToDB(selectedBackgroundFromGallery, type);
     }
   };
 
@@ -135,19 +155,9 @@ const Profile = () => {
     setHasImage(!hasImage);
     setSelectedBackgroundImage("");
     setSelectedProfileImage("");
+    setSelectedBackgroundFromGallery("");
     setHasError(false);
   };
-
-  useEffectOnce(() => {
-    // asynchonus getUserProfileAndPosts and getUserImages start as the same
-    const fetchInitData = async () => {
-      await newestAccessToken(dispatch);
-      fetchUserProfileAndPost();
-      fetchUserImages();
-      setLoading(false);
-    };
-    fetchInitData();
-  });
 
   const getShowingImageUrlFromPost = (post) => {
     return post?.gifUrl
@@ -164,14 +174,22 @@ const Profile = () => {
       const images = galleryImages.filter((el) => el._id !== id);
       setGalleryImages(images);
 
-      const response = await imageService.removeImage(`/images/${id}`);
+      const response = await imageService.delete(`/images/${id}`);
       Utils.displaySuccess(response.data.message, dispatch);
     } catch (error) {
-
       Utils.displayError(error, dispatch);
     }
   };
 
+  useEffectOnce(() => {
+    // asynchonus getUserProfileAndPosts and getsByUser start as the same
+    const fetchInitData = async () => {
+      fetchUserProfileAndPost();
+      fetchUserImages();
+      setLoading(false);
+    };
+    fetchInitData();
+  });
   return (
     <>
       {showImageModal && (
@@ -201,7 +219,7 @@ const Profile = () => {
       <div className="profile-wrapper">
         <div className="profile-wrapper-container">
           <div className="profile-header">
-            <BackgroundHeader
+            <ProfileHeader
               user={user}
               loading={loading}
               fromDbBackgroundUrl={fromDbBackgroundUrl}
@@ -219,7 +237,7 @@ const Profile = () => {
               cancelFileSelection={cancelFileSelection}
               removeBackgroundImage={() => {}}
               galleryImages={galleryImages}
-            ></BackgroundHeader>
+            ></ProfileHeader>
           </div>
 
           <div className="profile-content">

@@ -19,7 +19,7 @@ const ImageGridModal = ({
                         alt=""
                         src={`${Utils.getImage(data?.imgId, data?.imgVersion)}`}
                         onClick={() => {
-                            onSelectImage(Utils.getImage(data?.imgId, data?.imgVersion));
+                            onSelectImage(data);
                             closeModal();
                         }}
                     />

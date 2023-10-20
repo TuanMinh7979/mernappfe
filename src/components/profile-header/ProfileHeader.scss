@@ -1,10 +1,10 @@
 
-.profile-banner {
+.profile-top {
     position: relative;
     margin-bottom: 30px;
     overflow-x: hidden;
   
-    .profile-banner-image {
+    .profile-top-image {
       overflow-y: hidden;
       z-index: 1;
       height: 430px;
@@ -53,7 +53,7 @@
       display: table;
     }
   
-    .profile-banner-data {
+    .profile-top-data {
       display: grid;
       grid-template-areas: "image name . add-cover-photo";
       grid-template-columns: 180px 50px 1fr 1fr;
@@ -179,7 +179,7 @@
       }
     }
   
-    .profile-banner-items {
+    .profile-top-items {
       background-color: var(--white-1);
       height: 60px;
       border-bottom-right-radius: 16px;
@@ -309,7 +309,7 @@
   }
   
   @media only screen and (max-width: 768px) {
-    .profile-banner-data {
+    .profile-top-data {
       .profile-name {
         font-size: 30px;
       }
