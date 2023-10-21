@@ -79,7 +79,7 @@ const People = () => {
   //  follow and unfollow
   const followUser = async (user) => {
     try {
-      await followerService.followUser(user?._id);
+      await followerService.save(user?._id);
     } catch (error) {
       Utils.displayError(error, dispatch);
     }
@@ -87,7 +87,7 @@ const People = () => {
 
   const unFollowUser = async (idol) => {
     try {
-      await followerService.unFollowUser(idol?._id, profile?._id);
+      await followerService.delete(idol?._id, profile?._id);
     } catch (error) {
       Utils.displayError(error, dispatch);
     }

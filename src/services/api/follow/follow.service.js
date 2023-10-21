@@ -7,12 +7,12 @@ export const followerService = {
   setDispatch: function (newDispatch) {
     this.dispatch = newDispatch;
   },
-  followUser: async function (followerId) {
+  save: async function (followerId) {
     let accessToken = await newestAccessToken( this.dispatch)
     return await putAPI(`/user/follow/${followerId}`, {}, accessToken);
   },
 
-  unFollowUser: async function (idolId, fanId) {
+  delete: async function (idolId, fanId) {
     let accessToken = await newestAccessToken( this.dispatch)
     return await putAPI(`/user/unfollow/${idolId}/${fanId}`, {}, accessToken);
   },

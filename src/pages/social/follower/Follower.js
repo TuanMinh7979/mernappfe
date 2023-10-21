@@ -26,7 +26,7 @@ const Follower = () => {
 
   //  init follower
 
-  const getMyFans = useCallback(async () => {
+  const getLoggedUserFollower = useCallback(async () => {
     try {
       if (profile) {
         const response = await followerService.getByUser(profile?._id);
@@ -42,9 +42,8 @@ const Follower = () => {
   //  END init followers
   //  new user data when scroll 
 
-
   useEffectOnce(() => {
-    getMyFans();
+    getLoggedUserFollower();
   });
 
   useEffect(() => {
@@ -52,11 +51,7 @@ const Follower = () => {
   }, [profile])
   useEffect(() => {
     FollowersUtils.socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch)
-
   }, [dispatch, profile]);
-
-  //  END new user data when scroll 
-
 
   //  block and unblock
   const blockUser = async (toBlockUser) => {
@@ -67,7 +62,6 @@ const Follower = () => {
         blockedUser: toBlockUser._id, blockedBy: profile._id
       })
       //  service
-
       await followerService.blockUser(toBlockUser?._id);
     } catch (error) {
       Utils.displayError(error, dispatch);

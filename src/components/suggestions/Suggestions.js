@@ -19,7 +19,7 @@ const Suggestions = () => {
   const followUser = async (user) => {
     try {
 
-      await followerService.followUser(user?._id);
+      await followerService.save(user?._id);
       const result = filter(users, (data) => data?._id !== user?._id);
       setUsers(result);
       dispatch(updateSugUsersNewEle({ users: result, isLoading: false }));

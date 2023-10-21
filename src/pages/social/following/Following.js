@@ -34,7 +34,7 @@ const Following = () => {
 
   const followUser = async (user) => {
     try {
-      await followerService.followUser(user?._id);
+      await followerService.save(user?._id);
     } catch (error) {
       Utils.displayError(error ,dispatch);
     }
@@ -42,8 +42,7 @@ const Following = () => {
 
   const unFollowUser = async (user) => {
     try {
-
-      await followerService.unFollowUser(user?._id, profile?._id);
+      await followerService.delete(user?._id, profile?._id);
     } catch (error) {
       Utils.displayError(error ,dispatch);
     }
