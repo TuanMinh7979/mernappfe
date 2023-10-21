@@ -38,10 +38,10 @@ const SocialLinks = ({ editableSocialInputs, username, profile, loading, setEdit
     locationPlacehoder: ''
   };
   const socialLinksPlaceholder = {
-    instagramPlacehoder: 'Add your Instagram account link',
-    twitterPlacehoder: 'Add your Twitter account link',
-    facebookPlacehoder: 'Add your Facebook account link',
-    youtubePlacehoder: 'Add your YouTube account link'
+    instagramPlacehoder: 'Instagram account link',
+    twitterPlacehoder: 'Twitter account link',
+    facebookPlacehoder: 'Facebook account link',
+    youtubePlacehoder: 'YouTube account link'
   };
   
   const updateSocialLinks = async () => {

@@ -69,6 +69,7 @@ export class PostUtils {
       }
     });
     socketService?.socket?.on("update comment", (commentData) => {
+
       const newPosts = [...posts]
       const oldPostData = newPosts.find(
         (post) => post._id === commentData?.postId

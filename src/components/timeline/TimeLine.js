@@ -19,7 +19,7 @@ import BasicInfo from "./BasicInfo";
 import SocialLinks from "./SocialLinks";
 import { postService } from "@services/api/post/post.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import { newestAccessToken } from "@services/utils/tokenUtils";
+import { socketService } from "@services/socket/socket.service";
 import { useSearchParams } from "react-router-dom";
 const TimeLine = ({ userProfileData, loading }) => {
   const [editableInputs, setEditableInputs] = useState({
@@ -37,52 +37,39 @@ const TimeLine = ({ userProfileData, loading }) => {
 
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.user);
-  const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState(null);
-  const [loggedUserIdols, setLoggedUserIdols] = useState([]);
+  const [postsData, setPostsData] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [loggedUserFolloweeData, setLoggedUserFolloweeData] = useState([]);
   const { username } = useParams();
   const [searchParams] = useSearchParams();
   useEffect(() => {
     if (userProfileData) {
-      setPosts(userProfileData.posts);
-      setUser(userProfileData.user);
+      setPostsData(userProfileData.posts);
+      setUserData(userProfileData.user);
 
       setEditableInputs({
-        quote: userProfileData.user.quote,
-        work: userProfileData.user.work,
-        school: userProfileData.user.school,
-        location: userProfileData.user.location,
+        quote: userProfileData.user?.quote,
+        work: userProfileData.user?.work,
+        school: userProfileData.user?.school,
+        location: userProfileData.user?.location,
       });
       setEditableSocialInputs(userProfileData.user?.social);
     }
   }, [userProfileData]);
 
-  const getMyIdols = async () => {
+  const fetchLoggedUserFollowee = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
-      setLoggedUserIdols(response.data.following);
+      const response = await followerService.getLoggedUserFollowee();
+      setLoggedUserFolloweeData(response.data.following);
     } catch (error) {
       Utils.displayError(error, dispatch);
     }
   };
 
-  useEffectOnce(() => {
-    const fetchInitData = async () => {
-      await newestAccessToken(dispatch);
-      getMyIdols();
-      getReactionsByUsername();
-    };
-    fetchInitData();
-  });
-
-  useEffect(() => {
-    PostUtils.socketIOPost(posts, setPosts, searchParams.get("id"));
-  }, [posts]);
-
-  const getReactionsByUsername = async () => {
+  const fetchLoggedUserReactions = async () => {
     try {
       const reactionsResponse = await postService.getReactionsByUsername(
-        username
+        profile.username
       );
       dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
     } catch (error) {
@@ -90,14 +77,36 @@ const TimeLine = ({ userProfileData, loading }) => {
     }
   };
 
+
+  useEffectOnce(() => {
+    const fetchInitData = async () => {
+      fetchLoggedUserFollowee();
+      fetchLoggedUserReactions();
+    };
+    fetchInitData();
+  });
+
+  useEffect(() => {
+    PostUtils.socketIOPost(postsData, setPostsData, searchParams.get("id"));
+    return () => {
+      socketService.socket.off("add post");
+      socketService.socket.off("update post");
+      socketService.socket.off("delete post");
+      socketService.socket.off("update reaction");
+      socketService.socket.off("update comment");
+
+    };
+  }, [postsData]);
+
+
   return (
     <div className="timeline-wrapper">
       <div className="timeline-wrapper-container">
         <div className="timeline-wrapper-container-side">
           <div className="timeline-wrapper-container-side-count">
             <CountContainer
-              followingCount={user?.followingCount}
-              followersCount={user?.followersCount}
+              followingCount={userData?.followingCount}
+              followersCount={userData?.followersCount}
               loading={loading}
             />
 
@@ -123,7 +132,7 @@ const TimeLine = ({ userProfileData, loading }) => {
           </div>
         </div>
         {/* loading post */}
-        {!userProfileData && !posts.length && (
+        {!userProfileData && !postsData.length && (
           <div className="timeline-wrapper-container-main">
             <div className="" style={{ marginBottom: "10px" }}>
               <PostFormSkeleton />
@@ -139,11 +148,11 @@ const TimeLine = ({ userProfileData, loading }) => {
           </div>
         )}
         {/* show post */}
-        {userProfileData && posts.length > 0 && (
+        {userProfileData && postsData.length > 0 && (
           <div className="timeline-wrapper-container-main">
             {username === profile?.username && <PostForm />}
 
-            {posts.map((post) => (
+            {postsData.map((post) => (
               <div key={post?._id} data-testid="posts-item">
                 {(!Utils.checkIfUserIsBlocked(
                   profile?.blockedBy,
@@ -151,7 +160,7 @@ const TimeLine = ({ userProfileData, loading }) => {
                 ) ||
                   post?.userId === profile?._id) && (
                     <>
-                      {PostUtils.checkPrivacy(post, profile, loggedUserIdols) && (
+                      {PostUtils.checkPrivacy(post, profile, loggedUserFolloweeData) && (
                         <>
                           <Post
                             post={post}
@@ -167,7 +176,7 @@ const TimeLine = ({ userProfileData, loading }) => {
         )}
 
         {/* no post to show */}
-        {userProfileData && posts.length === 0 && (
+        {userProfileData && postsData.length === 0 && (
           <div className="timeline-wrapper-container-main">
             <div className="empty-page">No post to show</div>
           </div>

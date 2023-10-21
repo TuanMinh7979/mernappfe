@@ -31,7 +31,7 @@ const Photos = () => {
   const getMyIdols = async () => {
     try {
 
-      const response = await followerService.getLoggedUserIdols()
+      const response = await followerService.getLoggedUserFollowee()
       setLoggedUserIdols(response.data.following)
       setLoading(false)
     } catch (error) {

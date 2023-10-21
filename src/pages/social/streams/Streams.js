@@ -61,7 +61,7 @@ const Streams = () => {
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
+      const response = await followerService.getLoggedUserFollowee();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
 
@@ -104,6 +104,14 @@ const Streams = () => {
 
   useEffect(() => {
     PostUtils.socketIOPost(posts, setPosts);
+    return () => {
+      socketService.socket.off("add post");
+      socketService.socket.off("update post");
+      socketService.socket.off("delete post");
+      socketService.socket.off("update reaction");
+      socketService.socket.off("update comment");
+
+    };
   }, [posts]);
 
   // ? get all reactions of current user

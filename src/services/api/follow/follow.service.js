@@ -17,7 +17,7 @@ export const followerService = {
     return await putAPI(`/user/unfollow/${idolId}/${fanId}`, {}, accessToken);
   },
 
-  getLoggedUserIdols: async function () {
+  getLoggedUserFollowee: async function () {
     // get my idols
     let accessToken = await newestAccessToken( this.dispatch)
     return await getAPI("/user/following", accessToken);

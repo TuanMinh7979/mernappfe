@@ -28,7 +28,7 @@ const ReactionAndCommentArea = ({ post }) => {
   }
   // comment
 
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   // ? init reaction of this user in current post
   const loggedUserReactions = useSelector(
     (state) => state.userPostReaction.reactions
@@ -187,7 +187,7 @@ const ReactionAndCommentArea = ({ post }) => {
   }, [initLoggedUserChoosedReaction, loggedUserReactions]);
 
   return (
-    <div className="comment-area" data-testid="comment-area">
+    <div style={{border: '5px solid red'}}className="comment-area" data-testid="comment-area">
       <div className="like-icon reactions">
         <div className="likes-block" onClick={() => onReactionClick("like")}>
           <div

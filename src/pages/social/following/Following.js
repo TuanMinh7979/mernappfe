@@ -22,7 +22,7 @@ const Following = () => {
 
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
+      const response = await followerService.getLoggedUserFollowee();
       setFollowing(response.data.following);
       setLoading(false);
     } catch (error) {
