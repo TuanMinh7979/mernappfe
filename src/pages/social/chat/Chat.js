@@ -1,8 +1,8 @@
 import React from "react";
 import "./Chat.scss";
 import { useSelector } from "react-redux";
-import ChatSidebar from "@components/chat/list/ChatSidebar";
-import ChatWindow from "@components/chat/list/window/ChatWindow";
+import ChatSidebar from "@components/chat/ChatSidebar";
+import ChatWindow from "@components/chat/ChatWindow";
 
 import { fetchConversationList } from "@redux/api/chat";
 import { useDispatch } from "react-redux";

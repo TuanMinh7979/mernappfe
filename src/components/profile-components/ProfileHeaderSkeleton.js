@@ -5,7 +5,7 @@ const ProfileHeaderSkeleton = ({ tabItems }) => {
   return (
     <>
       <div className="profile-top" data-testid="profile-top-skeleton">
-        <div className="profile-top-image" style={{ border: '1px solid white', backgroundColor: '#EFF1F6' }}></div>
+        <div className="profile-top-image" ></div>
         <div className="profile-top-data">
           <div className="profile-pic">
             <Skeleton baseColor="#EFF1F6" height={180} width={180} />

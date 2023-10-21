@@ -94,11 +94,11 @@ const ProfileHeader = ({
       {loading ? (
         <ProfileHeaderSkeleton tabItems={tabItems} />
       ) : (
-        <div className="profile-top" style={{ border: "5px solid blue" }}>
+        <div className="profile-top" >
           {hasImage && (
             <div
               className="save-changes-container"
-              style={{ border: "3px solid green" }}
+           
             >
               <div className="save-changes-box">
                 <div className="spinner-container">
@@ -147,12 +147,12 @@ const ProfileHeader = ({
               <img src={fromDbBackgroundUrl} alt="" />
             )}
           </div>
-          <div className="profile-top-data" style={{ border: "1px solid red" }}>
+          <div className="profile-top-data" >
             <div
               className="profile-pic"
               style={{
                 width: `${user?.profilePicture ? "180px" : ""}`,
-                border: "1px solid red",
+              
               }}
             >
               <Avatar

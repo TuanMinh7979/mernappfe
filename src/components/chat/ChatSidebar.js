@@ -3,7 +3,7 @@ import Input from "@root/base-components/input/Input";
 import { Utils } from "@services/utils/utils.service";
 import { FaSearch, FaTimes } from "react-icons/fa";
 
-import "@components/chat/list/ChatSidebar.scss";
+
 import "./ChatSidebar.scss";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";

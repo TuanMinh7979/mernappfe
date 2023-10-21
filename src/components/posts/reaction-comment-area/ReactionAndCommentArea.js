@@ -187,7 +187,7 @@ const ReactionAndCommentArea = ({ post }) => {
   }, [initLoggedUserChoosedReaction, loggedUserReactions]);
 
   return (
-    <div style={{border: '5px solid red'}}className="comment-area" data-testid="comment-area">
+    <div className="comment-area" data-testid="comment-area">
       <div className="like-icon reactions">
         <div className="likes-block" onClick={() => onReactionClick("like")}>
           <div
