@@ -23,7 +23,7 @@ const FollowerCard = ({ userData }) => {
 
   const getUserFollowers = async () => {
     try {
-      const response = await followerService.getLoggedUserFans(searchParams.get('id'));
+      const response = await followerService.getFollowerByUser(searchParams.get('id'));
       setFollowers(response.data.followers);
       setLoading(false);
     } catch (error) {
@@ -34,7 +34,7 @@ const FollowerCard = ({ userData }) => {
 
   const getUserProfileByUsername = async () => {
     try {
-      const response = await userService.getUserProfileAndPosts(
+      const response = await userService.getProfileAndPost(
         username,
         searchParams.get('id')
       );

@@ -32,7 +32,7 @@ export const userService = {
     let accessToken = await newestAccessToken(this.dispatch);
     return await getAPI(`/user/profile/${userId}`, accessToken);
   },
-  getUserProfileAndPosts: async function (username, userId) {
+  getProfileAndPost: async function (username, userId) {
     let accessToken = await newestAccessToken(this.dispatch);
 
     return await getAPI(

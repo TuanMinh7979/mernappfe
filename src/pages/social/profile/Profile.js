@@ -9,7 +9,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { tabItems } from "@services/utils/static.data";
 
 import { imageService } from "@services/api/image/image.service";
-import TimeLine from "@components/timeline/TimeLine";
+import TimeLine from "@components/basic-info/TimeLine";
 import FollowerCard from "../follower/FollowerCard";
 import ChangePassword from "@components/change-password/ChangePassword";
 import NotificationSetting from "@components/notification-setting/NotificationSetting";
@@ -32,7 +32,7 @@ const Profile = () => {
   // * get user background image  , profile image and posts
   const fetchUserProfileAndPost = async () => {
     try {
-      const res = await userService.getUserProfileAndPosts(
+      const res = await userService.getProfileAndPost(
         username,
         searchParams.get("id")
       );
