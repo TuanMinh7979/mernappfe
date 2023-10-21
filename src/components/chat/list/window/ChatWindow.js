@@ -18,7 +18,7 @@ import { socketService } from "@services/socket/socket.service";
 const ChatWindow = () => {
   const reduxChat = useSelector((state) => state.chat);
   const dispatch = useDispatch();
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
 
   const [receiver, setReceiver] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);

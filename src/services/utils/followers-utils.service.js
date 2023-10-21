@@ -66,7 +66,7 @@ export class FollowersUtils {
   // block and unblock
   // in socket/user.ts
   // update profile in redux
-  static socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch) {
+  static socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch) {
 
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time

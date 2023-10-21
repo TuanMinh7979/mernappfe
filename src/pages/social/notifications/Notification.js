@@ -14,7 +14,7 @@ import NotificationUtils from "@services/utils/notification-utils.service";
 import NotificationPreview from "@components/dialog/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 const Notification = () => {
-  const { profile, token } = useSelector(state => state.user)
+  const { profile} = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();

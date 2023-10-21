@@ -17,7 +17,7 @@ import { followerService } from '@services/api/follow/follow.service'
 import { useEffect } from 'react'
 import useEffectOnce from '@hooks/useEffectOnce'
 const Follower = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
   const [myblockedUsers, setMyBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ const Follower = () => {
       }
     } catch (error) {
       setLoading(false);
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   }, [profile, dispatch]);
 
@@ -51,9 +51,9 @@ const Follower = () => {
     setMyBlockedUsers(profile.blocked)
   }, [profile])
   useEffect(() => {
-    FollowersUtils.socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch)
+    FollowersUtils.socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch)
 
-  }, [dispatch, profile, token]);
+  }, [dispatch, profile]);
 
   //  END new user data when scroll 
 
@@ -70,7 +70,7 @@ const Follower = () => {
 
       await followerService.blockUser(toBlockUser?._id);
     } catch (error) {
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -82,7 +82,7 @@ const Follower = () => {
 
       await followerService.unblockUser(user?._id);
     } catch (error) {
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   //  END block and unBlock

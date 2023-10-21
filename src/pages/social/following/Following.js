@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Following = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();

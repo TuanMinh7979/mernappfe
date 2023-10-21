@@ -28,7 +28,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
   const reduxPost = useSelector((state) => state.post);
 
   // ? use for create new post (only read)
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   // ? use for create new post
 
   // * Limit character

@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { feelingsList } from '@services/utils/static.data';
 import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()

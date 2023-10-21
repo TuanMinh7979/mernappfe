@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 const ChangePassword = () => {
 
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
 
   const dispatch = useDispatch()
   const navigate = useNavigate()

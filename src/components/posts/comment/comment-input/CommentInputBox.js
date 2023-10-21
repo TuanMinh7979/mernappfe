@@ -10,7 +10,7 @@ import { postService } from '@services/api/post/post.service';
 import "./CommentInputBox.scss"
 const CommentInputBox = ({ post }) => {
 
-    const { profile, token } = useSelector((state) => state.user);
+    const { profile} = useSelector((state) => state.user);
     const [comment, setComment] = useState('');
     const commentInputRef = useRef(null);
     const dispatch = useDispatch();

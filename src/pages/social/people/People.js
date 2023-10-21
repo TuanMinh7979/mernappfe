@@ -23,7 +23,7 @@ const People = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
 
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);

@@ -15,7 +15,7 @@ import { emptyPost } from '@redux/reducers/post/post.reducer'
 import { reactionsColor } from '@services/utils/static.data'
 const ReactionModal = () => {
 
-    const { profile, token } = useSelector((state) => state.user);
+    const { profile} = useSelector((state) => state.user);
 
     const dispatch = useDispatch()
     const { _id, reactions } = useSelector(state => state.post)

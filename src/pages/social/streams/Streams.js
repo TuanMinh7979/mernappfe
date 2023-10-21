@@ -19,11 +19,11 @@ import { fetchPosts } from "@redux/api/post";
 import { uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
-
+import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 
 const Streams = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false)
 
   // ? app post

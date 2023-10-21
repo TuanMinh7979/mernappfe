@@ -13,7 +13,7 @@ import { socketService } from '@services/socket/socket.service';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { followerService } from '@services/api/follow/follow.service';
 const FollowerCard = ({ userData }) => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
   const [user, setUser] = useState(userData);
   const [loading, setLoading] = useState(true);

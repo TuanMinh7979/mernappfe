@@ -11,7 +11,7 @@ import { useState } from 'react';
 import useEffectOnce from '@hooks/useEffectOnce';
 const CommentsModal = () => {
   const { post } = useSelector((state) => state);
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   const [postComments, setPostComments] = useState([]);
   const dispatch = useDispatch();
   const getPostComments = async () => {
