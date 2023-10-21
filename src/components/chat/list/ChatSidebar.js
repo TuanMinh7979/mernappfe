@@ -29,7 +29,7 @@ const ChatSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const { conversationList } = useSelector((state) => state.chat);
 
   //  for SearchListComponent

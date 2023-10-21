@@ -64,7 +64,7 @@ const Streams = () => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-  
+
       Utils.displayError(error, dispatch);
     }
   };
@@ -115,7 +115,7 @@ const Streams = () => {
       const rs = await postService.getReactionsByUsername(profile?.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
     } catch (error) {
-      
+
 
       Utils.displayError(error, dispatch);
 

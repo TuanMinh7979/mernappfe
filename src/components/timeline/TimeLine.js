@@ -20,6 +20,7 @@ import SocialLinks from "./SocialLinks";
 import { postService } from "@services/api/post/post.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 import { newestAccessToken } from "@services/utils/tokenUtils";
+import { useSearchParams } from "react-router-dom";
 const TimeLine = ({ userProfileData, loading }) => {
   const [editableInputs, setEditableInputs] = useState({
     quote: "",
@@ -40,6 +41,7 @@ const TimeLine = ({ userProfileData, loading }) => {
   const [user, setUser] = useState(null);
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const { username } = useParams();
+  const [searchParams] = useSearchParams();
   useEffect(() => {
     if (userProfileData) {
       setPosts(userProfileData.posts);
@@ -60,13 +62,13 @@ const TimeLine = ({ userProfileData, loading }) => {
       const response = await followerService.getLoggedUserIdols();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
   useEffectOnce(() => {
     const fetchInitData = async () => {
-      await newestAccessToken( dispatch);
+      await newestAccessToken(dispatch);
       getMyIdols();
       getReactionsByUsername();
     };
@@ -74,7 +76,7 @@ const TimeLine = ({ userProfileData, loading }) => {
   });
 
   useEffect(() => {
-    PostUtils.socketIOPost(posts, setPosts);
+    PostUtils.socketIOPost(posts, setPosts, searchParams.get("id"));
   }, [posts]);
 
   const getReactionsByUsername = async () => {
@@ -84,7 +86,7 @@ const TimeLine = ({ userProfileData, loading }) => {
       );
       dispatch(updateLoggedUserReactions(reactionsResponse.data.reactions));
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -148,17 +150,17 @@ const TimeLine = ({ userProfileData, loading }) => {
                   post?.userId
                 ) ||
                   post?.userId === profile?._id) && (
-                  <>
-                    {PostUtils.checkPrivacy(post, profile, loggedUserIdols) && (
-                      <>
-                        <Post
-                          post={post}
-                          showIcons={username == profile?.username}
-                        />
-                      </>
-                    )}
-                  </>
-                )}
+                    <>
+                      {PostUtils.checkPrivacy(post, profile, loggedUserIdols) && (
+                        <>
+                          <Post
+                            post={post}
+                            showIcons={username == profile?.username}
+                          />
+                        </>
+                      )}
+                    </>
+                  )}
               </div>
             ))}
           </div>
