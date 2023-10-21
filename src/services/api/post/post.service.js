@@ -83,7 +83,7 @@ export const postService = {
     let accessToken = await newestAccessToken( this.dispatch);
     return await deleteAPI(`/post/${postId}`, accessToken);
   },
-  getPostsWithImages: async function (page) {
+  getsWithImage: async function (page) {
     let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI(`/post/images/${page}`, accessToken);
   },

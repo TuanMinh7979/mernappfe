@@ -11,32 +11,21 @@ import { useNavigate } from 'react-router-dom'
 import "./styles/ChangePassword.scss"
 const ChangePassword = () => {
 
-
-
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-
   const [showPassword, setShowPassword] = useState(false)
-
-
-
-
 
   const changePassword = async (event) => {
     event.preventDefault()
     try {
-
-      const res = await userService.changePassword({
+      const res = await userService.updatePassword({
         currentPassword,
         newPassword,
         confirmPassword,
-
       },
-
-
       )
       setCurrentPassword('')
       setNewPassword('')
@@ -47,7 +36,6 @@ const ChangePassword = () => {
         setTimeout(async () => {
           Utils.clearStore(
             dispatch
-
           );
           await userService.logoutUser();
           navigate('/');

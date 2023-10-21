@@ -23,7 +23,7 @@ import { ProfileUtils } from "@services/utils/profile-utils.service";
 import HeaderSkeleton from "./HeaderSkeleton";
 import { notificationService } from "@services/api/notification/notification.service";
 
-import NotificationPreview from "@components/dialog/NotificationPreview";
+import NotificationPreview from "@components/noti-previview/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
 
@@ -69,7 +69,7 @@ const Header = () => {
 
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications();
+      const rs = await notificationService.getsByUser();
       const mapNotis = NotificationUtils.mapNotificationDropdownItems(
         rs.data.notifications,
         setNotificationCount
@@ -87,7 +87,7 @@ const Header = () => {
         notification,
         setNotificationDialogContent
       );
-      await notificationService.markNotificationAsRead(notification._id);
+      await notificationService.updateIsRead(notification._id);
     } catch (error) {
      Utils.displayError(error ,dispatch);
     }
@@ -95,7 +95,7 @@ const Header = () => {
 
   const onDeleteNotification = async (notificationId) => {
     try {
-      const response = await notificationService.deleteNotification(
+      const response = await notificationService.deleteById(
         notificationId
       );
       Utils.displaySuccess(response.data.message, dispatch)

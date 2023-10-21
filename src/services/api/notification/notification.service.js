@@ -8,15 +8,15 @@ export const notificationService = {
     this.dispatch = newDispatch;
   },
 
-  getUserNotifications: async function () {
+  getsByUser: async function () {
     let accessToken = await newestAccessToken( this.dispatch);
     return await getAPI("/notification", accessToken);
   },
-  markNotificationAsRead: async function (messageId) {
+  updateIsRead: async function (messageId) {
     let accessToken = await newestAccessToken( this.dispatch);
     return await putAPI(`/notification/${messageId}`, {}, accessToken);
   },
-  deleteNotification: async function (messageId) {
+  deleteById: async function (messageId) {
     let accessToken = await newestAccessToken( this.dispatch);
     return await deleteAPI(`/notification/${messageId}`, accessToken);
   },

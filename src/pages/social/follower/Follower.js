@@ -29,7 +29,7 @@ const Follower = () => {
   const getMyFans = useCallback(async () => {
     try {
       if (profile) {
-        const response = await followerService.getFollowerByUser(profile?._id);
+        const response = await followerService.getByUser(profile?._id);
         setFollowers(response.data.followers);
         setLoading(false);
       }

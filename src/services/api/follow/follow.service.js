@@ -22,7 +22,7 @@ export const followerService = {
     let accessToken = await newestAccessToken( this.dispatch)
     return await getAPI("/user/following", accessToken);
   },
-  getFollowerByUser: async function (userId) {
+  getByUser: async function (userId) {
 
     let accessToken = await newestAccessToken( this.dispatch)
     return await getAPI(`/user/followers/${userId}`, accessToken);

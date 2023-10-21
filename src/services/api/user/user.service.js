@@ -47,7 +47,7 @@ export const userService = {
   },
 
   // update
-  changePassword: async function (body) {
+  updatePassword: async function (body) {
     let accessToken = await newestAccessToken(this.dispatch);
     return await putAPI("/user/profile/change-password", body, accessToken);
   },

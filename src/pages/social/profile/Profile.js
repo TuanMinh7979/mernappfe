@@ -17,7 +17,7 @@ import GalleryImage from "@components/gallery-image/GalleryImage";
 import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reducer";
 import ImageModal from "@components/image-modal/ImageModal";
 import "./Profile.scss";
-import Dialog from "@components/dialog/Dialog";
+import Dialog from "@root/base-components/dialog/Dialog";
 import useEffectOnce from "@hooks/useEffectOnce";
 
 const Profile = () => {

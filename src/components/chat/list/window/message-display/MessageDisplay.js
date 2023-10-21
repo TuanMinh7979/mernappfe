@@ -13,8 +13,8 @@ import { chatService } from "@services/api/chat/chat.service";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import ImageModal from "@components/image-modal/ImageModal";
-import Dialog from "@components/dialog/Dialog";
-import ThreeButtonDialog from "@components/dialog/ThreeButtonDialog";
+import Dialog from "@root/base-components/dialog/Dialog";
+import ThreeButtonDialog from "@root/base-components/dialog/ThreeButtonDialog";
 const MessageDisplay = ({ chatMessages, profile }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [showImageModal, setShowImageModal] = useState(false);

@@ -23,7 +23,7 @@ const Follow = ({ userData }) => {
 
   const getUserFollowers = async () => {
     try {
-      const response = await followerService.getFollowerByUser(searchParams.get('id'));
+      const response = await followerService.getByUser(searchParams.get('id'));
       setFollowers(response.data.followers);
       setLoading(false);
     } catch (error) {
