@@ -8,7 +8,7 @@ import { FaTimes } from "react-icons/fa";
 import { bgColors } from "@services/utils/static.data";
 import { ImageUtils } from "@services/utils/image-utils.service";
 import { postService } from "@services/api/post/post.service";
-import Button from "@components/button/Button";
+import Button from "@root/base-components/button/Button";
 import { updatePost } from "@redux/reducers/post/post.reducer";
 import { useRef } from "react";
 import {
@@ -21,7 +21,7 @@ import AddPostBottomSelection from "../modal-box-content/AddPostBottomSelection"
 import { FaArrowLeft } from "react-icons/fa";
 import Giphy from "@components/giphy/Giphy";
 import { Utils } from "@services/utils/utils.service";
-import Spinner from "@components/spinner/Spinner";
+import Spinner from "@root/base-components/spinner/Spinner";
 
 import { privacyList } from "@services/utils/static.data";
 const EditPost = () => {

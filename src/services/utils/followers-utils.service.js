@@ -6,12 +6,6 @@ import { socketService } from '@services/socket/socket.service';
 
 
 export class FollowersUtils {
- 
-
-
-
-
-
   //  use in People page
   static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
     // when follow some one and then will be received from server socket "added follow"
@@ -91,7 +85,7 @@ export class FollowersUtils {
     });
   }
 
-  static socketIOBlockAndUnblockCard(user, setUser) {
+  static socketIOBlockAndUnblockProfileFollowTab(user, setUser) {
     socketService?.socket?.on('blocked user id', (data) => {
       const userData = FollowersUtils.updateProfileWhenBlock(user, data);
       setUser(userData);

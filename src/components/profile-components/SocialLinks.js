@@ -1,5 +1,5 @@
-import BasicInfoSkeleton from '@components/basic-info/BasicInfoSkeleton';
-import InfoDisplay from '@components/basic-info/InfoDisplay';
+import BasicInfoSkeleton from '@components/profile-components/BasicInfoSkeleton';
+import InfoDisplay from '@components/profile-components/InfoDisplay';
 import { userService } from '@services/api/user/user.service';
 import { Utils } from '@services/utils/utils.service';
 import PropTypes from 'prop-types';

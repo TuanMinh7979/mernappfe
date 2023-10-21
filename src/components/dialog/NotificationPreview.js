@@ -1,4 +1,4 @@
-import Button from '@components/button/Button';
+import Button from '@root/base-components/button/Button';
 import { reactionsMap } from '@services/utils/static.data';
 import PropTypes from 'prop-types';
 

@@ -1,5 +1,5 @@
 import Avatar from '@components/avatar/Avatar';
-import Button from '@components/button/Button';
+import Button from '@root/base-components/button/Button';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import { updateSugUsersNewEle } from '@redux/reducers/suggestions/suggestions.re
 
 const Suggestions = () => {
   const { suggestions } = useSelector((state) => state);
-  const { token } = useSelector((state) => state.user);
+
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -1,5 +1,5 @@
-import Input from '@components/input/Input';
-import Button from '@components/button/Button';
+import Input from '@root/base-components/input/Input';
+import Button from '@root/base-components/button/Button';
 import './Register.scss';
 import { useState } from 'react';
 import { Utils } from '@services/utils/utils.service';

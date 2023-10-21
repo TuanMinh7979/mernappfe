@@ -220,13 +220,13 @@ export const reactionsColor = {
 };
 
 export const notificationItems = [
-  {
-    index: 0,
-    title: 'Direct Messages',
-    description: 'New direct messages notifications.',
-    toggle: true,
-    type: 'messages'
-  },
+  // {
+  //   index: 0,
+  //   title: 'Direct Messages',
+  //   description: 'New direct messages notifications.',
+  //   toggle: true,
+  //   type: 'messages'
+  // },
   {
     index: 1,
     title: 'Follows',

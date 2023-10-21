@@ -1,5 +1,5 @@
 import Avatar from "@components/avatar/Avatar";
-import Input from "@components/input/Input";
+import Input from "@root/base-components/input/Input";
 import { Utils } from "@services/utils/utils.service";
 import { FaSearch, FaTimes } from "react-icons/fa";
 

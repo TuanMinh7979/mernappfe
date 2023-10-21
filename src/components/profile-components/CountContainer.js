@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Utils } from '@services/utils/utils.service';
-import './TimeLine.scss';
+import "./styles/TimeLine.scss"
 import CountContainerSkeleton from './CountContainerSkeleton';
 
 const CountContainer = ({ followingCount, followersCount, loading }) => {

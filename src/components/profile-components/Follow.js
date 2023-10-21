@@ -1,6 +1,6 @@
 import Avatar from '@components/avatar/Avatar';
-import Button from '@components/button/Button';
-import './FollowCard.scss';
+import Button from '@root/base-components/button/Button';
+import './styles/Follow.scss';
 import { FaUserPlus } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ import { FollowersUtils } from '@services/utils/followers-utils.service';
 import { socketService } from '@services/socket/socket.service';
 import useEffectOnce from '@hooks/useEffectOnce';
 import { followerService } from '@services/api/follow/follow.service';
-const FollowerCard = ({ userData }) => {
+const Follow = ({ userData }) => {
   const { profile} = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
   const [user, setUser] = useState(userData);
@@ -77,7 +77,7 @@ const FollowerCard = ({ userData }) => {
   });
 
   useEffect(() => {
-    FollowersUtils.socketIOBlockAndUnblockCard(user, setUser);
+    FollowersUtils.socketIOBlockAndUnblockProfileFollowTab(user, setUser);
   }, [user]);
 
   return (
@@ -133,7 +133,7 @@ const FollowerCard = ({ userData }) => {
   );
 };
 
-FollowerCard.propTypes = {
+Follow.propTypes = {
   userData: PropTypes.object
 };
-export default FollowerCard;
+export default Follow;

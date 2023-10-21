@@ -3,7 +3,7 @@ import AppRouter from "./route";
 import { useEffect } from "react";
 
 import { socketService } from "@services/socket/socket.service";
-import Toast from "@components/toast/Toast";
+import Toast from "@root/base-components/toast/Toast";
 
 import { useDispatch, useSelector } from "react-redux";
 import { chatService } from "@services/api/chat/chat.service";

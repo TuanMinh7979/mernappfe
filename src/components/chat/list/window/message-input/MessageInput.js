@@ -1,5 +1,5 @@
-import Button from '@components/button/Button';
-import Input from '@components/input/Input';
+import Button from '@root/base-components/button/Button';
+import Input from '@root/base-components/input/Input';
 import PropTypes from 'prop-types';
 
 import gif from '@assets/images/gif.png';

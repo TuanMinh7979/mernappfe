@@ -1,7 +1,7 @@
 
 import { FaArrowRight } from 'react-icons/fa';
-import Input from "@components/input/Input"
-import Button from "@components/button/Button"
+import Input from "@root/base-components/input/Input"
+import Button from "@root/base-components/button/Button"
 import { Link, useNavigate } from 'react-router-dom';
 import "./Login.scss"
 import { useState } from 'react';

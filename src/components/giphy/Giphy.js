@@ -1,4 +1,4 @@
-import Input from '@components/input/Input';
+import Input from '@root/base-components/input/Input';
 import { GiphyUtils } from '@services/utils/giphy-utils.service';
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';

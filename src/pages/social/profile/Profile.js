@@ -1,5 +1,5 @@
 import React from "react";
-import ProfileHeader from "@components/profile-header/ProfileHeader";
+import ProfileHeader from "@components/profile-components/ProfileHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
@@ -9,10 +9,10 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { tabItems } from "@services/utils/static.data";
 
 import { imageService } from "@services/api/image/image.service";
-import TimeLine from "@components/basic-info/TimeLine";
-import FollowerCard from "../follower/FollowerCard";
-import ChangePassword from "@components/change-password/ChangePassword";
-import NotificationSetting from "@components/notification-setting/NotificationSetting";
+import TimeLine from "@components/profile-components/TimeLine";
+import Follow from "../../../components/profile-components/Follow";
+import ChangePassword from "@components/profile-components/ChangePassword";
+import NotificationSetting from "@components/profile-components/NotificationSetting";
 import GalleryImage from "@components/gallery-image/GalleryImage";
 import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reducer";
 import ImageModal from "@components/image-modal/ImageModal";
@@ -188,12 +188,11 @@ const Profile = () => {
 
   useEffectOnce(() => {
     // asynchonus getUserProfileAndPosts and getsByUser start as the same
-    const fetchInitData = async () => {
+
       fetchUserProfileAndPost();
       fetchUserImages();
       setLoading(false);
-    };
-    fetchInitData();
+
   });
   return (
     <>
@@ -249,7 +248,7 @@ const Profile = () => {
             {displayContent === "timeline" && (
               <TimeLine userProfileData={userProfileData} loading={loading} />
             )}
-            {displayContent === "followers" && <FollowerCard useData={user} />}
+            {displayContent === "followers" && <Follow useData={user} />}
             {displayContent === "gallery" && (
               <>
                 {galleryImages.length > 0 && (

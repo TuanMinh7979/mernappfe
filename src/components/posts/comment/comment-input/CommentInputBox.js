@@ -1,4 +1,4 @@
-import Input from '@components/input/Input';
+import Input from '@root/base-components/input/Input';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';

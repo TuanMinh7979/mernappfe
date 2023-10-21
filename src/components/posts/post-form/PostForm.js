@@ -1,5 +1,5 @@
 import Avatar from "@components/avatar/Avatar";
-import Input from "@components/input/Input";
+import Input from "@root/base-components/input/Input";
 import { ImageUtils } from "@services/utils/image-utils.service";
 import { updatePost } from "@redux/reducers/post/post.reducer";
 import photo from "@assets/images/photo.png";

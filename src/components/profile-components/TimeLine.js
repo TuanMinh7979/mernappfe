@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import "./TimeLine.scss";
+import "./styles/TimeLine.scss";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useState } from "react";

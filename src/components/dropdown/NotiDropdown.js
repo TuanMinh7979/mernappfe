@@ -1,6 +1,6 @@
 
 import Avatar from '@components/avatar/Avatar';
-import Button from '@components/button/Button';
+import Button from '@root/base-components/button/Button';
 import PropTypes from 'prop-types';
 import { FaCircle, FaRegCircle, FaTrashAlt, FaUserAlt } from 'react-icons/fa';
 

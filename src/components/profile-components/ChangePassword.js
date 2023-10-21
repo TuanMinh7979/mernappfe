@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import "./ChangePassword.scss"
-import Input from '@components/input/Input'
-import Button from '@components/button/Button'
+
+import Input from '@root/base-components/input/Input'
+import Button from '@root/base-components/button/Button'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
 import { Utils } from '@services/utils/utils.service'
 import { userService } from '@services/api/user/user.service'
 
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import "./styles/ChangePassword.scss"
 const ChangePassword = () => {
 
-  const { profile} = useSelector((state) => state.user);
+
 
   const dispatch = useDispatch()
   const navigate = useNavigate()

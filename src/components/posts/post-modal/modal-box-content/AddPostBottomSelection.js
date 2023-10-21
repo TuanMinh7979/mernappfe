@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import photo from "@assets/images/photo.png";
 import gif from "@assets/images/gif.png";
 import feeling from "@assets/images/feeling.png";
-import Input from "@components/input/Input";
+import Input from "@root/base-components/input/Input";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 import Feelings from "@components/feelings/Feelings";
 import { useDispatch, useSelector } from "react-redux";

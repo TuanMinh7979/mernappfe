@@ -1,5 +1,5 @@
-import Input from '@components/input/Input';
-import Spinner from '@components/spinner/Spinner';
+import Input from '@root/base-components/input/Input';
+import Spinner from '@root/base-components/spinner/Spinner';
 import { GiphyUtils } from '@services/utils/giphy-utils.service';
 import { Utils } from '@services/utils/utils.service';
 import PropTypes from 'prop-types';

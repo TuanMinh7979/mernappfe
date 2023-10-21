@@ -2,13 +2,13 @@ import ImageGridModal from "@components/Image-grid-modal/ImageGridModal";
 import React, { useEffect } from "react";
 import { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import Button from "@components/button/Button";
-import Spinner from "@components/spinner/Spinner";
+import Button from "@root/base-components/button/Button";
+import Spinner from "@root/base-components/spinner/Spinner";
 import Avatar from "@components/avatar/Avatar";
-import Input from "@components/input/Input";
+import Input from "@root/base-components/input/Input";
 import { FaCamera } from "react-icons/fa";
 import { Utils } from "@services/utils/utils.service";
-import "./ProfileHeader.scss";
+import "./styles/ProfileHeader.scss";
 import ProfileHeaderSkeleton from "./ProfileHeaderSkeleton";
 const ProfileHeader = ({
   user,
