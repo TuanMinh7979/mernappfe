@@ -1,63 +1,69 @@
 import axios from "@services/axios";
+import { getAPI, postAPI, putAPI } from "@services/utils/fetchData";
+import { newestAccessToken } from "@services/utils/tokenUtils";
+export const userService = {
+  dispatch: null,
 
-class UserService {
-  async fetchUpdSugUsers() {
-    const response = await axios.get("/user/profile/user/suggestions");
-    return response;
-  }
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
 
-  async logoutUser() {
-    const response = await axios.post('/signout');
-    return response;
-  }
-  async checkCurrentUser() {
-    const response = await axios.get('/currentuser');
-    return response;
-  }
-  async getAllUsers(page) {
-    const response = await axios.get(`/user/all/${page}`);
-    return response;
-  }
+  fetchUpdSugUsers: async function () {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await getAPI("/user/profile/user/suggestions", accessToken);
+  },
+  logoutUser: async function () {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await postAPI("/signout", {}, accessToken);
+  },
+
+  getAllUsers: async function (page) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await getAPI(`/user/all/${page}`, accessToken);
+  },
 
   // search user for chat
-  async searchUsers(query) {
-    const response = await axios.get(`/user/profile/search/${query}`);
-    return response;
-  }
+  searchUsers: async function (query) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await getAPI(`/user/profile/search/${query}`, accessToken);
+  },
 
-  async getUserProfileByUserId(userId) {
-    const response = await axios.get(`/user/profile/${userId}`);
-    return response;
-  }
+  getUserProfileByUserId: async function (userId) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await getAPI(`/user/profile/${userId}`, accessToken);
+  },
+  getProfileAndPost: async function (username, userId) {
+    let accessToken = await newestAccessToken(this.dispatch);
 
+    return await getAPI(
+      `/user/profile/posts/${username}/${userId}`,
+      accessToken
+    );
+  },
+  updateBackgroundImage: async function (body) {
+    let accessToken = await newestAccessToken(this.dispatch);
 
-  async getUserProfileAndPosts(username, userId) {
-    const response = await axios.get(`/user/profile/posts/${username}/${userId}`);
-    return response;
-  }
+    return await putAPI(`/user/profile/background`, body, accessToken);
+  },
 
   // update
-  async changePassword(body) {
-    const response = await axios.put('/user/profile/change-password', body);
-    return response;
-  }
+  updatePassword: async function (body) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI("/user/profile/change-password", body, accessToken);
+  },
 
-  async updateNotificationSettings(settings) {
-    const response = await axios.put('/user/profile/settings', settings);
-    return response;
-  }
+  updateNotificationSettings: async function (settings) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI("/user/profile/settings", settings, accessToken);
+  },
 
-  async updateBasicInfo(info) {
-    const response = await axios.put('/user/profile/basic-info', info);
-    return response;
-  }
+  updateBasicInfo: async function (info) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI("/user/profile/basic-info", info, accessToken);
+  },
 
-  async updateSocialLinks(info) {
-    const response = await axios.put('/user/profile/social-links', info);
-    return response;
-  }
-
-
-}
-
-export const userService = new UserService();
+  updateSocialLinks: async function (info) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI("/user/profile/social-links", info, accessToken);
+  },
+};

@@ -1,5 +1,5 @@
 import Avatar from "@components/avatar/Avatar";
-import Input from "@components/input/Input";
+import Input from "@root/base-components/input/Input";
 import { ImageUtils } from "@services/utils/image-utils.service";
 import { updatePost } from "@redux/reducers/post/post.reducer";
 import photo from "@assets/images/photo.png";
@@ -72,7 +72,7 @@ const PostForm = () => {
       <div className="post-form" data-testid="post-form">
         <div className="post-form-row">
           <div className="post-form-header">
-            <h4 className="post-form-title">Create Post</h4>
+            <h4 className="post-form-title">Create a post</h4>
           </div>
           <div className="post-form-body">
             <div
@@ -89,7 +89,7 @@ const PostForm = () => {
               />
               <div
                 className="post-form-input"
-                data-placeholder="Write something here..."
+                data-placeholder="What's on your mind?"
               ></div>
             </div>
             <hr />

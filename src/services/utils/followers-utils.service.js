@@ -1,4 +1,4 @@
-import { updateLoggedUser } from '@redux/reducers/user/user.reducer';
+import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
 import { followerService } from '@services/api/follow/follow.service';
 
 import { Utils } from '@services/utils/utils.service';
@@ -6,28 +6,6 @@ import { socketService } from '@services/socket/socket.service';
 
 
 export class FollowersUtils {
-  static async followUser(user, dispatch) {
-    const response = await followerService.followUser(user?._id);
-
-  }
-
-  static async unFollowUser(idol, profile, dispatch) {
-    const response = await followerService.unFollowUser(idol?._id, profile?._id);
-
-  }
-
-
-  static async blockUserInServer(user, dispatch) {
-    const response = await followerService.blockUser(user?._id);
-
-  }
-
-  static async unblockUser(user, dispatch) {
-    const response = await followerService.unblockUser(user?._id);
-   
-  }
-
-
   //  use in People page
   static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
     // when follow some one and then will be received from server socket "added follow"
@@ -82,7 +60,7 @@ export class FollowersUtils {
   // block and unblock
   // in socket/user.ts
   // update profile in redux
-  static socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch) {
+  static socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch) {
 
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
@@ -94,7 +72,7 @@ export class FollowersUtils {
       // update blocked list in state
       setMyBlockedUsers(newProfile?.blocked);
       // update profile in redux
-      dispatch(updateLoggedUser({ token, profile: newProfile }));
+      dispatch(updateLoggedUserProfile(newProfile ));
     });
 
     socketService?.socket?.on('unblocked user id', (data) => {
@@ -103,11 +81,11 @@ export class FollowersUtils {
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
       setMyBlockedUsers(newProfile?.blocked);
-      dispatch(updateLoggedUser({ token, profile: newProfile }));
+      dispatch(updateLoggedUserProfile( newProfile ));
     });
   }
 
-  static socketIOBlockAndUnblockCard(user, setUser) {
+  static socketIOBlockAndUnblockProfileFollowTab(user, setUser) {
     socketService?.socket?.on('blocked user id', (data) => {
       const userData = FollowersUtils.updateProfileWhenBlock(user, data);
       setUser(userData);

@@ -18,14 +18,15 @@ import ImageModal from "@components/image-modal/ImageModal";
 import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reducer";
 import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 import { openModal } from "@redux/reducers/modal/modal.reducer";
-import Dialog from "@components/dialog/Dialog";
+import Dialog from "@root/base-components/dialog/Dialog";
 import { postService } from "@services/api/post/post.service";
 const Post = ({ post, showIcons }) => {
   const dispatch = useDispatch()
   // ?comment
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
-  const { _id } = useSelector(state => state.post)
+
   const reduxPost = useSelector(state => state.post)
+  const { token } = useSelector((state) => state.user);
   // ? end comment
 
   const getFeeling = (name) => {
@@ -70,12 +71,12 @@ const Post = ({ post, showIcons }) => {
     try {
       const response = await postService.deletePost(reduxPost._id);
       if (response) {
-        Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+        Utils.displaySuccess(response.data.message, dispatch)
         dispatch(updateModalIsDeleteDialogOpen(!reduxModal.isDeleteDialogOpen));
         dispatch(emptyPost());
       }
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 

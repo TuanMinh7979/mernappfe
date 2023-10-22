@@ -1,21 +1,23 @@
-import axios from "@services/axios"
-class NotificationService {
+import axios from "@services/axios";
+import { deleteAPI, getAPI, putAPI } from "@services/utils/fetchData";
+import { newestAccessToken } from "@services/utils/tokenUtils";
+export const notificationService = {
+  dispatch: null,
+  // notificationService.setDispatch
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
 
-    async getUserNotifications() {
-        const response = await axios.get('/notification')
-        return response
-
-    }
-
-    async markNotificationAsRead(messageId) {
-        const response = await axios.put(`/notification/${messageId}`);
-        return response;
-    }
-
-    async deleteNotification(messageId) {
-        const response = await axios.delete(`/notification/${messageId}`);
-        return response;
-    }
-}
-
-export const notificationService = new NotificationService()
+  getsByUser: async function () {
+    let accessToken = await newestAccessToken( this.dispatch);
+    return await getAPI("/notification", accessToken);
+  },
+  updateIsRead: async function (messageId) {
+    let accessToken = await newestAccessToken( this.dispatch);
+    return await putAPI(`/notification/${messageId}`, {}, accessToken);
+  },
+  deleteById: async function (messageId) {
+    let accessToken = await newestAccessToken( this.dispatch);
+    return await deleteAPI(`/notification/${messageId}`, accessToken);
+  },
+};

@@ -1,12 +1,12 @@
-import  {BASE_ENDPOINT}  from '@services/axios';
+
 import { io } from 'socket.io-client';
 
 class SocketService {
   socket;
 
   setupSocketConnection() {
-    console.log(BASE_ENDPOINT);
-    this.socket = io(BASE_ENDPOINT, {
+
+    this.socket = io(`${process.env.REACT_APP_API_BASE_URL}`, {
       transports: ['websocket'],
       secure: true
     });
@@ -15,7 +15,7 @@ class SocketService {
 
   socketConnectionEvents() {
     this.socket.on('connect', () => {
-      console.log('socket connected');
+      console.log('Socket connected');
     });
 
     this.socket.on('disconnect', (reason) => {

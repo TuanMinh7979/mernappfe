@@ -15,7 +15,7 @@ const useLocalStorage = (key, type) => {
       return [deleteValue];
     }
   } catch (error) {
-    console.log(error);
+ 
   }
 };
 export default useLocalStorage;

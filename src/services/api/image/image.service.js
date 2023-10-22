@@ -1,23 +1,28 @@
-import axios from '@services/axios';
 
-class ImageService {
-  async getUserImages(userId) {
-    const response = await axios.get(`/images/${userId}`);
-    return response;
-  }
+import { deleteAPI, getAPI, postAPI } from "@services/utils/fetchData";
+import { newestAccessToken } from "@services/utils/tokenUtils";
+export const imageService = {
+  dispatch: null,
 
-  async addImage(url, data) {
-    const response = await axios.post(url, { image: data });
-    return response;
-  }
-
-  async removeImage(url) {
-    const response = await axios.delete(url);
-    return response;
-  }
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
 
 
-  
-}
+  getsByUser: async function (userId) {
 
-export const imageService = new ImageService();
+    let accessToken = await newestAccessToken( this.dispatch);
+
+    return getAPI(`/images/${userId}`, accessToken);
+  },
+
+  save: async function (url, data) {
+    let accessToken = await newestAccessToken( this.dispatch);
+    return await postAPI(url, { image: data }, accessToken);
+  },
+
+  delete: async function (url) {
+    let accessToken = await newestAccessToken( this.dispatch);
+    return await deleteAPI(url, accessToken);
+  },
+};

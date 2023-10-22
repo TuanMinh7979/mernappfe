@@ -1,13 +1,8 @@
-import {
-  updateLoggedUser,
-  emptyLoggedUser,
-} from "@redux/reducers/user/user.reducer";
+import { emptyLoggedUser } from "@redux/reducers/user/user.reducer";
 import { avatarColors } from "./static.data";
 import { floor, random } from "lodash";
-import {
-  updateToastsNewEle,
-  removeToasts,
-} from "@redux/reducers/notifications/toasts.reducer";
+import { removeToasts } from "@redux/reducers/notifications/toasts.reducer";
+import { updateToastsNewEle } from "@redux/reducers/notifications/toasts.reducer";
 import millify from "millify";
 export class Utils {
   static avatarColor() {
@@ -34,36 +29,47 @@ export class Utils {
     return canvas.toDataURL("image/png");
   }
 
-
-  static clearStore = ({
-    dispatch,
-   
-    deleteSessionPageReload,
-
-  }) => {
+  static clearStore = (dispatch) => {
     dispatch(emptyLoggedUser());
-
-    deleteSessionPageReload();
-
+    sessionStorage.removeItem("accessToken");
   };
 
-  static appEnvironment = () => {
-    const env = process.env.REACT_APP_ENVIROMENT;
-
-    if (env == "development") {
-      return "DEV";
-    } else if (env == "production") {
-      return "PRO";
+  static displayError(error, dispatch, removeOlds) {
+    if (removeOlds ) {
+      dispatch(removeToasts());
     }
-  };
 
-  static updToastsNewEle(message, type, dispatch) {
-    dispatch(updateToastsNewEle({ message, type }));
+    let message = "";
+    let type = "error";
+    if (error?.response?.data?.message) {
+      if (error.response.data.statusCode === 401) return;
+      message = error.response.data.message;
+    } else if (error.message) {
+      message = error.message;
+    } else if (typeof error === "string") {
+      message = error;
+      type = "clientError";
+    }
+
+    if (message && type) {
+      dispatch(updateToastsNewEle({ message, type }));
+    }
+  }
+  static displaySuccess(message, dispatch, removeOlds) {
+    if (removeOlds) {
+      dispatch(removeToasts());
+    }
+    dispatch(updateToastsNewEle({ message, type: "success" }));
+  }
+  static displayInfo(message, dispatch, removeOlds) {
+    if (removeOlds) {
+      dispatch(removeToasts());
+    }
+    dispatch(updateToastsNewEle({ message, type: "info" }));
   }
   static remToasts(dispatch) {
     dispatch(removeToasts());
   }
-
 
   static generateString(length) {
     const characters =
@@ -81,12 +87,15 @@ export class Utils {
       version = version.replace(/['"]+/g, "");
       id = id.replace(/['"]+/g, "");
     }
-    return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
+    return `${process.env.REACT_APP_CLOUD_IMAGE_URL}/image/upload/v${version}/${id}`;
   }
 
   static checkIfUserIsBlocked(myBlockedByArray, postAuthorUserId) {
-
-    return myBlockedByArray && myBlockedByArray.length >= 0 && myBlockedByArray.some((id) => id === postAuthorUserId);
+    return (
+      myBlockedByArray &&
+      myBlockedByArray.length >= 0 &&
+      myBlockedByArray.some((id) => id === postAuthorUserId)
+    );
   }
 
   static checkIfUserIsFollowed(idols, postCreatorId, loggedUserId) {
@@ -95,21 +104,22 @@ export class Utils {
     );
   }
 
-
   static getImage(imageId, imageVersion) {
-    return imageId && imageVersion ? this.appImageUrl(imageVersion, imageId) : '';
+    return imageId && imageVersion
+      ? this.appImageUrl(imageVersion, imageId)
+      : "";
   }
 
   static appImageUrl(version, id) {
-    if (typeof version === 'string' && typeof id === 'string') {
-      version = version.replace(/['"]+/g, '');
-      id = id.replace(/['"]+/g, '');
+    if (typeof version === "string" && typeof id === "string") {
+      version = version.replace(/['"]+/g, "");
+      id = id.replace(/['"]+/g, "");
     }
-    return `https://res.cloudinary.com/djnekmzdf/image/upload/v${version}/${id}`;
+    return `${process.env.REACT_APP_CLOUD_IMAGE_URL}/image/upload/v${version}/${id}`;
   }
 
   static firstLetterUpperCase(word) {
-    if (!word) return '';
+    if (!word) return "";
     return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
   }
 
@@ -120,7 +130,7 @@ export class Utils {
       if (value > 0) {
         const reactionObject = {
           type: key,
-          value
+          value,
         };
         postReactions.push(reactionObject);
       }
@@ -136,22 +146,17 @@ export class Utils {
     }
   }
 
-
-  static checkIfUserIsOnline(username, onlineUsers) {
-    return onlineUsers.some((user) => user === username?.toLowerCase());
-  }
-
-
-
   static renameFile(element) {
     // change to png image file
 
-    const fileName = element.name.split('.').slice(0, -1).join('.');
-    const blob = element.slice(0, element.size, 'image/png');
+    const fileName = element.name.split(".").slice(0, -1).join(".");
+    const blob = element.slice(0, element.size, "image/png");
 
-    const newFile = new File([blob], `${fileName}.png`, { type: 'image/png' });
+    const newFile = new File([blob], `${fileName}.png`, { type: "image/png" });
 
     return newFile;
   }
 
+
+  
 }

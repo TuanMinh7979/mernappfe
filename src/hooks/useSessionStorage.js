@@ -15,7 +15,7 @@ const useSessionStorage = (key, type) => {
       return [deleteValue];
     }
   } catch (error) {
-    console.log(error);
+ 
   }
 };
 export default useSessionStorage;

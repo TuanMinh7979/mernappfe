@@ -22,28 +22,29 @@ const Following = () => {
 
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
-      setFollowing(response.data.following);
+      const response = await followerService.getLoggedUserFollowee();
+      setFollowing([...following, ...response.data.following]);
       setLoading(false);
     } catch (error) {
+
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
   const followUser = async (user) => {
     try {
-      FollowersUtils.followUser(user, dispatch);
+      await followerService.save(user?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
   const unFollowUser = async (user) => {
     try {
-      FollowersUtils.unFollowUser(user, profile, dispatch);
+      await followerService.delete(user?._id, profile?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 

@@ -8,7 +8,7 @@ import { FaTimes } from "react-icons/fa";
 import { bgColors, privacyList } from "@services/utils/static.data";
 import { ImageUtils } from "@services/utils/image-utils.service";
 import { postService } from "@services/api/post/post.service";
-import Button from "@components/button/Button";
+import Button from "@root/base-components/button/Button";
 import { updatePost } from "@redux/reducers/post/post.reducer";
 import { useRef } from "react";
 import {
@@ -20,7 +20,7 @@ import AddPostBottomSelection from "../modal-box-content/AddPostBottomSelection"
 import { FaArrowLeft } from "react-icons/fa";
 import Giphy from "@components/giphy/Giphy";
 import { Utils } from "@services/utils/utils.service";
-import Spinner from "@components/spinner/Spinner";
+import Spinner from "@root/base-components/spinner/Spinner";
 const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
   const reduxPost = useSelector((state) => state.post);
 
   // ? use for create new post (only read)
-  const { profile } = useSelector((state) => state.user);
+  const { profile} = useSelector((state) => state.user);
   // ? use for create new post
 
   // * Limit character
@@ -123,23 +123,23 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
 
       if (reduxPost.image) {
         postData.image = await ImageUtils.readAsBase64(globalChoosedPostImage);
- 
+
         const response = await postService.createPostWithImage(postData);
 
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());
       } else {
-  
+
         const response = await postService.createPost(postData);
         setLoading(false);
         dispatch(closeModal());
         dispatch(emptyPost());
       }
-  
+
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, "error", dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
 
@@ -169,7 +169,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
             </button>
           </div>
           <hr />
-          <AddPostHeader privacyObject={privacyList[0]}/>
+          <AddPostHeader privacyObject={privacyList[0]} />
 
           {!reduxPost.image && !reduxPost.gifUrl && (
             <>
@@ -203,7 +203,7 @@ const AddPost = ({ globalChoosedPostImage, onPostImageInputChange }) => {
                       contentEditable={true}
                       onInput={(event) => onInputPostText(event)}
                       onKeyDown={onKeyDownPostText}
-                      data-placeholder="What's on your mind?..."
+                      data-placeholder="What's on your mind?"
                     ></div>
                   </div>
                 </div>

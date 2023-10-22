@@ -1,4 +1,4 @@
-import Input from '@components/input/Input';
+import Input from '@root/base-components/input/Input';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
@@ -10,7 +10,7 @@ import { postService } from '@services/api/post/post.service';
 import "./CommentInputBox.scss"
 const CommentInputBox = ({ post }) => {
 
-    const { profile } = useSelector((state) => state.user);
+    const { profile} = useSelector((state) => state.user);
     const [comment, setComment] = useState('');
     const commentInputRef = useRef(null);
     const dispatch = useDispatch();
@@ -34,8 +34,8 @@ const CommentInputBox = ({ post }) => {
             await postService.createComment(commentBody);
             setComment('');
         } catch (error) {
-            console.log(error);
-            Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+         
+            Utils.displayError(error ,dispatch);
         }
     };
 

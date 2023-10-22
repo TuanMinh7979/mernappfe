@@ -18,44 +18,39 @@ const Photos = () => {
 
   const getPostWithImages = async () => {
     try {
-
-      const response = await postService.getPostsWithImages(1)
+      const response = await postService.getsWithImage(1)
       setPosts(response.data.posts)
       setLoading(false)
     } catch (error) {
+
       setLoading(false)
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   }
   const getMyIdols = async () => {
     try {
-
-      const response = await followerService.getLoggedUserIdols()
+      const response = await followerService.getLoggedUserFollowee()
       setLoggedUserIdols(response.data.following)
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   }
 
   useEffectOnce(() => {
     getPostWithImages()
     getMyIdols()
-  }, [])
+  })
 
-
-
-  const emptyPost = (post) => {
+  const isEmptyPost = (post) => {
     return (
       Utils.checkIfUserIsBlocked(profile?.blockedBy, post?.userId) || PostUtils.checkPrivacy(post, profile, loggedUserIdols)
     );
   };
 
-  const [curImageUrl, setCurImageUrl] = useState('')
+  const [galleryImageToShow, setGalleryImageToShow] = useState('')
   const [showImageModal, setShowImageModal] = useState(false)
-
-
   const getShowingImageUrlFromPost = (post) => {
     return post?.gifUrl ? post?.gifUrl : Utils.getImage(post?.imgId, post?.imgVersion)
 
@@ -63,11 +58,11 @@ const Photos = () => {
 
   const onClickRight = () => {
     setCurrentShowImageIdx(prev => prev + 1)
-    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
+    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
     setCurrentShowImageIdx(prev => prev - 1)
-    setCurImageUrl(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
+    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
 
   const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
@@ -76,7 +71,7 @@ const Photos = () => {
       <div className="photos-container">
 
         {showImageModal && <ImageModal
-          image={curImageUrl}
+          image={galleryImageToShow}
           showArrow={true}
           onClickRight={onClickRight}
           onClickLeft={onClickLeft}
@@ -91,7 +86,7 @@ const Photos = () => {
         {posts.length > 0 && (
           <div className="gallery-images">
             {posts.map((el, idx) =>
-              <div className={`${!emptyPost(el) ? 'empty-post-div' : ''}`} key={idx}>
+              <div className={`${!isEmptyPost(el) ? 'empty-post-div' : ''}`} key={idx}>
                 {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
                   el?.userId === profile?._id) && (
                     <>
@@ -108,7 +103,7 @@ const Photos = () => {
                               onClick={() => {
                                 setCurrentShowImageIdx(idx)
                                 setShowImageModal(!showImageModal)
-                                setCurImageUrl(getShowingImageUrlFromPost(el))
+                                setGalleryImageToShow(getShowingImageUrlFromPost(el))
                               }}
 
                             />

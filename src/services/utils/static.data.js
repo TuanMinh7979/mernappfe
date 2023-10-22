@@ -9,72 +9,74 @@ import love from '../../assets/reactions/love.png';
 import sad from '../../assets/reactions/sad.png';
 import wow from '../../assets/reactions/wow.png';
 import {
-  FaBirthdayCake,
-  FaComments,
   FaGlobe,
-  FaHeart,
-  FaImages,
   FaKey,
-  FaLock,
-  FaNewspaper,
-  FaRegBell,
-  FaRegUser,
+  FaLock, 
   FaUser,
   FaUserCheck,
-  FaUserPlus,
-  FaUsers,
-  FaVideo
 } from 'react-icons/fa';
+
+
+import {
+  RiNewspaperFill,
+  RiUserAddFill,
+  RiUserSmileFill,
+  RiChat2Fill,
+  RiHeart3Fill,
+  RiImageFill,
+  RiNotification2Fill,
+  RiUser3Fill
+} from 'react-icons/ri'
 
 export const sideBarItems = [
   {
     index: 1,
-    name: 'Streams',
+    name: 'Feeds',
     url: '/app/social/streams',
-    iconName: 'FaNewspaper'
+    iconName: 'RiNewspaperFill'
   },
   {
     index: 2,
     name: 'Chat',
     url: '/app/social/chat/messages',
-    iconName: 'FaComments'
+    iconName: 'RiChat2Fill'
   },
   {
     index: 3,
     name: 'People',
     url: '/app/social/people',
-    iconName: 'FaUsers'
+    iconName: 'RiUserSmileFill'
   },
   {
     index: 4,
     name: 'Following',
     url: '/app/social/following',
-    iconName: 'FaUserPlus'
+    iconName: 'RiUserAddFill'
   },
   {
     index: 5,
     name: 'Followers',
     url: '/app/social/followers',
-    iconName: 'FaHeart'
+    iconName: 'RiHeart3Fill'
   },
   {
     index: 6,
     name: 'Photos',
     url: '/app/social/photos',
-    iconName: 'FaImages'
+    iconName: 'RiImageFill'
   },
 
   {
     index: 7,
     name: 'Notifications',
     url: '/app/social/notifications',
-    iconName: 'FaRegBell'
+    iconName: 'RiNotification2Fill'
   },
   {
     index: 8,
     name: 'Profile',
     url: '/app/social/profile',
-    iconName: 'FaRegUser'
+    iconName: 'RiUser3Fill'
   }
 ];
 
@@ -102,16 +104,19 @@ export const feelingsList = [
 ];
 
 export const fontAwesomeIcons = {
-  FaNewspaper: <FaNewspaper className="icon" />,
-  FaComments: <FaComments className="icon" />,
-  FaUsers: <FaUsers className="icon" />,
-  FaUserPlus: <FaUserPlus className="icon" />,
-  FaHeart: <FaHeart className="icon" />,
-  FaImages: <FaImages className="icon" />,
-  FaVideo: <FaVideo className="icon" />,
-  FaRegBell: <FaRegBell className="icon" />,
-  FaBirthdayCake: <FaBirthdayCake className="icon" />,
-  FaRegUser: <FaRegUser className="icon" />
+
+
+  RiNewspaperFill: <RiNewspaperFill className='icon' />,
+
+  RiChat2Fill: <RiChat2Fill className="icon" />,
+  RiUserSmileFill: <RiUserSmileFill className="icon" />,
+  RiUserAddFill: <RiUserAddFill className="icon" />,
+  RiHeart3Fill: <RiHeart3Fill className="icon" />,
+  RiImageFill: <RiImageFill className="icon" />,
+
+  RiNotification2Fill: <RiNotification2Fill className="icon" />,
+
+  RiUser3Fill: <RiUser3Fill className="icon" />
 };
 
 export const privacyList = [
@@ -215,13 +220,13 @@ export const reactionsColor = {
 };
 
 export const notificationItems = [
-  {
-    index: 0,
-    title: 'Direct Messages',
-    description: 'New direct messages notifications.',
-    toggle: true,
-    type: 'messages'
-  },
+  // {
+  //   index: 0,
+  //   title: 'Direct Messages',
+  //   description: 'New direct messages notifications.',
+  //   toggle: true,
+  //   type: 'messages'
+  // },
   {
     index: 1,
     title: 'Follows',
@@ -248,8 +253,8 @@ export const notificationItems = [
 export const tabItems = (showPassword, showNotification) => {
   const items = [
     { key: 'Timeline', show: true, icon: <FaUser className="banner-nav-item-name-icon" /> },
-    { key: 'Followers', show: true, icon: <FaHeart className="banner-nav-item-name-icon" /> },
-    { key: 'Gallery', show: true, icon: <FaImages className="banner-nav-item-name-icon" /> },
+    { key: 'Followers', show: true, icon: <RiHeart3Fill className="banner-nav-item-name-icon" /> },
+    { key: 'Gallery', show: true, icon: <RiImageFill className="banner-nav-item-name-icon" /> },
     {
       key: 'Change Password',
       show: showPassword,
@@ -258,7 +263,7 @@ export const tabItems = (showPassword, showNotification) => {
     {
       key: 'Notifications',
       show: showNotification,
-      icon: <FaRegBell className="banner-nav-item-name-icon" />
+      icon: <RiNotification2Fill className="banner-nav-item-name-icon" />
     }
   ];
   return items;

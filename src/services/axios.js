@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-export let BASE_ENDPOINT = 'http://localhost:5000';
-const BASE_URL = `${BASE_ENDPOINT}/api/v1`;
+export const BASE_URL = `${process.env.REACT_APP_API_BASE_URL}/api/v1`;
 
 export default axios.create({
     baseURL: BASE_URL,

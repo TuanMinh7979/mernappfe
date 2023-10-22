@@ -15,8 +15,9 @@ import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'
 import { followerService } from '@services/api/follow/follow.service'
 import { useEffect } from 'react'
+import useEffectOnce from '@hooks/useEffectOnce'
 const Follower = () => {
-  const { profile, token } = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const [followers, setFollowers] = useState([]);
   const [myblockedUsers, setMyBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,35 +26,32 @@ const Follower = () => {
 
   //  init follower
 
-  const getMyFans = useCallback(async () => {
+  const getLoggedUserFollower = useCallback(async () => {
     try {
       if (profile) {
-        const response = await followerService.getLoggedUserFans(profile?._id);
-        setFollowers(response.data.followers);
+        const response = await followerService.getByUser(profile?._id);
+        setFollowers([...followers, ...response.data.followers]);
         setLoading(false);
       }
     } catch (error) {
       setLoading(false);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   }, [profile, dispatch]);
 
   //  END init followers
   //  new user data when scroll 
 
+  useEffectOnce(() => {
+    getLoggedUserFollower();
+  });
 
   useEffect(() => {
-    getMyFans();
     setMyBlockedUsers(profile.blocked)
-
-  }, [getMyFans, profile]);
+  }, [profile])
   useEffect(() => {
-    FollowersUtils.socketIOBlockAndUnblock(profile, token, setMyBlockedUsers, dispatch)
-
-  }, [dispatch, profile, token]);
-
-  //  END new user data when scroll 
-
+    FollowersUtils.socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch)
+  }, [dispatch, profile]);
 
   //  block and unblock
   const blockUser = async (toBlockUser) => {
@@ -64,9 +62,9 @@ const Follower = () => {
         blockedUser: toBlockUser._id, blockedBy: profile._id
       })
       //  service
-      FollowersUtils.blockUserInServer(toBlockUser, dispatch)
+      await followerService.blockUser(toBlockUser?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -75,9 +73,10 @@ const Follower = () => {
       socketService?.socket?.emit('unblock user', {
         blockedUser: user._id, blockedBy: profile._id
       })
-      FollowersUtils.unblockUser(user, dispatch)
+
+      await followerService.unblockUser(user?._id);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   //  END block and unBlock

@@ -14,16 +14,16 @@ import { PostUtils } from "@services/utils/post-utils.service";
 import { Utils } from "@services/utils/utils.service";
 import { useState } from "react";
 import { postService } from "@services/api/post/post.service";
-import { getPosts } from "@redux/api/post";
-import { getActiveElement } from "@testing-library/user-event/dist/utils";
-import { orderBy, uniqBy } from 'lodash';
+import { fetchPosts } from "@redux/api/post";
+
+import { uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
-import useLocalStorage from "@hooks/useLocalStorage";
+import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import { ChatUtils } from "@services/utils/chat-utils.service.";
-const Streams = () => {
 
+const Streams = () => {
+  const { profile } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false)
 
   // ? app post
@@ -50,8 +50,9 @@ const Streams = () => {
       }
       setLoading(false);
     } catch (error) {
+
       setLoading(false);
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   // ? end app post
@@ -60,10 +61,11 @@ const Streams = () => {
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const getUserFollowing = async () => {
     try {
-      const response = await followerService.getLoggedUserIdols();
+      const response = await followerService.getLoggedUserFollowee();
       setLoggedUserIdols(response.data.following);
     } catch (error) {
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+
+      Utils.displayError(error, dispatch);
     }
   };
   // ?  END get logged user idols
@@ -89,7 +91,7 @@ const Streams = () => {
     dispatch(fetchUpdSugUsers());
     getUserFollowing();
     getReactionsByUsername()
-    dispatch(getPosts())
+    dispatch(fetchPosts())
 
   });
 
@@ -102,18 +104,28 @@ const Streams = () => {
 
   useEffect(() => {
     PostUtils.socketIOPost(posts, setPosts);
+    return () => {
+      socketService.socket.off("add post");
+      socketService.socket.off("update post");
+      socketService.socket.off("delete post");
+      socketService.socket.off("update reaction");
+      socketService.socket.off("update comment");
+
+    };
   }, [posts]);
 
   // ? get all reactions of current user
-  const { profile } = useSelector((state) => state.user);
+
 
   const getReactionsByUsername = async () => {
     try {
 
-      const rs = await postService.getReactionsByUsername(profile.username)
+      const rs = await postService.getReactionsByUsername(profile?.username)
       dispatch(updateLoggedUserReactions(rs.data.reactions));
-    } catch (e) {
-      Utils.updToastsNewEle(e.response.data.message, 'error', dispatch);
+    } catch (error) {
+
+
+      Utils.displayError(error, dispatch);
 
     }
   }

@@ -11,10 +11,10 @@ import { notificationService } from "@services/api/notification/notification.ser
 import useEffectOnce from "@hooks/useEffectOnce";
 import { timeAgo } from "@services/utils/time.ago.utils";
 import NotificationUtils from "@services/utils/notification-utils.service";
-import NotificationPreview from "@components/dialog/NotificationPreview";
-import { socketService } from "@services/socket/socket.service";
+import NotificationPreview from "@components/noti-previview/NotificationPreview";
+
 const Notification = () => {
-  const { profile } = useSelector(state => state.user)
+  const { profile} = useSelector(state => state.user)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch();
@@ -25,39 +25,37 @@ const Notification = () => {
     reaction: '',
     senderName: ''
   })
-  const initNotifications = async () => {
+  const fetchLoggedUserNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications()
+      const rs = await notificationService.getsByUser()
       setNotifications(rs.data.notifications)
-
     } catch (error) {
-
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
 
   useEffectOnce(() => {
-    initNotifications()
+    fetchLoggedUserNotifications()
   })
 
-  const markAsRead = async (notification) => {
+  const updateNotiIsRead = async (notification) => {
     try {
       // to show dialog
       NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
-      await notificationService.markNotificationAsRead(notification._id);
+      await notificationService.updateIsRead(notification._id);
     } catch (error) {
 
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
 
-  const deleteNotification = async (event, notificationId) => {
+  const deleteNoti = async (event, notificationId) => {
     event.stopPropagation()
     try {
-      const response = await notificationService.deleteNotification(notificationId);
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      const response = await notificationService.deleteById(notificationId);
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   }
   useEffect(() => {
@@ -110,7 +108,7 @@ const Notification = () => {
               className="notification-box"
               data-testid="notification-box"
               key={notification?._id}
-              onClick={() => markAsRead(notification)}
+              onClick={() => updateNotiIsRead(notification)}
 
             >
               <div className="notification-box-sub-card">
@@ -130,7 +128,7 @@ const Notification = () => {
                       <small
                         data-testid="subtitle"
                         className="subtitle"
-                        onClick={(event) => deleteNotification(event, notification._id)}
+                        onClick={(event) => deleteNoti(event, notification._id)}
                       >
                         <FaRegTrashAlt className="trash" />
                       </small>

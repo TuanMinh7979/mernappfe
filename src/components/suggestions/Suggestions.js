@@ -1,30 +1,32 @@
 import Avatar from '@components/avatar/Avatar';
-import Button from '@components/button/Button';
+import Button from '@root/base-components/button/Button';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import './Suggestions.scss'
 import { Utils } from '@services/utils/utils.service';
-import { FollowersUtils } from '@services/utils/followers-utils.service';
+import { followerService } from '@services/api/follow/follow.service';
 import { filter } from 'lodash';
 import { updateSugUsersNewEle } from '@redux/reducers/suggestions/suggestions.reducer';
 
 const Suggestions = () => {
   const { suggestions } = useSelector((state) => state);
+
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const followUser = async (user) => {
     try {
-      FollowersUtils.followUser(user, dispatch);
+
+      await followerService.save(user?._id);
       const result = filter(users, (data) => data?._id !== user?._id);
       setUsers(result);
       dispatch(updateSugUsersNewEle({ users: result, isLoading: false }));
     } catch (error) {
       alert(error)
-      console.log(error);
-      Utils.updToastsNewEle(error.response.data.message, 'error', dispatch);
+
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -35,7 +37,7 @@ const Suggestions = () => {
   return (
     <div className="suggestions-list-container" data-testid="suggestions-container">
       <div className="suggestions-header">
-        <div className="title-text">Suggestions</div>
+        <div className="title-text">Other people</div>
       </div>
       <hr />
       <div className="suggestions-container">
@@ -62,8 +64,8 @@ const Suggestions = () => {
           ))}
         </div>
         {users?.length > 8 && (
-          <div className="view-more" 
-          onClick={() => navigate('/app/social/people')}>
+          <div className="view-more"
+            onClick={() => navigate('/app/social/people')}>
             View More
           </div>
         )}

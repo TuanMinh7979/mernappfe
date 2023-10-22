@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { feelingsList } from '@services/utils/static.data';
 import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
-
+  const { profile} = useSelector((state) => state.user);
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
@@ -22,7 +22,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
@@ -54,8 +54,8 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
     try {
       const response = await postService.getPostCommentsNames(post._id)
       setPostCommentNames([...new Set(response.data.comments.names)])
-    } catch (e) {
-      Utils.updToastsNewEle(e?.response?.data?.message, 'error', dispatch);
+    } catch (error) {
+     Utils.displayError(error ,dispatch);
 
     }
   }

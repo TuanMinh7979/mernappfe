@@ -1,4 +1,4 @@
-import { getPosts } from '@redux/api/post';
+import { fetchPosts } from '@redux/api/post';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -16,17 +16,17 @@ const postsSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(getPosts.pending, (state) => {
+    builder.addCase(fetchPosts.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(getPosts.fulfilled, (state, action) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
       
       state.isLoading = false;
       const { posts, totalPosts } = action.payload;
       state.posts = [...posts];
       state.totalPostsCount = totalPosts;
     });
-    builder.addCase(getPosts.rejected, (state) => {
+    builder.addCase(fetchPosts.rejected, (state) => {
       state.isLoading = false;
     });
   }

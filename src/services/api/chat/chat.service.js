@@ -1,44 +1,44 @@
-import axios from '@services/axios';
-import userEvent from '@testing-library/user-event';
+import { deleteAPI, getAPI, postAPI, putAPI } from "@services/utils/fetchData";
+import { newestAccessToken } from "@services/utils/tokenUtils";
 
-class ChatService {
-  async getConversationList() {
-    const response = await axios.get('/chat/message/conversations');
-    return response;
-  }
+export const chatService = {
+  dispatch: null,
 
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
+  getConversationListService: async function () {
+    let accessToken = await newestAccessToken(this.dispatch);
 
-
-
-
-
-  async markMessagesAsRead(senderId, receiverId) {
-    const response = await axios.put(`/chat/message/mark-as-readed`, { senderId, receiverId });
-    return response;
-  }
-
+    return await getAPI("/chat/message/conversations", accessToken);
+  },
+  markMessagesAsRead: async function (senderId, receiverId) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI(
+      `/chat/message/mark-as-readed`,
+      { senderId, receiverId },
+      accessToken
+    );
+  },
   // get chat messages
-  async getChatMessages(receiverId) {
-    const response = await axios.get(`/chat/message/user/${receiverId}`);
-    return response;
-  }
-
-  // 
-  async saveChatMessage(body) {
-    const response = await axios.post('/chat/message', body);
-    return response;
-  }
-
-  async updateMessageReaction(body) {
-
-    const response = await axios.put('/chat/message/reaction', body);
-    return response;
-  }
-  async markMessageAsDelete(messageId, senderId, receiverId, type) {
-    const response = await axios.delete(`/chat/message/mark-as-deleted/${messageId}/${senderId}/${receiverId}/${type}`);
-    return response;
-  }
-
-}
-
-export const chatService = new ChatService();
+  getChatMessages: async function (receiverId) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await getAPI(`/chat/message/user/${receiverId}`, accessToken);
+  },
+  //
+  saveChatMessage: async function (body) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await postAPI("/chat/message", body, accessToken);
+  },
+  updateMessageReaction: async function (body) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await putAPI("/chat/message/reaction", body, accessToken);
+  },
+  markMessageAsDelete: async function (messageId, senderId, receiverId, type) {
+    let accessToken = await newestAccessToken(this.dispatch);
+    return await deleteAPI(
+      `/chat/message/mark-as-deleted/${messageId}/${senderId}/${receiverId}/${type}`,
+      accessToken
+    );
+  },
+};

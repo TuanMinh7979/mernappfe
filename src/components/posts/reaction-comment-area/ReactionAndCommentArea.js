@@ -12,7 +12,7 @@ import { reactionsMap } from "@services/utils/static.data";
 import { postService } from "@services/api/post/post.service";
 import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
-import useLocalStorage from "@hooks/useLocalStorage";
+
 import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 const ReactionAndCommentArea = ({ post }) => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const ReactionAndCommentArea = ({ post }) => {
 
   const toggleCommentInput = () => {
     if (!_id || _id !== post?._id) {
-      dispatch(updatePost({...post}))
+      dispatch(updatePost({ ...post }))
     } else {
       dispatch(emptyPost())
     }
@@ -107,8 +107,8 @@ const ReactionAndCommentArea = ({ post }) => {
         }
       }
     } catch (error) {
-      console.log(error);
-      Utils.updToastsNewEle(error?.response?.data?.message, "error", dispatch);
+
+     Utils.displayError(error ,dispatch);
     }
   };
   const updateReactionsPropertyOfCurrentPost = (
@@ -116,7 +116,7 @@ const ReactionAndCommentArea = ({ post }) => {
     existOldReactionFromDB,
     previousReactionText
   ) => {
-   
+
 
     let newPost = { ...post };
 

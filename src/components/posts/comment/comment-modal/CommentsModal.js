@@ -11,6 +11,7 @@ import { useState } from 'react';
 import useEffectOnce from '@hooks/useEffectOnce';
 const CommentsModal = () => {
   const { post } = useSelector((state) => state);
+  const { profile} = useSelector((state) => state.user);
   const [postComments, setPostComments] = useState([]);
   const dispatch = useDispatch();
   const getPostComments = async () => {
@@ -18,14 +19,14 @@ const CommentsModal = () => {
       const response = await postService.getPostComments(post?._id);
       setPostComments(response.data?.comments);
     } catch (error) {
-      Utils.updToastsNewEle (error.response.data.message, 'error', dispatch);
+      Utils.displayError(error ,dispatch);
     }
   };
 
   const closeCommentsModal = () => {
     dispatch(closeModal());
     dispatch(emptyPost());
-    
+
 
   };
 

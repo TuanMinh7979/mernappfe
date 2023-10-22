@@ -20,8 +20,12 @@ export class PostUtils {
   // * Params:
   // * posts: outer state
   // * setPosts: outer set state function
-  static socketIOPost(posts, setPosts) {
+  static socketIOPost(posts, setPosts, timeLineUserId) {
+
+
     socketService?.socket?.on("add post", (post) => {
+
+      if (timeLineUserId && timeLineUserId !== post.userId) return
       // add at first
       posts = [post, ...posts];
       setPosts(posts);
@@ -34,7 +38,7 @@ export class PostUtils {
       const index = posts.findIndex((el) => el._id == updatedPost._id);
       if (index > -1) {
         newPosts.splice(index, 1, updatedPost);
- 
+
         setPosts([...newPosts]);
       }
     });
@@ -46,7 +50,7 @@ export class PostUtils {
 
     // from post.socket.ts in server after sending emit('reaction') in client at ReactionAndCommentArea
     socketService?.socket?.on("update reaction", (reactionData) => {
-    
+
       const oldPostData = posts.find(
         (post) => post._id === reactionData?.postId
       );
@@ -65,6 +69,7 @@ export class PostUtils {
       }
     });
     socketService?.socket?.on("update comment", (commentData) => {
+
       const newPosts = [...posts]
       const oldPostData = newPosts.find(
         (post) => post._id === commentData?.postId
@@ -82,5 +87,5 @@ export class PostUtils {
     });
   }
 
-  static updateAPost(posts, updatedPost, setPosts) { }
+
 }

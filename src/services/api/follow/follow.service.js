@@ -1,40 +1,38 @@
 import axios from "@services/axios";
+import { getAPI, putAPI } from "@services/utils/fetchData";
+import { newestAccessToken } from "@services/utils/tokenUtils";
+export const followerService = {
+  dispatch: null,
 
-class FollowerService {
-  async followUser(followerId) {
-    const response = await axios.put(`/user/follow/${followerId}`);
-    return response;
-  }
+  setDispatch: function (newDispatch) {
+    this.dispatch = newDispatch;
+  },
+  save: async function (followerId) {
+    let accessToken = await newestAccessToken( this.dispatch)
+    return await putAPI(`/user/follow/${followerId}`, {}, accessToken);
+  },
 
-  async unFollowUser(idolId, fanId) {
-    const response = await axios.put(`/user/unfollow/${idolId}/${fanId}`);
-    return response;
-  }
+  delete: async function (idolId, fanId) {
+    let accessToken = await newestAccessToken( this.dispatch)
+    return await putAPI(`/user/unfollow/${idolId}/${fanId}`, {}, accessToken);
+  },
 
-  async getLoggedUserIdols() {
+  getLoggedUserFollowee: async function () {
     // get my idols
-    const response = await axios.get('/user/following');
-    return response;
-  }
+    let accessToken = await newestAccessToken( this.dispatch)
+    return await getAPI("/user/following", accessToken);
+  },
+  getByUser: async function (userId) {
 
-  async getLoggedUserFans(userId) {
-    // get my fans
-    const response = await axios.get(`/user/followers/${userId}`);
-    return response;
-  }
-
-
-  async blockUser(targetId) {
-    const response = await axios.put(`/user/block/${targetId}`);
-    return response;
-  }
-
-  async unblockUser(targetId) {
-    const response = await axios.put(`/user/unblock/${targetId}`);
-    return response;
-  }
-
-
-}
-
-export const followerService = new FollowerService();
+    let accessToken = await newestAccessToken( this.dispatch)
+    return await getAPI(`/user/followers/${userId}`, accessToken);
+  },
+  blockUser: async function (targetId) {
+    let accessToken = await newestAccessToken( this.dispatch)
+    return await putAPI(`/user/block/${targetId}`, {}, accessToken);
+  },
+  unblockUser: async function (targetId) {
+    let accessToken = await newestAccessToken( this.dispatch)
+    await putAPI(`/user/unblock/${targetId}`, {}, accessToken);
+  },
+};

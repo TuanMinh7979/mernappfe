@@ -1,11 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import logo from "@assets/images/logo.svg";
-import {
-  FaCaretDown,
-  FaCaretUp,
-  FaRegBell,
-  FaRegEnvelope,
-} from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaRegEnvelope } from "react-icons/fa";
+import { RiNotification2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import MessageSidebar from "@components/message-sidebar/MessageSidebar";
 import "@components/header/Header.scss";
@@ -14,120 +9,116 @@ import { Utils } from "@services/utils/utils.service";
 import NotificationUtils from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { sumBy } from "lodash";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 import NotiDropdown from "@components/dropdown/NotiDropdown";
-
-
-import useSessionStorage from "@hooks/useSessionStorage";
 import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { ProfileUtils } from "@services/utils/profile-utils.service";
 import HeaderSkeleton from "./HeaderSkeleton";
 import { notificationService } from "@services/api/notification/notification.service";
-
-import NotificationPreview from "@components/dialog/NotificationPreview";
+import NotificationPreview from "@components/noti-previview/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-
 import { createSearchParams } from "react-router-dom";
 import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 const Header = () => {
-
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
   const settingsRef = useRef(null);
   const [isMesssageActive, setIsMessageActive] = useDetectOutsideClick(
-    messageRef, false
-  )
-  const [isNotificationActive, setIsNotificationActive] = useDetectOutsideClick(notificationRef, false);
-  const [isSettingActive, setIsSettingActive] = useDetectOutsideClick(settingsRef, false);
+    messageRef,
+    false
+  );
+  const [isNotificationActive, setIsNotificationActive] = useDetectOutsideClick(
+    notificationRef,
+    false
+  );
+  const [isSettingActive, setIsSettingActive] = useDetectOutsideClick(
+    settingsRef,
+    false
+  );
   const [messageCount, setMessageCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [notificationDialogContent, setNotificationDialogContent] = useState({
-    post: '',
-    imgUrl: '',
-    comment: '',
-    reaction: '',
-    senderName: ''
-  })
+    post: "",
+    imgUrl: "",
+    comment: "",
+    reaction: "",
+    senderName: "",
+  });
 
   const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-
-
-  const [deleteSessionPageReload] = useSessionStorage('logged', 'delete');
   const { conversationList } = useSelector((state) => state.chat);
 
   const initNotifications = async () => {
     try {
-      const rs = await notificationService.getUserNotifications()
-      const mapNotis = NotificationUtils.mapNotificationDropdownItems(rs.data.notifications,
+      const rs = await notificationService.getsByUser();
+      const mapNotis = NotificationUtils.mapNotificationDropdownItems(
+        rs.data.notifications,
         setNotificationCount
-      )
-      setNotifications(mapNotis)
-
-
+      );
+      setNotifications(mapNotis);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+
+     Utils.displayError(error ,dispatch);
     }
-  }
+  };
   const onMarkAsRead = async (notification) => {
     try {
       // to show dialog
-      NotificationUtils.markMessageAsRead(notification, setNotificationDialogContent)
-      await notificationService.markNotificationAsRead(notification._id);
+      NotificationUtils.markMessageAsRead(
+        notification,
+        setNotificationDialogContent
+      );
+      await notificationService.updateIsRead(notification._id);
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+     Utils.displayError(error ,dispatch);
     }
-  }
+  };
 
   const onDeleteNotification = async (notificationId) => {
-
     try {
-      const response = await notificationService.deleteNotification(notificationId);
-      Utils.updToastsNewEle(response.data.message, 'success', dispatch);
+      const response = await notificationService.deleteById(
+        notificationId
+      );
+      Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+     Utils.displayError(error ,dispatch);
     }
-  }
+  };
 
-  const [settings, setSettings] = useState('')
+  const [settings, setSettings] = useState("");
   useEffectOnce(() => {
-    setSettings([{
-      topText: "Profile",
-      subText: "View personal profile.",
-    }])
-    initNotifications()
+    setSettings([
+      {
+        topText: "Profile",
+        subText: "Your Profile",
+      },
+    ]);
+    initNotifications();
   });
 
-
-
-
   const callUpdateConversationListAction = (data) => {
-    dispatch(updateConversationList(data))
-
-  }
-
+    dispatch(updateConversationList(data));
+  };
 
   useEffect(() => {
-
     ChatUtils.socketIOConversations(
       profile,
       [...conversationList],
       callUpdateConversationListAction,
       dispatch
     );
-    return (() => {
+    return () => {
       socketService.socket.off("chat list");
-    })
-  }, [conversationList])
+    };
+  }, [conversationList]);
   useEffect(() => {
     NotificationUtils.socketIONotification(
       profile,
@@ -135,17 +126,16 @@ const Header = () => {
       setNotifications,
       "header",
       setNotificationCount
-    )
-    return (() => {
+    );
+    return () => {
       socketService.socket.off("inserted notification");
       socketService.socket.off("updated notification");
       socketService.socket.off("deleted notification");
+    };
+  }, [notifications, profile]);
 
-    }
-    )
 
 
-  }, [notifications, profile])
 
   const openChatPage = async (notification) => {
     try {
@@ -168,27 +158,21 @@ const Header = () => {
       ) {
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
-
-
     } catch (error) {
-      console.log(error);
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
-
 
   const onLogout = async () => {
     try {
 
-      Utils.clearStore({ dispatch, deleteSessionPageReload });
       await userService.logoutUser();
-      navigate('/');
+      Utils.clearStore( dispatch );
+      // navigate("/");
     } catch (error) {
-      console.log(error);
-      Utils.updToastsNewEle(error?.response?.data?.message, 'error', dispatch);
+     Utils.displayError(error ,dispatch);
     }
   };
-
 
   //  ? FOR MESSAGES SIDEBAR
 
@@ -196,29 +180,30 @@ const Header = () => {
 
   //  ? END FOR MESSAGES SIDEBAR
 
-
-
   useEffect(() => {
-
     let newMessageNotifications = [...conversationList];
-    newMessageNotifications = newMessageNotifications.filter(el => el.receiverUsername == profile.username && !el.isRead)
+    newMessageNotifications = newMessageNotifications.filter(
+      (el) => el.receiverUsername == profile.username && !el.isRead
+    );
     setMessageCount(newMessageNotifications.length);
     setChatMessageNotifications([...newMessageNotifications]);
-
-  }, [conversationList, profile])
+  }, [conversationList, profile]);
 
   useEffect(() => {
+    if (profile) {
+      socketService?.socket?.emit("join room", profile);
+    }
 
-    socketService?.socket?.emit("join room", profile);
-  }, [])
+  }, []);
+
 
   return (
-
     <>
-      {!profile
-        ? <HeaderSkeleton /> :
+      {!profile ? (
+        <HeaderSkeleton />
+      ) : (
         <div className="header-nav-wrapper" data-testid="header-wrapper">
-          {isMesssageActive &&
+          {isMesssageActive && (
             <div ref={messageRef}>
               <div ref={messageRef}>
                 <MessageSidebar
@@ -229,12 +214,9 @@ const Header = () => {
                 />
               </div>
             </div>
+          )}
 
-
-          }
-
-
-          {notificationDialogContent?.senderName &&
+          {notificationDialogContent?.senderName && (
             <NotificationPreview
               title="Your post"
               post={notificationDialogContent?.post}
@@ -245,30 +227,27 @@ const Header = () => {
               secondButtonText="Close"
               secondBtnHandler={() => {
                 setNotificationDialogContent({
-                  post: '',
-                  imgUrl: '',
-                  comment: '',
-                  reaction: '',
-                  senderName: ''
-                })
+                  post: "",
+                  imgUrl: "",
+                  comment: "",
+                  reaction: "",
+                  senderName: "",
+                });
               }}
-
-
             />
-          }
+          )}
 
           <div className="header-navbar">
-            <div className="header-image" data-testid="header-image"
-
+            <div
+              className="header-image"
+              data-testid="header-image"
               onClick={() => {
                 socketService?.socket?.emit("leave room", profile);
-                navigate('/app/social/streams')
+                navigate("/app/social/streams");
               }}
             >
-              <img src={logo} className="img-fluid" alt="" />
               <div className="app-name">
-                Myapp
-
+                <span id="logo">Social App</span>
               </div>
             </div>
             <div className="header-menu-toggle">
@@ -284,24 +263,26 @@ const Header = () => {
                 onClick={() => {
                   setIsMessageActive(false);
                   setIsNotificationActive(true);
-                  setIsSettingActive(false)
+                  setIsSettingActive(false);
                 }}
               >
                 <span className="header-list-name">
-                  <FaRegBell className="header-list-icon" />
+                  <RiNotification2Line className="header-list-icon" />
                   {notificationCount > 0 && (
-                    <span className="bg-danger-dots dots" data-testid="notification-dots">
+                    <span
+                      className="bg-danger-dots dots"
+                      data-testid="notification-dots"
+                    >
                       {notificationCount}
                     </span>
-                  )
-                  }
+                  )}
                 </span>
                 {isNotificationActive && (
                   <ul className="dropdown-ul" ref={notificationRef}>
                     <li className="dropdown-li">
                       <NotiDropdown
                         height={300}
-                        style={{ right: '250px', top: '20px' }}
+                        style={{ right: "250px", top: "20px" }}
                         data={notifications}
                         notificationCount={notificationCount}
                         title="Notifications"
@@ -316,30 +297,32 @@ const Header = () => {
               <li
                 data-testid="message-list-item"
                 className="header-nav-item active-item"
-
                 onClick={() => {
-                  setIsMessageActive(true)
-                  setIsNotificationActive(false)
-                  setIsSettingActive(false)
+                  setIsMessageActive(true);
+                  setIsNotificationActive(false);
+                  setIsSettingActive(false);
                 }}
               >
                 <span className="header-list-name">
                   <FaRegEnvelope className="header-list-icon" />
 
-                  <span
-                    className="bg-danger-dots dots"
-                    data-testid="messages-dots"
-                  ></span>
+                  {messageCount > 0 && (
+                    <span
+                      className="bg-danger-dots dots"
+                      data-testid="messages-dots"
+                    ></span>
+                  )}
                 </span>
                 &nbsp;
               </li>
-              <li data-testid="settings-list-item" className="header-nav-item"
+              <li
+                data-testid="settings-list-item"
+                className="header-nav-item"
                 onClick={() => {
-                  setIsMessageActive(false)
-                  setIsNotificationActive(false)
-                  setIsSettingActive(true)
+                  setIsMessageActive(false);
+                  setIsNotificationActive(false);
+                  setIsSettingActive(true);
                 }}
-
               >
                 <span className="header-list-name profile-image">
                   <Avatar
@@ -352,37 +335,37 @@ const Header = () => {
                 </span>
                 <span className="header-list-name profile-name">
                   {profile?.username}
-                  {isSettingActive ?
-                    <FaCaretDown className="header-list-icon caret" /> :
-                    <FaCaretUp className="header-list-icon caret" />}
-
+                  {isSettingActive ? (
+                    <FaCaretDown className="header-list-icon caret" />
+                  ) : (
+                    <FaCaretUp className="header-list-icon caret" />
+                  )}
                 </span>
-                {
-                  isSettingActive &&
+                {isSettingActive && (
                   <ul className="dropdown-ul" ref={settingsRef}>
                     <li className="dropdown-li">
                       <NotiDropdown
                         height={300}
-                        style={{ right: '150px', top: '40px' }}
+                        style={{ right: "150px", top: "40px" }}
                         data={settings}
                         notificationCount={0}
                         title="Settings"
                         onLogout={onLogout}
                         onNavigate={() => {
-                          ProfileUtils.navigateToProfile(profile, navigate)
+                          ProfileUtils.navigateToProfile(profile, navigate);
                         }}
                       ></NotiDropdown>
                     </li>
                   </ul>
-                }
+                )}
                 <ul className="dropdown-ul">
                   <li className="dropdown-li"></li>
                 </ul>
               </li>
             </ul>
           </div>
-        </div>}
-
+        </div>
+      )}
     </>
   );
 };
