@@ -30,7 +30,7 @@ const Follower = () => {
     try {
       if (profile) {
         const response = await followerService.getByUser(profile?._id);
-        setFollowers(response.data.followers);
+        setFollowers([...followers, ...response.data.followers]);
         setLoading(false);
       }
     } catch (error) {

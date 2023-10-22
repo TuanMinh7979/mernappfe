@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Following = () => {
-  const { profile} = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
   const [following, setFollowing] = useState([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -23,12 +23,12 @@ const Following = () => {
   const getUserFollowing = async () => {
     try {
       const response = await followerService.getLoggedUserFollowee();
-      setFollowing(response.data.following);
+      setFollowing([...following, ...response.data.following]);
       setLoading(false);
     } catch (error) {
 
       setLoading(false);
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -36,7 +36,7 @@ const Following = () => {
     try {
       await followerService.save(user?._id);
     } catch (error) {
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -44,7 +44,7 @@ const Following = () => {
     try {
       await followerService.delete(user?._id, profile?._id);
     } catch (error) {
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 

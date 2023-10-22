@@ -12,7 +12,13 @@ import { updateLoggedUserProfile } from "@redux/reducers/user/user.reducer";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
+import Cookies from "js-cookie";
 const ProtectedRoute = ({ children }) => {
+
+  console.log(Cookies);
+  const cookieValue = Cookies.get('refreshtoken');
+  console.log("----------------", cookieValue);
+
   const dispatch = useDispatch();
   const accessTk = sessionStorage.getItem("accessToken");
 

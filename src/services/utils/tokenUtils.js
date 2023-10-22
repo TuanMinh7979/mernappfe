@@ -6,7 +6,6 @@ import { Utils } from "./utils.service";
 
 export const newestAccessToken = async (dispatch) => {
   const existAccessToken = sessionStorage.getItem("accessToken");
-
   //make sure logged success before goto here, (accessTk and profile is exist)
   if (isAccessTokenValid(existAccessToken)) {
     return existAccessToken;
@@ -18,10 +17,9 @@ export const newestAccessToken = async (dispatch) => {
       sessionStorage.setItem("accessToken", res.data.token);
       return res.data.token;
     } catch (e) {
-   
-
       Utils.displayError(e, dispatch, 1)
       Utils.clearStore(dispatch);
+      // server also remove rf_token if server refresh error 
       return existAccessToken;
     }
   }

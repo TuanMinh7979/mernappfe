@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import logo from "@assets/images/logo.svg";
 import { FaCaretDown, FaCaretUp, FaRegEnvelope } from "react-icons/fa";
-
 import { RiNotification2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import MessageSidebar from "@components/message-sidebar/MessageSidebar";
@@ -11,28 +9,20 @@ import { Utils } from "@services/utils/utils.service";
 import NotificationUtils from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { sumBy } from "lodash";
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 import NotiDropdown from "@components/dropdown/NotiDropdown";
-
-import useSessionStorage from "@hooks/useSessionStorage";
 import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
 import useEffectOnce from "@hooks/useEffectOnce";
 import { ProfileUtils } from "@services/utils/profile-utils.service";
 import HeaderSkeleton from "./HeaderSkeleton";
 import { notificationService } from "@services/api/notification/notification.service";
-
 import NotificationPreview from "@components/noti-previview/NotificationPreview";
 import { socketService } from "@services/socket/socket.service";
 import { ChatUtils } from "@services/utils/chat-utils.service.";
-
 import { createSearchParams } from "react-router-dom";
 import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
-import { followerService } from "@services/api/follow/follow.service";
-import { imageService } from "@services/api/image/image.service";
-import { postService } from "@services/api/post/post.service";
 const Header = () => {
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
@@ -62,7 +52,6 @@ const Header = () => {
   });
 
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const { conversationList } = useSelector((state) => state.chat);
@@ -176,9 +165,10 @@ const Header = () => {
 
   const onLogout = async () => {
     try {
-      Utils.clearStore( dispatch );
+
       await userService.logoutUser();
-      navigate("/");
+      Utils.clearStore( dispatch );
+      // navigate("/");
     } catch (error) {
      Utils.displayError(error ,dispatch);
     }

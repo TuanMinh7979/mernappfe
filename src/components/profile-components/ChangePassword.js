@@ -34,11 +34,12 @@ const ChangePassword = () => {
       if (res) {
         Utils.displaySuccess(res.data.message, dispatch)
         setTimeout(async () => {
+
+          await userService.logoutUser();
           Utils.clearStore(
             dispatch
           );
-          await userService.logoutUser();
-          navigate('/');
+          // navigate('/');
         }, 3000);
       }
     } catch (error) {

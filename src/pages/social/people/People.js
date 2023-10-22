@@ -23,7 +23,7 @@ const People = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { profile} = useSelector((state) => state.user);
+  const { profile } = useSelector((state) => state.user);
 
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,12 +37,12 @@ const People = () => {
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {
     try {
-      console.log("pageeeeeeeeeeeeeeeeeeeeeeeeeeeeee", currentPage);
+
       const response = await userService.getAllUsers(currentPage);
       console.log("------------>>>>>", response);
       if (response.data.users.length > 0) {
 
-        setUsers(response.data.users)
+        setUsers([...users, ...response.data.users])
       }
       setTotalUserCnt(response.data.totalUsers);
       setMyIdols(response.data.followees)
