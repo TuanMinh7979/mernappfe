@@ -39,7 +39,7 @@ const People = () => {
     try {
 
       const response = await userService.getAllUsers(currentPage);
-      console.log("------------>>>>>", response);
+
       if (response.data.users.length > 0) {
 
         setUsers([...users, ...response.data.users])
@@ -62,7 +62,7 @@ const People = () => {
   const PAGE_SIZE = 8;
 
   function fetchData() {
-    console.log("---------------------call fetch data");
+
     let pageNum = currentPage;
     if (currentPage <= Math.round(totalUserCnt / PAGE_SIZE)) {
       pageNum += 1;
