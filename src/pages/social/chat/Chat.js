@@ -11,9 +11,7 @@ import useEffectOnce from "@hooks/useEffectOnce";
 const Chat = () => {
   const dispatch = useDispatch();
   const reduxChat = useSelector((state) => state.chat);
-  useEffectOnce(() => {
-    dispatch(fetchConversationList());
-  });
+
 
   const [searchParams] = useSearchParams();
 
