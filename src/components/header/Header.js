@@ -23,6 +23,7 @@ import { ChatUtils } from "@services/utils/chat-utils.service.";
 import { createSearchParams } from "react-router-dom";
 import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
+import { fetchConversationList } from "@redux/api/chat";
 const Header = () => {
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
@@ -195,6 +196,11 @@ const Header = () => {
     }
 
   }, []);
+
+
+  useEffectOnce(() => {
+    dispatch(fetchConversationList());
+  });
 
 
   return (
