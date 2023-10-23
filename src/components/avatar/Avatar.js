@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import '@components/avatar/Avatar.scss';
 
-const Avatar = ({ avatarSrc, name, bgColor = '#f33e58', textColor, size, round = true }) => {
+const Avatar = ({ avatarSrc, name, bgColor = '#AFD3E2', textColor, size, round = true }) => {
   const textSizeRatio = 1.7;
   const fontSize = Math.floor(size / textSizeRatio);
   const firstNameCharacter = name?.charAt(0);
