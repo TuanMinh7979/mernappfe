@@ -1,7 +1,5 @@
-
-import { FaArrowRight } from 'react-icons/fa';
-import Input from "@root/base-components/input/Input"
-import Button from "@root/base-components/button/Button"
+import Button from '@root/base-components/button/Button';
+import Input from '@root/base-components/input/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import "./Login.scss"
 import { useState } from 'react';
@@ -10,7 +8,8 @@ import { authService } from '@services/api/auth/auth.service';
 import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
 
-import useSessionStorage from '@hooks/useSessionStorage';
+import authBackgroundImage  from "@assets/images/authbg6.jpg"
+
 const Login = () => {
     const [formData, setFormData] = useState({
         username: '',
@@ -75,14 +74,21 @@ const Login = () => {
 
         }
     }, [loading, user])
+
+
+
+
+
+
     return (
+   
         <div className="signin">
 
 
 
 
             <div class="split-screen">
-                <div class="left">
+                <div style={{background:`url(${authBackgroundImage})`}}class="left">
                     <section class="copy">
                         <h1>Connect together</h1>
                         <p>with Social App</p>
