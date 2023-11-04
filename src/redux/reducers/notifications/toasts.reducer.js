@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import checkIcon from '@assets/images/check.svg'
 import errorIcon from '@assets/images/error.svg'
 import infoIcon from '@assets/images/info.svg'
-import warningIcon from '@assets/images/warning.svg'
+
 import { uniqBy } from "lodash";
 
 
@@ -13,7 +13,6 @@ const toastIcons = [
   { success: checkIcon, color: "#5cb85c" },
   { error: errorIcon, color: "#d9534f" },
   { info: infoIcon, color: "#5bc0de" },
-
   { clientError: errorIcon, color: "orange" },
 ];
 

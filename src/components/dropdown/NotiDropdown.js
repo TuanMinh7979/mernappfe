@@ -75,11 +75,11 @@ const NotiDropdown = ({
               ))}
             </div>
 
-            {title === 'Settings' && (
+            {/* {title === 'Settings' && (
               <div className="social-sub-button">
                 <Button label="Sign out" className="button signOut" handleClick={onLogout} />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

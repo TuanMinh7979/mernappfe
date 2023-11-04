@@ -142,7 +142,7 @@ const ChatSidebar = () => {
     callUpdateConversationListAction([...tmp]);
     ChatUtils.joinConversation(profile, "");
 
-    return navigate("/app/social/chat/messages");
+    return navigate("/chat/messages");
   };
 
 

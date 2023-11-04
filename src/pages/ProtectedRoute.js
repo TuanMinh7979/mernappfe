@@ -68,7 +68,7 @@ const ProtectedRoute = ({ children }) => {
       return <>{children}</>;
     }
   } else {
-    return <>{<Navigate to="/" />}</>;
+    return <>{<Navigate to="/signin" />}</>;
   }
 };
 ProtectedRoute.propTypes = {

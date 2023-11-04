@@ -8,7 +8,7 @@ import { authService } from '@services/api/auth/auth.service';
 import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
 import { useDispatch } from 'react-redux';
 
-import authBackgroundImage  from "@assets/images/authbg6.jpg"
+import authBackgroundImage from "@assets/images/authbg6.jpg"
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -30,13 +30,7 @@ const Login = () => {
     const [user, setUser] = useState('')
     const navigate = useNavigate()
     const dispatch = useDispatch();
-
-
     // true is logged in and get current user by jwt
-
-
-
-
     const loginUser = async (event) => {
         setErrorMessage('')
         setLoading(true);
@@ -49,14 +43,14 @@ const Login = () => {
 
             // set to localStorage
 
-       
-            sessionStorage.setItem('accessToken', rs.data.token)
-    
 
+            sessionStorage.setItem('accessToken', rs.data.token)
+            // in production : 
+            localStorage.setItem("rfToken", rs.data.rfToken)
             // * dispatch user to redux
             setLoading(false)
             setUser(rs.data.user)
-        
+
             dispatch(
                 updateLoggedUserProfile(rs.data.user)
             );
@@ -70,7 +64,7 @@ const Login = () => {
     useEffect(() => {
         if (loading && !user) return;
         if (user) {
-            navigate('/app/social/streams')
+            navigate('/')
 
         }
     }, [loading, user])
@@ -81,14 +75,14 @@ const Login = () => {
 
 
     return (
-   
+
         <div className="signin">
 
 
 
 
             <div class="split-screen">
-                <div style={{background:`url(${authBackgroundImage})`}}class="left">
+                <div style={{ background: `url(${authBackgroundImage})` }} class="left">
                     <section class="copy">
                         <h1>Connect together</h1>
                         <p>with Social App</p>
@@ -104,13 +98,13 @@ const Login = () => {
 
 
                         <div className="form-input">
-                            
-                                {errorMessage &&
-                                    <div className={`alerts alert-error`} role='alert'>
-                                        {errorMessage}
-                                    </div>
-                                }
-                     
+
+                            {errorMessage &&
+                                <div className={`alerts alert-error`} role='alert'>
+                                    {errorMessage}
+                                </div>
+                            }
+
 
                             <Input
                                 id="username"
@@ -150,8 +144,8 @@ const Login = () => {
                         <section class="copy">
 
                             <div class="login-container">
-                                <p>New user,  Create an account? <span className='link' onClick={()=>navigate("/signup")}> <strong>Sign up</strong></span></p>
-            
+                                <p>New user,  Create an account? <span className='link' onClick={() => navigate("/signup")}> <strong>Sign up</strong></span></p>
+
                             </div>
                         </section>
 

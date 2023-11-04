@@ -32,6 +32,8 @@ export class Utils {
   static clearStore = (dispatch) => {
     dispatch(emptyLoggedUser());
     sessionStorage.removeItem("accessToken");
+    // in production : 
+    localStorage.removeItem('rfToken')
   };
 
   static displayError(error, dispatch, removeOlds) {

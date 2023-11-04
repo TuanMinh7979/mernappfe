@@ -8,10 +8,12 @@ import like from '../../assets/reactions/like.png';
 import love from '../../assets/reactions/love.png';
 import sad from '../../assets/reactions/sad.png';
 import wow from '../../assets/reactions/wow.png';
+
+
 import {
   FaGlobe,
   FaKey,
-  FaLock, 
+  FaLock,
   FaUser,
   FaUserCheck,
 } from 'react-icons/fa';
@@ -27,55 +29,56 @@ import {
   RiNotification2Fill,
   RiUser3Fill
 } from 'react-icons/ri'
+import { ProfileUtils } from './profile-utils.service';
 
 export const sideBarItems = [
   {
     index: 1,
     name: 'Feeds',
-    url: '/app/social/streams',
+    url: '/',
     iconName: 'RiNewspaperFill'
   },
   {
     index: 2,
     name: 'Chat',
-    url: '/app/social/chat/messages',
+    url: '/chat/messages',
     iconName: 'RiChat2Fill'
   },
   {
     index: 3,
     name: 'People',
-    url: '/app/social/people',
+    url: '/people',
     iconName: 'RiUserSmileFill'
   },
   {
     index: 4,
     name: 'Following',
-    url: '/app/social/following',
+    url: '/following',
     iconName: 'RiUserAddFill'
   },
   {
     index: 5,
     name: 'Followers',
-    url: '/app/social/followers',
+    url: '/followers',
     iconName: 'RiHeart3Fill'
   },
   {
     index: 6,
     name: 'Photos',
-    url: '/app/social/photos',
+    url: '/photos',
     iconName: 'RiImageFill'
   },
 
   {
     index: 7,
     name: 'Notifications',
-    url: '/app/social/notifications',
+    url: '/notifications',
     iconName: 'RiNotification2Fill'
   },
   {
     index: 8,
     name: 'Profile',
-    url: '/app/social/profile',
+    url: '/profile',
     iconName: 'RiUser3Fill'
   }
 ];
@@ -249,6 +252,7 @@ export const notificationItems = [
     type: 'comments'
   }
 ];
+
 
 export const tabItems = (showPassword, showNotification) => {
   const items = [

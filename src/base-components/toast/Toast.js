@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useEffect, useCallback, useRef, useState } from 'react';
-import { cloneDeep } from 'lodash';
 
 import './Toast.scss';
 import { Utils } from '@services/utils/utils.service';

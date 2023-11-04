@@ -7,6 +7,7 @@ import StreamsSkeleton from '@pages/social/streams/StreamsSkeleton';
 import NotificationSkeleton from '@pages/social/notifications/NotificationsSkeleon';
 import CardSkeleton from '@components/card-element/CardSkeleton';
 import Register from '@pages/auth/register/Register';
+import LoginInfo from '@pages/auth/login-info/LoginInfo';
 const Social = lazy(() => import('@pages/social/Socical'));
 const Chat = lazy(() => import('@pages/social/chat/Chat'));
 const Follower = lazy(() => import('@pages/social/follower/Follower'));
@@ -21,28 +22,28 @@ const Streams = lazy(() => import('@pages/social/streams/Streams'));
 const AppRouter = () => {
     const elements = useRoutes([
         {
-            path: '/',
+            path: '/signin',
             element: <Login />
         },
         {
             path: '/signup',
             element: <Register />
         },
-   
+
 
         {
-            path: "/app/social",
+            path: "/",
             element:
                 <ProtectedRoute>
                     <Social />
                 </ProtectedRoute>,
             children: [
                 {
-                    path: "streams",
-                    element: 
-                    <Suspense fallback={<StreamsSkeleton />}>
-                        <Streams></Streams>
-                        
+                    path: "/",
+                    element:
+                        <Suspense fallback={<StreamsSkeleton />}>
+                            <Streams></Streams>
+
                         </Suspense>
                 },
                 {
@@ -72,6 +73,10 @@ const AppRouter = () => {
                 {
                     path: "profile/:username",
                     element: <Suspense><Profile></Profile></Suspense>
+                },
+                {
+                    path: "/login-info/",
+                    element: <LoginInfo />
                 },
 
             ]

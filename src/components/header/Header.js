@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaCaretDown, FaCaretUp, FaRegEnvelope } from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaRegEnvelope , FaUserAlt} from "react-icons/fa";
 import { RiNotification2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import MessageSidebar from "@components/message-sidebar/MessageSidebar";
@@ -8,7 +8,7 @@ import Avatar from "@components/avatar/Avatar";
 import { Utils } from "@services/utils/utils.service";
 import NotificationUtils from "@services/utils/notification-utils.service";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+
 import useDetectOutsideClick from "@hooks/useDetectOutsideClick";
 import NotiDropdown from "@components/dropdown/NotiDropdown";
 import { userService } from "@services/api/user/user.service";
@@ -24,6 +24,7 @@ import { createSearchParams } from "react-router-dom";
 import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 import { fetchConversationList } from "@redux/api/chat";
+import SettingDropdown from "@components/dropdown/SettingDropdown";
 const Header = () => {
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
@@ -94,14 +95,9 @@ const Header = () => {
     }
   };
 
-  const [settings, setSettings] = useState("");
+
   useEffectOnce(() => {
-    setSettings([
-      {
-        topText: "Profile",
-        subText: "Your Profile",
-      },
-    ]);
+
     initNotifications();
   });
 
@@ -151,7 +147,7 @@ const Header = () => {
           : notification?.senderId;
 
       ChatUtils.joinConversation(profile, notification.conversationId);
-      navigate(`/app/social/chat/messages?${createSearchParams(params)}`);
+      navigate(`/chat/messages?${createSearchParams(params)}`);
 
       if (
         notification?.receiverUsername === profile?.username &&
@@ -249,7 +245,7 @@ const Header = () => {
               data-testid="header-image"
               onClick={() => {
                 socketService?.socket?.emit("leave room", profile);
-                navigate("/app/social/streams");
+                navigate("/");
               }}
             >
               <div className="app-name">
@@ -350,17 +346,17 @@ const Header = () => {
                 {isSettingActive && (
                   <ul className="dropdown-ul" ref={settingsRef}>
                     <li className="dropdown-li">
-                      <NotiDropdown
+                      <SettingDropdown
                         height={300}
                         style={{ right: "150px", top: "40px" }}
-                        data={settings}
-                        notificationCount={0}
+                 
+            
                         title="Settings"
                         onLogout={onLogout}
-                        onNavigate={() => {
-                          ProfileUtils.navigateToProfile(profile, navigate);
-                        }}
-                      ></NotiDropdown>
+                        // onNavigate={() => {
+                        //   ProfileUtils.navigateToProfile(profile, navigate);
+                        // }}
+                      ></SettingDropdown>
                     </li>
                   </ul>
                 )}

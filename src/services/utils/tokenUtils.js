@@ -34,3 +34,22 @@ export const isAccessTokenValid = (tk) => {
   const access_tokenDecode = jwt_decode(tk);
   return access_tokenDecode.exp >= Date.now() / 1000;
 };
+
+
+
+
+export const getAccessTokenExp = (access_token) => {
+  const accessTokenDecode = jwt_decode(access_token);
+
+  if (accessTokenDecode.exp <= Date.now() / 1000) {
+    return "expired";
+  }
+  return accessTokenDecode.exp;
+};
+export const getRefreshTokenExp = (rfToken) => {
+  const rfTokenDecode = jwt_decode(rfToken);
+  if (rfTokenDecode.exp <= Date.now() / 1000) {
+    return "expired";
+  }
+  return rfTokenDecode.exp;
+};
