@@ -5,7 +5,7 @@ import { getRefreshTokenExp, getAccessTokenExp } from "@services/utils/tokenUtil
 const LoginInfo = () => {
 
     // const rftk = Cookies.get("refreshtoken");
-    const rfToken = localStorage.getItem("rfToken");
+
     const accessToken = sessionStorage.getItem("accessToken");
 
     return (
@@ -18,14 +18,14 @@ const LoginInfo = () => {
             ) : (
                 <p style={{ textAlign: "center" }}>Not exist Access Token </p>
             )}
-            {rfToken ? (
+            {/* {rfToken ? (
                 <CountDown
                     title={"Refresh token time expire in"}
                     exp={getRefreshTokenExp(rfToken)}
                 ></CountDown>
             ) : (
                 <p style={{ textAlign: "center" }}>Not exist Refresh Token </p>
-            )}
+            )} */}
         </>
     );
 };

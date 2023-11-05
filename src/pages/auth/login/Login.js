@@ -46,7 +46,7 @@ const Login = () => {
 
             sessionStorage.setItem('accessToken', rs.data.token)
             // in production : 
-            localStorage.setItem("rfToken", rs.data.rfToken)
+
             // * dispatch user to redux
             setLoading(false)
             setUser(rs.data.user)

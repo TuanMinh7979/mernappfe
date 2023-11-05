@@ -6,23 +6,26 @@ import { Utils } from "./utils.service";
 
 export const newestAccessToken = async (dispatch) => {
   const existAccessToken = sessionStorage.getItem("accessToken");
-  //make sure logged success before goto here, (accessTk and profile is exist)
+
+  // if exist
+
   if (isAccessTokenValid(existAccessToken)) {
     return existAccessToken;
-  } else {
-    try {
-      Utils.displayInfo("Refreshing token", dispatch, true)
-      const res = await getAPI(`/refresh_token`);
-      dispatch(updateLoggedUserProfile(res.data.user));
-      sessionStorage.setItem("accessToken", res.data.token);
-      return res.data.token;
-    } catch (e) {
-      Utils.displayError(e, dispatch, 1)
-      Utils.clearStore(dispatch);
-      // server also remove rf_token if server refresh error 
-      return existAccessToken;
-    }
   }
+  // if exist and not valid
+  try {
+    Utils.displayInfo("Refreshing token", dispatch, true)
+    const res = await getAPI(`/refresh_token`);
+    dispatch(updateLoggedUserProfile(res.data.user));
+    sessionStorage.setItem("accessToken", res.data.token);
+    return res.data.token;
+  } catch (e) {
+    Utils.displayError(e, dispatch, 1)
+    Utils.clearStore(dispatch);
+    // server also remove rf_token in cookies if server refresh error 
+    return existAccessToken;
+  }
+
 };
 
 export const isAccessTokenExist = (tk) => {
@@ -35,6 +38,13 @@ export const isAccessTokenValid = (tk) => {
   return access_tokenDecode.exp >= Date.now() / 1000;
 };
 
+export const isRfTokenValid = (tk) => {
+  if (!tk) return false;
+  const rfTokenDecode = jwt_decode(tk);
+  return rfTokenDecode.exp >= Date.now() / 1000;
+};
+
+
 
 
 
@@ -45,11 +55,4 @@ export const getAccessTokenExp = (access_token) => {
     return "expired";
   }
   return accessTokenDecode.exp;
-};
-export const getRefreshTokenExp = (rfToken) => {
-  const rfTokenDecode = jwt_decode(rfToken);
-  if (rfTokenDecode.exp <= Date.now() / 1000) {
-    return "expired";
-  }
-  return rfTokenDecode.exp;
 };

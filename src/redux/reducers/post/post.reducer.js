@@ -1,4 +1,4 @@
-import { fetchUpdSugUsers } from '@redux/api/suggestion';
+
 import { createSlice } from '@reduxjs/toolkit';
 import { emptyPostData } from '@services/utils/static.data';
 

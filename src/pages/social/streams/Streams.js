@@ -55,22 +55,8 @@ const Streams = () => {
       Utils.displayError(error, dispatch);
     }
   };
-  // ? end app post
 
-  // ? get logged user idols
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
-  const getUserFollowing = async () => {
-    try {
-      const response = await followerService.getLoggedUserFollowee();
-      setLoggedUserIdols(response.data.following);
-    } catch (error) {
-
-      Utils.displayError(error, dispatch);
-    }
-  };
-  // ?  END get logged user idols
-
-
   const bodyRef = useRef(null);
   const bottomLineRef = useRef();
   const dispatch = useDispatch();
@@ -87,13 +73,27 @@ const Streams = () => {
   const [posts, setPosts] = useState([]);
   const [postsCnt, setPostsCnt] = useState(1);
   // ? end  post
-  useEffectOnce(() => {
-    dispatch(fetchUpdSugUsers());
-    getUserFollowing();
-    getReactionsByUsername()
-    dispatch(fetchPosts())
+  useEffect(() => {
+    async function initFetch() {
+      try {
+        setLoading(true)
+        dispatch(fetchUpdSugUsers());
+        const response = await followerService.getLoggedUserFollowee();
+        setLoggedUserIdols(response.data.following);
+        const rs = await postService.getReactionsByUsername(profile?.username)
+        dispatch(updateLoggedUserReactions(rs.data.reactions));
 
-  });
+        dispatch(fetchPosts())
+      } catch (error) {
+        setLoading(false);
+        Utils.displayError(error, dispatch);
+      }
+    }
+
+    initFetch()
+  }
+
+    , []);
 
   useEffect(() => {
     setPosts(reduxPosts?.posts)
@@ -117,18 +117,7 @@ const Streams = () => {
   // ? get all reactions of current user
 
 
-  const getReactionsByUsername = async () => {
-    try {
 
-      const rs = await postService.getReactionsByUsername(profile?.username)
-      dispatch(updateLoggedUserReactions(rs.data.reactions));
-    } catch (error) {
-
-
-      Utils.displayError(error, dispatch);
-
-    }
-  }
   // ? END get all reactions of current user
 
 
