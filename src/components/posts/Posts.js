@@ -10,6 +10,7 @@ import { PostUtils } from "@services/utils/post-utils.service";
 
 const Posts = ({ allPosts, loggedUserIdolsProp }) => {
   const { profile } = useSelector((state) => state.user);
+  console.log("..............", allPosts);
   return (
     <div className="posts-container" data-testid="posts">
 
@@ -19,20 +20,20 @@ const Posts = ({ allPosts, loggedUserIdolsProp }) => {
           <div key={post?._id} data-testid="posts-item">
             {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, post?.userId) ||
               post?.userId === profile?._id) && (
-              <>
-                {PostUtils.checkPrivacy(post, profile, loggedUserIdolsProp) && (
-                  <>
-                    <Post post={post} showIcons={true} />
-                  </>
-                )}
-              </>
-            )}
+                <>
+                  {PostUtils.checkPrivacy(post, profile, loggedUserIdolsProp) && (
+                    <>
+                      <Post post={post} showIcons={post.userId == profile._id} />
+                    </>
+                  )}
+                </>
+              )}
           </div>
         ))
-        
-        }
 
-   
+      }
+
+
     </div>
   );
 };
