@@ -10,7 +10,7 @@ import { PostUtils } from "@services/utils/post-utils.service";
 
 const Posts = ({ allPosts, loggedUserIdolsProp }) => {
   const { profile } = useSelector((state) => state.user);
-  console.log("..............", allPosts);
+
   return (
     <div className="posts-container" data-testid="posts">
 
