@@ -2,7 +2,7 @@ import Input from '@root/base-components/input/Input';
 import { GiphyUtils } from '@services/utils/giphy-utils.service';
 import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-
+import Spinner from '@root/base-components/spinner/Spinner';
 import './Giphy.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePost } from '@redux/reducers/post/post.reducer';
@@ -13,8 +13,9 @@ const Giphy = () => {
 
     const [gifs, setGifs] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchTxt, setSearchTxt] = useState('')
     const updPostGifUrl = (gifUrl) => {
-   
+
         dispatch(updatePost({ gifUrl: gifUrl, image: '' }))
         dispatch(updateModalIsGifModalOpen(false))
     }
@@ -23,7 +24,7 @@ const Giphy = () => {
             <div className="giphy-container" id="editable" data-testid="giphy-container">
                 <div className="giphy-container-picker" style={{ height: '500px' }}>
                     <div className="giphy-container-picker-form">
-                        <FaSearch className="search" />
+                        <FaSearch className="search searchgif-btn"  />
                         <Input
                             id="gif"
                             name="gif"
@@ -32,9 +33,10 @@ const Giphy = () => {
                             placeholder="Search Gif"
                             className="giphy-container-picker-form-input"
                             handleChange={(e) => GiphyUtils.searchGifs(e.target.value, setGifs, setLoading)}
+
                         />
                     </div>
-
+                    {loading && <Spinner />}
                     <ul className="giphy-container-picker-list" data-testid="unorderedList">
                         {gifs.map((gif, index) => (
                             <li

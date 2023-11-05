@@ -7,6 +7,7 @@ import { authService } from '@services/api/auth/auth.service';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ValidRegister } from '@services/utils/valid';
+import authBackgroundImage from "@assets/images/authbg6.jpg"
 const Register = () => {
 
     const dispatch = useDispatch()
@@ -70,7 +71,7 @@ const Register = () => {
 
 
             <div class="split-screen">
-                <div class="left">
+                <div class="left"  style={{ background: `url(${authBackgroundImage})` }}>
                     <section class="copy">
                         <h1>Connect together</h1>
                         <p>with Social App</p>

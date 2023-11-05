@@ -12,6 +12,7 @@ const GiphyContainer = ({ handleGiphyClick }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    
     GiphyUtils.getTrendingGifs(setGifs, setLoading);
   }, []);
 
@@ -30,6 +31,7 @@ const GiphyContainer = ({ handleGiphyClick }) => {
         />
       </div>
       {loading && <Spinner />}
+
       <ul className="search-results">
         {gifs.map((gif) => (
           <li
