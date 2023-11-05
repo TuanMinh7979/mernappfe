@@ -18,7 +18,7 @@ import { updateModalIsDeleteDialogOpen } from "@redux/reducers/modal/modal.reduc
 import ImageModal from "@components/image-modal/ImageModal";
 import "./Profile.scss";
 import Dialog from "@root/base-components/dialog/Dialog";
-import useEffectOnce from "@hooks/useEffectOnce";
+import { useEffect } from "react";
 
 const Profile = () => {
   const { profile } = useSelector((state) => state.user);
@@ -30,36 +30,6 @@ const Profile = () => {
   const [searchParams] = useSearchParams();
 
   // * get user background image  , profile image and posts
-  const fetchUserProfileAndPost = async () => {
-    try {
-      const res = await userService.getProfileAndPost(
-        username,
-        searchParams.get("id")
-      );
-
-      setFromDbBackgroundUrl(
-        Utils.getImage(
-          res?.data?.user?.bgImageId,
-          res?.data?.user?.bgImageVersion
-        )
-      );
-
-      setUserProfileData(res.data);
-      setUser(res.data.user);
-    } catch (error) {
-      Utils.displayError(error, dispatch);
-    }
-  };
-
-  const fetchUserImages = async () => {
-    try {
-      const res = await imageService.getsByUser(searchParams.get("id"));
-
-      setGalleryImages(res.data.images);
-    } catch (error) {
-      Utils.displayError(error, dispatch);
-    }
-  };
 
   const [hasError, setHasError] = useState(false);
   const [hasImage, setHasImage] = useState(false);
@@ -186,14 +156,35 @@ const Profile = () => {
     }
   };
 
-  useEffectOnce(() => {
+  useEffect(() => {
     // asynchonus getUserProfileAndPosts and getsByUser start as the same
+    async function initFetch() {
+      try {
+        const res = await userService.getProfileAndPost(
+          username,
+          searchParams.get("id")
+        );
 
-      fetchUserProfileAndPost();
-      fetchUserImages();
-      setLoading(false);
+        setFromDbBackgroundUrl(
+          Utils.getImage(
+            res?.data?.user?.bgImageId,
+            res?.data?.user?.bgImageVersion
+          )
+        );
+        setUserProfileData(res.data);
+        setUser(res.data.user);
+        const res1 = await imageService.getsByUser(searchParams.get("id"));
+        setGalleryImages(res1.data.images);
 
-  });
+        setLoading(false);
+      } catch (error) {
+        Utils.displayError(error, dispatch);
+      }
+    }
+
+    initFetch()
+
+  }, []);
   return (
     <>
       {showGalleryImageModal && (

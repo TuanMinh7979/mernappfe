@@ -13,35 +13,27 @@ const Photos = () => {
   const { profile } = useSelector(state => state.user)
   const [posts, setPosts] = useState([])
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
-  const [loading, setLoading] = useState(false)
+
   const dispatch = useDispatch()
 
-  const getPostWithImages = async () => {
-    try {
-      const response = await postService.getsWithImage(1)
-      setPosts(response.data.posts)
-      setLoading(false)
-    } catch (error) {
-
-      setLoading(false)
-      Utils.displayError(error, dispatch);
-    }
-  }
-  const getMyIdols = async () => {
-    try {
-      const response = await followerService.getLoggedUserFollowee()
-      setLoggedUserIdols(response.data.following)
-      setLoading(false)
-    } catch (error) {
-      setLoading(false)
-      Utils.displayError(error, dispatch);
-    }
-  }
 
   useEffectOnce(() => {
-    getPostWithImages()
-    getMyIdols()
-  })
+    async function initFetch() {
+      try {
+        const res1 = await postService.getsWithImage(1)
+        setPosts(res1.data.posts)
+
+        const res2 = await followerService.getLoggedUserFollowee()
+        setLoggedUserIdols(res2.data.following)
+
+      } catch (error) {
+        Utils.displayError(error, dispatch);
+      }
+    }
+    initFetch()
+  }
+
+  )
 
   const isEmptyPost = (post) => {
     return (
@@ -121,9 +113,9 @@ const Photos = () => {
         )}
 
 
-        {loading && !posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
+        {!posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
 
-        {!loading && !posts.length && (
+        { !posts.length && (
           <div className="empty-page" data-testid="empty-page">
             No photos to display
           </div>

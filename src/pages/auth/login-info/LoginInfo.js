@@ -1,13 +1,14 @@
 import React from "react";
 import CountDown from "@components/countdown/CountDown";
-import { getRefreshTokenExp, getAccessTokenExp } from "@services/utils/tokenUtils";
-
+import { checkRfExp, getAccessTokenExp } from "@services/utils/tokenUtils";
+import { useSelector } from "react-redux";
 const LoginInfo = () => {
 
+    // can not get Cookies by js code, because httponly in server 
     // const rftk = Cookies.get("refreshtoken");
 
     const accessToken = sessionStorage.getItem("accessToken");
-
+    const { profile } = useSelector((state) => state.user);
     return (
         <>
             {accessToken ? (
@@ -18,14 +19,14 @@ const LoginInfo = () => {
             ) : (
                 <p style={{ textAlign: "center" }}>Not exist Access Token </p>
             )}
-            {/* {rfToken ? (
+            {profile.rfTokenExp ? (
                 <CountDown
                     title={"Refresh token time expire in"}
-                    exp={getRefreshTokenExp(rfToken)}
+                    exp={checkRfExp(profile.rfTokenExp)}
                 ></CountDown>
             ) : (
                 <p style={{ textAlign: "center" }}>Not exist Refresh Token </p>
-            )} */}
+            )}
         </>
     );
 };

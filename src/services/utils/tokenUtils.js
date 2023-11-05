@@ -56,3 +56,12 @@ export const getAccessTokenExp = (access_token) => {
   }
   return accessTokenDecode.exp;
 };
+
+export const checkRfExp = (exp) => {
+
+
+  if (exp <= Date.now() / 1000) {
+    return "expired";
+  }
+  return exp;
+};

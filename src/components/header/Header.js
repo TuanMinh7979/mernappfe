@@ -14,7 +14,7 @@ import NotiDropdown from "@components/dropdown/NotiDropdown";
 import { userService } from "@services/api/user/user.service";
 import { useNavigate } from "react-router-dom";
 import useEffectOnce from "@hooks/useEffectOnce";
-import { ProfileUtils } from "@services/utils/profile-utils.service";
+
 import HeaderSkeleton from "./HeaderSkeleton";
 import { notificationService } from "@services/api/notification/notification.service";
 import NotificationPreview from "@components/noti-previview/NotificationPreview";
@@ -97,7 +97,6 @@ const Header = () => {
 
 
   useEffectOnce(() => {
-
     initNotifications();
   });
 
