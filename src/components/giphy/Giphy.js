@@ -7,7 +7,8 @@ import './Giphy.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePost } from '@redux/reducers/post/post.reducer';
 import { updateModalIsGifModalOpen } from '@redux/reducers/modal/modal.reducer';
-
+import { useEffect } from 'react';
+import GiphyImage from './GiphyImage';
 const Giphy = () => {
     const dispatch = useDispatch();
 
@@ -19,12 +20,26 @@ const Giphy = () => {
         dispatch(updatePost({ gifUrl: gifUrl, image: '' }))
         dispatch(updateModalIsGifModalOpen(false))
     }
+
+    useEffect(() => {
+
+        GiphyUtils.getTrendingGifs(setGifs, setLoading);
+    }, []);
+
+    useEffect(() => {
+        if (searchTxt) {
+            const timer = setTimeout(() => GiphyUtils.searchGifs(searchTxt, setGifs, setLoading), 500);
+            return () => {
+                clearTimeout(timer);
+            };
+        }
+    }, [searchTxt]);
     return (
         <>
             <div className="giphy-container" id="editable" data-testid="giphy-container">
                 <div className="giphy-container-picker" style={{ height: '500px' }}>
                     <div className="giphy-container-picker-form">
-                        <FaSearch className="search searchgif-btn"  />
+                        <FaSearch className="search searchgif-btn" />
                         <Input
                             id="gif"
                             name="gif"
@@ -32,20 +47,22 @@ const Giphy = () => {
                             labelText=""
                             placeholder="Search Gif"
                             className="giphy-container-picker-form-input"
-                            handleChange={(e) => GiphyUtils.searchGifs(e.target.value, setGifs, setLoading)}
+                            handleChange={(e) => setSearchTxt(e.target.value)}
 
                         />
                     </div>
                     {loading && <Spinner />}
                     <ul className="giphy-container-picker-list" data-testid="unorderedList">
-                        {gifs.map((gif, index) => (
+                        {gifs.length > 0 && gifs.map((gif, index) => (
                             <li
+                               
                                 className="giphy-container-picker-list-item"
                                 data-testid="list-item"
                                 key={index}
                                 onClick={() => updPostGifUrl(gif.images.original.url)}
                             >
-                                <img style={{ width: '470px' }} src={`${gif.images.original.url}`} alt="" />
+                                {/* <img style={{ width: '470px', border: "1px solid black"}} src={`${gif.images.original.url}`} alt="" /> */}
+                                <GiphyImage  url={gif.images.original.url}></GiphyImage>
                             </li>
                         ))}
                     </ul>

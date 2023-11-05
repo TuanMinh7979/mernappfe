@@ -1,6 +1,7 @@
 .giphy-search-container {
     bottom: 55px;
     height: 360px;
+    width: 500px;
     margin-left: 45px;
     position: absolute;
     border-radius: 4px;
@@ -51,10 +52,10 @@
       list-style-type: none;
   
       img {
-        width: 274px;
+        width: 500px;
         height: 274px;
         cursor: pointer;
-        padding: 2px;
+       
         margin: 0 auto;
         text-align: center;
         object-fit: cover;
@@ -65,6 +66,7 @@
         padding-left: 10px;
         padding-right: 10px;
         font-size: 0.8rem;
+    
       }
     }
   

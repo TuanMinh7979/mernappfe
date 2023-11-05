@@ -6,15 +6,28 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import './GiphyContainer.scss';
-
+import GiphyImage from '@components/giphy/GiphyImage';
 const GiphyContainer = ({ handleGiphyClick }) => {
   const [gifs, setGifs] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // useEffect(() => {
+
+  //   GiphyUtils.getTrendingGifs(setGifs, setLoading);
+  // }, []);
+
+
+  const [searchTxt, setSearchTxt] = useState("")
+
   useEffect(() => {
-    
-    GiphyUtils.getTrendingGifs(setGifs, setLoading);
-  }, []);
+    if (searchTxt) {
+      const timer = setTimeout(() => GiphyUtils.searchGifs(searchTxt, setGifs, setLoading), 500);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [searchTxt]);
+
 
   return (
     <div className="giphy-search-container" data-testid="giphy-container">
@@ -27,20 +40,22 @@ const GiphyContainer = ({ handleGiphyClick }) => {
           labelText=""
           placeholder="Search Gif"
           className="search-input"
-          handleChange={(e) => GiphyUtils.searchGifs(e.target.value, setGifs, setLoading)}
+          handleChange={(e) => setSearchTxt(e.target.value)}
         />
       </div>
       {loading && <Spinner />}
 
       <ul className="search-results">
-        {gifs.map((gif) => (
+        {gifs.length >0 && gifs.map((gif) => (
           <li
+            style={{ width: '500px' }}
             className="gif-result"
             data-testid="list-item"
             key={Utils.generateString(10)}
             onClick={() => handleGiphyClick(gif.images.original.url)}
           >
-            <img src={`${gif.images.original.url}`} alt="" />
+            <GiphyImage url={gif.images.original.url}></GiphyImage>
+
           </li>
         ))}
       </ul>

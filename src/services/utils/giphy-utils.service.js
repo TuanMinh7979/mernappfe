@@ -7,6 +7,7 @@ export class GiphyUtils {
       setLoading(true);
       const response = await giphyService.trending();
       setGifs(response.data.data);
+ 
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -15,14 +16,15 @@ export class GiphyUtils {
 
   static async searchGifs(gif, setGifs, setLoading) {
 
-    if (gif.length <= 1) {
-      GiphyUtils.getTrendingGifs(setGifs, setLoading);
-      return;
-    }
+    // if (gif.length <= 1) {
+    //   GiphyUtils.getTrendingGifs(setGifs, setLoading);
+    //   return;
+    // }
 
     try {
       setLoading(true);
       const response = await giphyService.search(gif);
+      setGifs([]);
       setGifs(response.data.data);
 
       setLoading(false);
