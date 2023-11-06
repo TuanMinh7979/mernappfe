@@ -16,65 +16,93 @@ import { useState } from "react";
 import { postService } from "@services/api/post/post.service";
 import { fetchPosts } from "@redux/api/post";
 
+import Spinner from "@root/base-components/spinner/Spinner";
 import { uniqBy } from 'lodash';
 import useInfiniteScroll from "@hooks/useInfiniteScroll";
 import { followerService } from "@services/api/follow/follow.service";
 import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
+import { useSearchParams } from "react-router-dom";
 
 const Streams = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const { profile } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false)
-
+  const [loadingPost, setLoadingPost] = useState(false)
+  const [searchParams] = useSearchParams();
+  const [posts, setPosts] = useState([]);
+  const [postsCnt, setPostsCnt] = useState(1);
   // ? app post
-  let appPosts = useRef([])
-  const fetchPostData = () => {
-    let pageNum = currentPage
+  // let appPosts = useRef([])
+  const fetchPostData = async () => {
 
-    if (currentPage <= Math.round(reduxPosts.totalPostsCount / 3)) {
+    console.log("postsCnt", postsCnt);
+    let pageNum = currentPage
+    if (currentPage <= Math.ceil(postsCnt / 8)) {
       pageNum += 1
-      setCurrentPage(pageNum)
-      getPostByPage()
+      // getPostByPage()
+
+      try {
+        setLoadingPost(true)
+        const response = await postService.getAllPosts(pageNum);
+
+        if (response.data.posts.length > 0) {
+
+          let newAllPost = [...posts, ...response.data.posts];
+
+          // alert(response.data.posts.length)
+          console.log("===============", response.data.posts.length);
+          let abc = uniqBy([...newAllPost], '_id');
+          console.log("===============>>>>", currentPage, newAllPost)
+          setPosts([...abc]);
+        }
+        setLoadingPost(false);
+        setCurrentPage(pageNum)
+      } catch (error) {
+
+        setLoadingPost(false);
+        Utils.displayError(error, dispatch);
+      }
+
+
     }
   }
 
+  // useEffect(() => { getPostByPage() }, [currentPage])
   const getPostByPage = async () => {
     try {
-      setLoading(true)
+      setLoadingPost(true)
       const response = await postService.getAllPosts(currentPage);
 
       if (response.data.posts.length > 0) {
-        appPosts = [...posts, ...response.data.posts];
-        const allPosts = uniqBy(appPosts, '_id');
-        setPosts(allPosts);
+
+        let newAllPost = [...posts, ...response.data.posts];
+
+        // alert(response.data.posts.length)
+        console.log("===============", response.data.posts.length);
+        let abc = uniqBy([...newAllPost], '_id');
+        console.log("===============>>>>", currentPage, newAllPost)
+        setPosts([...abc]);
       }
-      setLoading(false);
+      setLoadingPost(false);
     } catch (error) {
 
-      setLoading(false);
+      setLoadingPost(false);
       Utils.displayError(error, dispatch);
     }
   };
 
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const bodyRef = useRef(null);
-  const bottomLineRef = useRef();
+  const bottomLineRef = useRef(null);
   const dispatch = useDispatch();
   useInfiniteScroll(bodyRef, bottomLineRef, fetchPostData)
 
 
-  // ? all posts
-  const reduxPosts = useSelector(state => state.posts)
-  // ? end all posts
 
-
-  // ? post
-  const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState([]);
-  const [postsCnt, setPostsCnt] = useState(1);
-  // ? end  post
   useEffect(() => {
     async function initFetch() {
+      console.log("-----------INIT FETCH");
       try {
         setLoading(true)
         dispatch(fetchUpdSugUsers());
@@ -83,7 +111,14 @@ const Streams = () => {
         const rs = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(rs.data.reactions));
 
-        dispatch(fetchPosts())
+        // dispatch(fetchPosts())
+        const fetchPostRes = await postService.getAllPosts(1);
+
+        const { posts, totalPosts } = fetchPostRes.data
+        setPosts([...posts])
+        setPostsCnt(totalPosts)
+
+
       } catch (error) {
         setLoading(false);
         Utils.displayError(error, dispatch);
@@ -92,13 +127,7 @@ const Streams = () => {
 
     initFetch()
   }
-
     , []);
-
-  useEffect(() => {
-    setPosts(reduxPosts?.posts)
-    setPostsCnt(reduxPosts?.totalPostsCount)
-  }, [reduxPosts.posts]);
 
 
 
@@ -126,10 +155,12 @@ const Streams = () => {
       <div className="streams-content">
         <div className="streams-post" ref={bodyRef}>
           <PostForm />
-          <Posts allPosts={posts} loggedUserIdolsProp={loggedUserIdols} />
+          <Posts loadingPost={loadingPost} allPosts={posts} loggedUserIdolsProp={loggedUserIdols} />
+
+
           <div
             ref={bottomLineRef}
-            style={{ marginBottom: "50px", height: "50px" }}
+            style={{ marginBottom: "150px", height: "50px" }}
           ></div>
         </div>
         <div className="streams-suggestions">

@@ -5,11 +5,12 @@ import "./Post.scss";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
-import { useEffect } from "react";
 import { PostUtils } from "@services/utils/post-utils.service";
 
-const Posts = ({ allPosts, loggedUserIdolsProp }) => {
+const Posts = ({ allPosts, loggedUserIdolsProp, loadingPost }) => {
+  console.log("...............", allPosts);
   const { profile } = useSelector((state) => state.user);
+  
 
   return (
     <div className="posts-container" data-testid="posts">
@@ -33,7 +34,7 @@ const Posts = ({ allPosts, loggedUserIdolsProp }) => {
 
       }
 
-
+      {loadingPost && <h2 style={{ textAlign: "center" }}>Loading...</h2>}
     </div>
   );
 };
