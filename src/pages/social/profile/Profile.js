@@ -193,7 +193,7 @@ const Profile = () => {
 
     initFetch()
 
-  }, []);
+  }, [searchParams]);
   return (
     <>
       {showGalleryImageModal && (
