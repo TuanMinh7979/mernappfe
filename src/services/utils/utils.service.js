@@ -31,7 +31,7 @@ export class Utils {
 
   static clearStore = (dispatch) => {
     dispatch(emptyLoggedUser());
-    sessionStorage.removeItem("accessToken");
+    localStorage.removeItem("accessToken");
 
 
   };

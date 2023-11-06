@@ -5,7 +5,7 @@ import { getAPI } from "./fetchData";
 import { Utils } from "./utils.service";
 
 export const newestAccessToken = async (dispatch) => {
-  const existAccessToken = sessionStorage.getItem("accessToken");
+  const existAccessToken = localStorage.getItem("accessToken");
 
   // if exist
 
@@ -17,7 +17,7 @@ export const newestAccessToken = async (dispatch) => {
     Utils.displayInfo("Refreshing token", dispatch, true)
     const res = await getAPI(`/refresh_token`);
     dispatch(updateLoggedUserProfile(res.data.user));
-    sessionStorage.setItem("accessToken", res.data.token);
+    localStorage.setItem("accessToken", res.data.token);
     return res.data.token;
   } catch (e) {
     Utils.displayError(e, dispatch, 1)

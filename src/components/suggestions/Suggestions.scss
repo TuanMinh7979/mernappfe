@@ -55,6 +55,11 @@
       cursor: pointer;
 
       .suggestions-item {
+        padding: 6px;
+        &:hover {
+          border:1px solid var(--primary-1);
+          border-radius: 12px;
+        }
         display: grid;
         grid-template-columns: 40px 1fr max-content;
         margin-bottom: 30px;

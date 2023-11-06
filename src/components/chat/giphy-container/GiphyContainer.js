@@ -11,10 +11,10 @@ const GiphyContainer = ({ handleGiphyClick }) => {
   const [gifs, setGifs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   GiphyUtils.getTrendingGifs(setGifs, setLoading);
-  // }, []);
+    GiphyUtils.getTrendingGifs(setGifs, setLoading);
+  }, []);
 
 
   const [searchTxt, setSearchTxt] = useState("")

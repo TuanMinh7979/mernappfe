@@ -8,6 +8,7 @@ import { Utils } from '@services/utils/utils.service';
 import { followerService } from '@services/api/follow/follow.service';
 import { filter } from 'lodash';
 import { updateSugUsersNewEle } from '@redux/reducers/suggestions/suggestions.reducer';
+import { ProfileUtils } from '@services/utils/profile-utils.service';
 
 const Suggestions = () => {
   const { suggestions } = useSelector((state) => state);
@@ -26,7 +27,7 @@ const Suggestions = () => {
     } catch (error) {
       alert(error)
 
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -43,7 +44,7 @@ const Suggestions = () => {
       <div className="suggestions-container">
         <div className="suggestions">
           {users?.map((user) => (
-            <div data-testid="suggestions-item" className="suggestions-item" key={user?._id}>
+            <div data-testid="suggestions-item" onClick={() => { ProfileUtils.navigateToProfile(user, navigate) }} className="suggestions-item" key={user?._id}>
               <Avatar
                 name={user?.username}
                 bgColor={user?.avatarColor}
@@ -57,7 +58,10 @@ const Suggestions = () => {
                   label="Follow"
                   className="button follow"
                   disabled={false}
-                  handleClick={() => followUser(user)}
+                  handleClick={(e) => {
+                    e.stopPropagation()
+                    followUser(user)
+                  }}
                 />
               </div>
             </div>

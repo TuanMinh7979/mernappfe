@@ -19,6 +19,7 @@ import ImageModal from "@components/image-modal/ImageModal";
 import "./Profile.scss";
 import Dialog from "@root/base-components/dialog/Dialog";
 import { useEffect } from "react";
+import { updateLoggedUserProfile } from "@redux/reducers/user/user.reducer";
 
 const Profile = () => {
   const { profile } = useSelector((state) => state.user);
@@ -85,7 +86,15 @@ const Profile = () => {
           bgImageId: selectedBackgroundFromGallery.imgId,
         });
       } else {
-        response = await imageService.save(url, result);
+
+        if (url == "/images/profile") {
+          response = await imageService.save(url, result);
+          console.log(response);
+          dispatch(updateLoggedUserProfile({ ...profile, profilePicture: response.data.url }))
+        } else {
+
+          response = await imageService.save(url, result);
+        }
       }
 
       if (response) {

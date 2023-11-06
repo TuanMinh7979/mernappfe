@@ -7,7 +7,7 @@ const LoginInfo = () => {
     // can not get Cookies by js code, because httponly in server 
     // const rftk = Cookies.get("refreshtoken");
 
-    const accessToken = sessionStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     const { profile } = useSelector((state) => state.user);
     return (
         <>

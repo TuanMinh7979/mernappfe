@@ -5,7 +5,8 @@ import { timeAgo } from '@services/utils/time.ago.utils';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useState } from 'react';
-
+import { IoMdTrash } from "react-icons/io"
+import { BsEmojiSmile } from "react-icons/bs"
 const LeftMessageDisplay = ({
   chat,
 
@@ -72,11 +73,7 @@ const LeftMessageDisplay = ({
           <div className="message-content-container-wrapper">
             <div
               className="message-content"
-              onClick={() => {
-                if (!chat?.deleteForMe) {
-                  showDeleteMessageDialog(chat, 'deleteForMe');
-                }
-              }}
+
               onMouseEnter={() => {
                 if (!chat?.deleteForMe) {
 
@@ -135,14 +132,40 @@ const LeftMessageDisplay = ({
                       <img src={chat?.gifUrl} alt="" />
                     </div>
                   )}
+                  {/* message-content-emoji-container */}
+                  {isBeingHovered && !chat?.deleteForMe && (<>
+                    {isBeingHovered && !chat.deleteForEveryone && !deletedByMe && (<>
+                      <div
+                        style={{
+                          position: "absolute", right: "-10px",
+                          top: `
+                                ${chat.gifUrl || chat.selectedImage ? !chat.body.startsWith("Sent") ? "30px" : "-10px" : "-10px"}`
+                        }}
+                        className={`message-content-emoji-container`}
 
-                  {isBeingHovered && !chat?.deleteForMe && (
-                    <div style={{ position: "absolute", right: "-10px", top: "center" }} className="message-content-emoji-container" onClick={(e) => {
-                      e.stopPropagation()
-                      setIsShowReactionSelection(true)
-                    }}>
-                      &#9786;
-                    </div>
+                      >
+                        <BsEmojiSmile onClick={(e) => {
+                          e.stopPropagation()
+                          setIsShowReactionSelection(true);
+                        }}></BsEmojiSmile>
+                      </div>
+                      <div
+                        style={{
+                          position: "absolute", right: "-10px", top:
+                            `${chat.gifUrl || chat.selectedImage ? !chat.body.startsWith("Sent") ? "70px" : "30px" : "30px"}`
+                        }}
+                        className={`message-content-emoji-container`}
+                      >
+                        <IoMdTrash onClick={(e) => {
+                          e.stopPropagation()
+                          if (!chat.deleteForEveryone) {
+                            showDeleteMessageDialog(chat, !chat.isRead ? "bold" : "deleteForMe");
+                          }
+                        }} />
+                      </div></>
+
+                    )}
+                  </>
                   )}</>
 
               }
@@ -160,6 +183,7 @@ const LeftMessageDisplay = ({
             <div className="message-reaction">
               {chat?.reaction.map((data, index) => (
                 <img
+                  style={{ border: `${data?.senderName === profile?.username ? "1px dashed red" : "1px solid blue"}` }}
                   src={reactionsMap[data?.type]}
                   alt=""
                   key={index}

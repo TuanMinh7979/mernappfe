@@ -19,10 +19,10 @@ const ProtectedRoute = ({ children }) => {
 
 
   const dispatch = useDispatch();
-  const accessTk = sessionStorage.getItem("accessToken");
+  const accessTk = localStorage.getItem("accessToken");
 
   const freshLoggedUserData = async () => {
-    let existAccessToken = sessionStorage.getItem("accessToken");
+    let existAccessToken = localStorage.getItem("accessToken");
     if (!profile && isAccessTokenExist(existAccessToken)) {
       if (isAccessTokenValid(existAccessToken)) {
         try {
@@ -38,7 +38,7 @@ const ProtectedRoute = ({ children }) => {
           //  fresh new token and profile
           const res = await getAPI("/refresh_token");
           dispatch(updateLoggedUserProfile(res.data.user));
-          sessionStorage.setItem("accessToken", res.data.token);
+          localStorage.setItem("accessToken", res.data.token);
         } catch (e) {
           Utils.clearStore(dispatch);
         }

@@ -87,7 +87,7 @@ const InfoDisplay = ({
                         </div>
                         <div className="side-container-body-content">
 
-                            {type == 'basic' && editIntroBtn && work && <>Works at</>}
+                            {type == 'basic' && editIntroBtn && work && <>Works at </>}
                             {type == 'basic' && editIntroBtn && !work && <div className='no-infomation'>{workMsg}</div>}
                             {type != 'basic' && editIntroBtn && instagram &&
 
@@ -139,7 +139,7 @@ const InfoDisplay = ({
                         </div>
                         <div className="side-container-body-content">
 
-                            {type == 'basic' && editIntroBtn && school && <>Went to</>}
+                            {type == 'basic' && editIntroBtn && school && <>Went to </>}
                             {type == 'basic' && editIntroBtn && !school && <div className='no-infomation'>{schoolMsg}</div>}
                             {type != 'basic' && editIntroBtn && twitter &&
 
