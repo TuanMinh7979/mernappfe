@@ -19,6 +19,7 @@ import { FollowersUtils } from "@services/utils/followers-utils.service";
 import { followerService } from "@services/api/follow/follow.service";
 import { useEffect } from "react";
 import { chatService } from "@services/api/chat/chat.service";
+import { socketService } from "@services/socket/socket.service";
 const People = () => {
 
   const dispatch = useDispatch();
@@ -97,6 +98,11 @@ const People = () => {
   useEffect(() => {
     // users is list use now, myidols is user is folled by logged user
     FollowersUtils.socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers)
+    return () => {
+      socketService.socket.off("added follow");
+      socketService.socket.off("removed follow");
+
+    };
   }, [myIdols, users])
 
 

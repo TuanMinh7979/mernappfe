@@ -30,7 +30,8 @@ export class FollowersUtils {
     socketService?.socket?.on('removed follow', (newIdolData) => {
 
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
-      if (idolIndex) {
+      if (idolIndex != -1) {
+    
         // update idol state
         let newMyIdols = myIdols.filter((idol) => idol._id !== newIdolData?._id);
         setMyIdols([...newMyIdols])
