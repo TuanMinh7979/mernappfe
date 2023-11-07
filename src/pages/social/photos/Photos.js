@@ -145,7 +145,7 @@ const Photos = () => {
 
             <div
               ref={bottomLineRef}
-              style={{ marginBottom: "150px", height: "50px" }}
+              style={{ marginBottom: "150px", height: "150px" }}
             ></div>
           </div>
         )}
