@@ -27,33 +27,23 @@ import { useSearchParams } from "react-router-dom";
 const Streams = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { profile } = useSelector((state) => state.user);
-  const [loading, setLoading] = useState(false)
   const [loadingPost, setLoadingPost] = useState(false)
-  const [searchParams] = useSearchParams();
   const [posts, setPosts] = useState([]);
   const [postsCnt, setPostsCnt] = useState(1);
   // ? app post
-  // let appPosts = useRef([])
-  const fetchPostData = async () => {
 
+  const fetchPostData = async () => {
     console.log("postsCnt", postsCnt);
     let pageNum = currentPage
     if (currentPage <= Math.ceil(postsCnt / 8)) {
       pageNum += 1
       // getPostByPage()
-
       try {
         setLoadingPost(true)
         const response = await postService.getAllPosts(pageNum);
-
         if (response.data.posts.length > 0) {
-
           let newAllPost = [...posts, ...response.data.posts];
-
-          // alert(response.data.posts.length)
-          console.log("===============", response.data.posts.length);
           let abc = uniqBy([...newAllPost], '_id');
-          console.log("===============>>>>", currentPage, newAllPost)
           setPosts([...abc]);
         }
         setLoadingPost(false);
@@ -68,30 +58,6 @@ const Streams = () => {
     }
   }
 
-  // useEffect(() => { getPostByPage() }, [currentPage])
-  const getPostByPage = async () => {
-    try {
-      setLoadingPost(true)
-      const response = await postService.getAllPosts(currentPage);
-
-      if (response.data.posts.length > 0) {
-
-        let newAllPost = [...posts, ...response.data.posts];
-
-        // alert(response.data.posts.length)
-        console.log("===============", response.data.posts.length);
-        let abc = uniqBy([...newAllPost], '_id');
-        console.log("===============>>>>", currentPage, newAllPost)
-        setPosts([...abc]);
-      }
-      setLoadingPost(false);
-    } catch (error) {
-
-      setLoadingPost(false);
-      Utils.displayError(error, dispatch);
-    }
-  };
-
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
@@ -102,25 +68,22 @@ const Streams = () => {
 
   useEffect(() => {
     async function initFetch() {
-      console.log("-----------INIT FETCH");
       try {
-        setLoading(true)
+        // setLoadingPost(true)
         dispatch(fetchUpdSugUsers());
         const response = await followerService.getLoggedUserFollowee();
         setLoggedUserIdols(response.data.following);
         const rs = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(rs.data.reactions));
 
-        // dispatch(fetchPosts())
         const fetchPostRes = await postService.getAllPosts(1);
-
         const { posts, totalPosts } = fetchPostRes.data
         setPosts([...posts])
         setPostsCnt(totalPosts)
-
+        // setLoadingPost(false)
 
       } catch (error) {
-        setLoading(false);
+        // setLoadingPost(false);
         Utils.displayError(error, dispatch);
       }
     }
@@ -142,13 +105,6 @@ const Streams = () => {
 
     };
   }, [posts]);
-
-  // ? get all reactions of current user
-
-
-
-  // ? END get all reactions of current user
-
 
   return (
     <div className="streams" data-testid="streams">

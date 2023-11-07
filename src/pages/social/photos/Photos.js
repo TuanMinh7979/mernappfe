@@ -9,20 +9,22 @@ import useEffectOnce from '@hooks/useEffectOnce'
 import GalleryImage from '@components/gallery-image/GalleryImage'
 import "./Photos.scss"
 import ImageModal from '@components/image-modal/ImageModal'
+import { useRef } from 'react'
+import useInfiniteScroll from '@hooks/useInfiniteScroll'
+import { uniqBy } from 'lodash';
 const Photos = () => {
   const { profile } = useSelector(state => state.user)
   const [posts, setPosts] = useState([])
+  const [postsCnt, setPostCnt] = useState(1)
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
-
   const dispatch = useDispatch()
-
 
   useEffectOnce(() => {
     async function initFetch() {
       try {
         const res1 = await postService.getsWithImage(1)
         setPosts(res1.data.posts)
-
+        setPostCnt(res1.data.cnt)
         const res2 = await followerService.getLoggedUserFollowee()
         setLoggedUserIdols(res2.data.following)
 
@@ -58,9 +60,40 @@ const Photos = () => {
   }
 
   const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
+  const bodyRef = useRef(null);
+  const bottomLineRef = useRef(null);
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  const fetchPhotos = async () => {
+
+    let pageNum = currentPage
+    if (currentPage <= Math.ceil(postsCnt / 8)) {
+      pageNum += 1
+      try {
+        const res1 = await postService.getsWithImage(pageNum)
+
+        console.log(res1.data.posts.length);
+        let abc = uniqBy([...posts, ...res1.data.posts], '_id');
+        console.log("-----");
+        console.log("----abc len", abc.length);
+        setPosts([...abc]);
+        setCurrentPage(pageNum)
+      } catch (error) {
+
+        Utils.displayError(error, dispatch);
+      }
+    }
+  }
+  useInfiniteScroll(bodyRef, bottomLineRef, fetchPhotos)
+
+
+
   return (
     <>
-      <div className="photos-container">
+      <div className="photos-container" ref={bodyRef}>
 
         {showImageModal && <ImageModal
           image={galleryImageToShow}
@@ -76,7 +109,7 @@ const Photos = () => {
         />}
         <div className="photos">  Photos   </div>
         {posts.length > 0 && (
-          <div className="gallery-images">
+          <div className="gallery-images" >
             {posts.map((el, idx) =>
               <div className={`${!isEmptyPost(el) ? 'empty-post-div' : ''}`} key={idx}>
                 {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
@@ -109,17 +142,24 @@ const Photos = () => {
               </div>
 
             )}
+
+            <div
+              ref={bottomLineRef}
+              style={{ marginBottom: "150px", height: "50px" }}
+            ></div>
           </div>
         )}
 
 
         {!posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
 
-        { !posts.length && (
+        {!posts.length && (
           <div className="empty-page" data-testid="empty-page">
             No photos to display
           </div>
         )}
+
+
 
       </div>
     </>
