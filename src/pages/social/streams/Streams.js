@@ -33,7 +33,7 @@ const Streams = () => {
   // ? app post
 
   const fetchPostData = async () => {
-    console.log("postsCnt", postsCnt);
+
     let pageNum = currentPage
     if (currentPage <= Math.ceil(postsCnt / 8)) {
       pageNum += 1

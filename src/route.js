@@ -56,11 +56,11 @@ const AppRouter = () => {
                 },
                 {
                     path: "followers",
-                    element: <Suspense><Follower></Follower></Suspense>
+                    element: <Suspense fallback={<CardSkeleton />}><Follower></Follower></Suspense>
                 },
                 {
                     path: "following",
-                    element: <Suspense><Following></Following></Suspense>
+                    element: <Suspense fallback={<CardSkeleton />}><Following></Following></Suspense>
                 },
                 {
                     path: "photos",

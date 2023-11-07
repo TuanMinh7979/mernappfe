@@ -75,10 +75,10 @@ const Photos = () => {
       try {
         const res1 = await postService.getsWithImage(pageNum)
 
-        console.log(res1.data.posts.length);
+
         let abc = uniqBy([...posts, ...res1.data.posts], '_id');
-        console.log("-----");
-        console.log("----abc len", abc.length);
+
+
         setPosts([...abc]);
         setCurrentPage(pageNum)
       } catch (error) {
@@ -109,7 +109,7 @@ const Photos = () => {
         />}
         <div className="photos">  Photos   </div>
         {posts.length > 0 && (
-          <div className="gallery-images" >
+          <div className="gallery-images scroll-3" >
             {posts.map((el, idx) =>
               <div className={`${!isEmptyPost(el) ? 'empty-post-div' : ''}`} key={idx}>
                 {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||

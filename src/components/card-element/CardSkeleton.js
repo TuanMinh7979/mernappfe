@@ -1,8 +1,8 @@
 import Skeleton from 'react-loading-skeleton';
-
+import "../../pages/social/people/People.scss"
 const CardSkeleton = () => {
   return (
-    <div className="card-element" style={{backgroundColor: "white"}} data-testid="card-skeleton">
+    <div className="card-element" style={{marginTop:"100px"}} data-testid="card-skeleton">
       {[1, 2, 3].map((user, index) => (
         <div className="card-element-item" key={index}>
           <div className="card-element-header">
