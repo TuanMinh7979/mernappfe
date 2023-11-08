@@ -12,17 +12,20 @@ import { useSelector } from 'react-redux';
 import { feelingsList } from '@services/utils/static.data';
 import { updateIsReactionsModalOpen, updateModalIsCommentsModalOpen } from '@redux/reducers/modal/modal.reducer';
 const ReactionsAndCommentsDisplay = ({ post }) => {
-  const { profile} = useSelector((state) => state.user);
+
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
+  const [currentShowReactionPeoplePostId, setCurrentShowReactionPeoplePostId] = useState("")
   const getReactionDocsOfCurPost = async () => {
     try {
+      if(post._id == currentShowReactionPeoplePostId) return
+      setCurrentShowReactionPeoplePostId(post?._id)
       const response = await postService.getReactionDocsOfAPost(post?._id);
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
-      Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -55,7 +58,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
       const response = await postService.getPostCommentsNames(post._id)
       setPostCommentNames([...new Set(response.data.comments.names)])
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
 
     }
   }
@@ -132,7 +135,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
           <span data-testid="reactions-count"
             className="tooltip-container reactions-count"
-            onMouseEnter={() => getReactionDocsOfCurPost()}
+            onFocus={() => getReactionDocsOfCurPost()}
             onClick={openReactionsCom}
           >
             {sumAllReactions(reactionsProp)}
@@ -162,7 +165,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
         </div>
       </div>
       <div className="comment tooltip-container" data-testid="comment-container"
-      onClick={openCommentsComponent}
+        onClick={openCommentsComponent}
       >
         <span data-testid="comment-count">
 

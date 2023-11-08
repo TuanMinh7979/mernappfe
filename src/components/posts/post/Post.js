@@ -11,7 +11,6 @@ import ReactionAndCommentSection from "../post-react-comment-section/ReactionAnd
 import { useDispatch, useSelector } from "react-redux";
 import ReactionModal from "../reactions/reactions-modal/ReactionModal";
 import CommentInputBox from "../comment/comment-input/CommentInputBox";
-import useLocalStorage from "@hooks/useLocalStorage";
 import { useState } from "react";
 import CommentsModal from "../comment/comment-modal/CommentsModal";
 import ImageModal from "@components/image-modal/ImageModal";
@@ -26,7 +25,7 @@ const Post = ({ post, showIcons }) => {
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage
 
   const reduxPost = useSelector(state => state.post)
-  const { token } = useSelector((state) => state.user);
+
   // ? end comment
 
   const getFeeling = (name) => {
