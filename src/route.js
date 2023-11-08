@@ -52,15 +52,15 @@ const AppRouter = () => {
                 },
                 {
                     path: "people",
-                    element: <Suspense fallback={<CardSkeleton />}><People></People></Suspense>
+                    element: <Suspense ><People></People></Suspense>
                 },
                 {
                     path: "followers",
-                    element: <Suspense fallback={<CardSkeleton />}><Follower></Follower></Suspense>
+                    element: <Suspense ><Follower></Follower></Suspense>
                 },
                 {
                     path: "following",
-                    element: <Suspense fallback={<CardSkeleton />}><Following></Following></Suspense>
+                    element: <Suspense ><Following></Following></Suspense>
                 },
                 {
                     path: "photos",

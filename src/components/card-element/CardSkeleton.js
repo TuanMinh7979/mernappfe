@@ -1,9 +1,10 @@
 import Skeleton from 'react-loading-skeleton';
 import "../../pages/social/people/People.scss"
+import { Utils } from '@services/utils/utils.service';
 const CardSkeleton = () => {
   return (
-    <div className="card-element" style={{marginTop:"100px"}} data-testid="card-skeleton">
-      {[1, 2, 3].map((user, index) => (
+    <div className="card-element" data-testid="card-skeleton">
+      {Array(Utils.POST_PAGE_SIZE).fill(0).map((user, index) => (
         <div className="card-element-item" key={index}>
           <div className="card-element-header">
             <div className="card-element-header-bg"></div>
