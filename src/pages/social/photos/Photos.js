@@ -18,7 +18,7 @@ const Photos = () => {
   const [postsCnt, setPostCnt] = useState(1)
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const dispatch = useDispatch()
-
+  const [loading, setLoading] = useState(true)
   useEffectOnce(() => {
     async function initFetch() {
       try {
@@ -27,8 +27,9 @@ const Photos = () => {
         setPostCnt(res1.data.cnt)
         const res2 = await followerService.getLoggedUserFollowee()
         setLoggedUserIdols(res2.data.following)
-
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
         Utils.displayError(error, dispatch);
       }
     }
@@ -70,7 +71,7 @@ const Photos = () => {
   const fetchPhotos = async () => {
 
     let pageNum = currentPage
-    if (currentPage <= Math.ceil(postsCnt / 8)) {
+    if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE)) {
       pageNum += 1
       try {
         const res1 = await postService.getsWithImage(pageNum)
@@ -151,9 +152,9 @@ const Photos = () => {
         )}
 
 
-        {!posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
+        {loading && !posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
 
-        {!posts.length && (
+        {!loading && !posts.length && (
           <div className="empty-page" data-testid="empty-page">
             No photos to display
           </div>

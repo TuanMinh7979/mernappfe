@@ -16,7 +16,7 @@ import { userService } from "@services/api/user/user.service";
 const App = () => {
   const dispatch = useDispatch();
   const reduxToasts = useSelector((state) => state.toasts);
-  const { profile } = useSelector((state) => state.user);
+
   useEffect(() => {
     socketService.setupSocketConnection();
   }, []);

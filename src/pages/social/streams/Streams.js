@@ -33,7 +33,7 @@ const Streams = () => {
   const fetchPostData = async () => {
 
     let pageNum = currentPage
-    if (currentPage <= Math.ceil(postsCnt / 8)) {
+    if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE)) {
       pageNum += 1
 
       try {
