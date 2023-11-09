@@ -19,7 +19,8 @@ import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
 import { openModal } from "@redux/reducers/modal/modal.reducer";
 import Dialog from "@root/base-components/dialog/Dialog";
 import { postService } from "@services/api/post/post.service";
-const Post = ({ post, showIcons }) => {
+const Post = ({ post, showIcons }) =>
+ {
   const dispatch = useDispatch()
   // ?comment
   // ** only and only use useSelector(state.a) => when a change => component will re render=>will get new localstorage

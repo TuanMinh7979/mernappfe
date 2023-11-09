@@ -16,15 +16,16 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   const [reactionsOfCurPost, setReactionsOfCurPost] = useState([])
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
-  const [currentShowReactionPeoplePostId, setCurrentShowReactionPeoplePostId] = useState("")
+  const [isShowReactions, setIsShowReactions] = useState("")
   const getReactionDocsOfCurPost = async () => {
     try {
-      if(post._id == currentShowReactionPeoplePostId) return
-      setCurrentShowReactionPeoplePostId(post?._id)
+      if (isShowReactions) return
+      setIsShowReactions(post?._id)
       const response = await postService.getReactionDocsOfAPost(post?._id);
 
       setReactionsOfCurPost(response.data.reactions);
     } catch (error) {
+      setReactionsOfCurPost("");
       Utils.displayError(error, dispatch);
     }
   };
@@ -95,6 +96,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
                     className="reaction-img"
                     src={reactionsMap[reactRawItem.type]} alt=""
                     onMouseEnter={() => getReactionDocsOfCurPost()}
+                    onMouseLeave={() => setIsShowReactions("")}
 
                   />
 
