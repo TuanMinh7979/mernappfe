@@ -17,6 +17,7 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
   const [reactionsProp, setReactionsProp] = useState([]);
   const dispatch = useDispatch()
   const [isShowReactions, setIsShowReactions] = useState("")
+
   const getReactionDocsOfCurPost = async () => {
     try {
       if (isShowReactions) return
@@ -137,7 +138,8 @@ const ReactionsAndCommentsDisplay = ({ post }) => {
 
           <span data-testid="reactions-count"
             className="tooltip-container reactions-count"
-            onFocus={() => getReactionDocsOfCurPost()}
+            onMouseEnter={() => getReactionDocsOfCurPost()}
+            onMouseLeave={() => setIsShowReactions("")}
             onClick={openReactionsCom}
           >
             {sumAllReactions(reactionsProp)}
