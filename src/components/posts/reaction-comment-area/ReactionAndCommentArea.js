@@ -14,6 +14,7 @@ import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 
 import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
+
 const ReactionAndCommentArea = ({ post }) => {
   const dispatch = useDispatch();
   // ? comment
@@ -60,7 +61,9 @@ const ReactionAndCommentArea = ({ post }) => {
 
       const gettedExistingReactionDocument =
         existingReactionDocOfCurPostByLoggedUserInDB.data.reactions;
-
+      if (choosedReaction.toLowerCase == newReactionText.toLowerCase()) {
+        setChoosedReaction('Like')
+      }
       updLoggedUserReactions(
         newReactionText,
         gettedExistingReactionDocument?.type,
@@ -108,7 +111,7 @@ const ReactionAndCommentArea = ({ post }) => {
       }
     } catch (error) {
 
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   const updateReactionsPropertyOfCurrentPost = (
@@ -189,7 +192,7 @@ const ReactionAndCommentArea = ({ post }) => {
   return (
     <div className="comment-area" data-testid="comment-area">
       <div className="like-icon reactions">
-        <div className="likes-block" onClick={() => onReactionClick("like")}>
+        <div className="likes-block" onClick={() => onReactionClick(choosedReaction)}>
           <div
             className={`likes-block-icons reaction-icon ${choosedReaction.toLowerCase()}`}
           >
