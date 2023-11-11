@@ -28,16 +28,20 @@ const Streams = () => {
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState([]);
   const [postsCnt, setPostsCnt] = useState(1);
+
+
   // ? app post
+
+
 
   const fetchPostData = async () => {
 
     let pageNum = currentPage
-    if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE)) {
+    if (currentPage < Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
       pageNum += 1
-
       try {
         setLoadingPost(true)
+
         const response = await postService.getAllPosts(pageNum);
         if (response.data.posts.length > 0) {
           let newAllPost = [...posts, ...response.data.posts];
@@ -47,15 +51,16 @@ const Streams = () => {
         setLoadingPost(false);
         setCurrentPage(pageNum)
       } catch (error) {
-
         setLoadingPost(false);
         Utils.displayError(error, dispatch);
       }
-
-
     }
   }
-
+  const loadMore = () => {
+    setTimeout(() => {
+      fetchPostData();
+    }, 5000);
+  }
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
