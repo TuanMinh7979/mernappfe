@@ -41,11 +41,11 @@ const ReactionAndCommentArea = ({ post }) => {
       const userReaction = postReactions?.filter(
         (reaction) => reaction.postId === post._id
       )[0];
-      // console.log("------------------", userReaction);
+
       const result = userReaction
         ? Utils.firstLetterUpperCase(userReaction.type)
         : "Default";
-      console.log("sett----------------again, ", postReactions, userReaction);
+
       setChoosedReaction(result);
     },
     [post]
@@ -54,7 +54,7 @@ const ReactionAndCommentArea = ({ post }) => {
 
   // ? onClick in reaction
   const onReactionClick = async (newReactionText) => {
-    // console.log(newReactionText);
+
     try {
 
       updLoggedUserReactionsInRedux(
@@ -87,19 +87,16 @@ const ReactionAndCommentArea = ({ post }) => {
 
       if (newReactionText.toLowerCase() !== choosedReaction.toLowerCase()) {
         // add if exist
-        console.log("ADD", reactionDataToServer, newReactionText.toLowerCase(), choosedReaction.toLowerCase());
         await postService.addReaction(reactionDataToServer);
       } else {
 
         if (newReactionText.toLowerCase() === reactionDataToServer.previousReaction.toLowerCase()) {
-          console.log("RM", reactionDataToServer, newReactionText.toLowerCase(), choosedReaction.toLowerCase());
           await postService.removeReaction(
             post?._id,
             reactionDataToServer.previousReaction,
             post.reactions
           );
         } else {
-          console.log("ADD2", reactionDataToServer, newReactionText.toLowerCase(), choosedReaction.toLowerCase());
           //  create new
           await postService.addReaction(reactionDataToServer);
         }
@@ -192,12 +189,12 @@ const ReactionAndCommentArea = ({ post }) => {
   useEffect(() => {
     initLoggedUserChoosedReaction(loggedUserReactions);
   }, [initLoggedUserChoosedReaction, loggedUserReactions]);
-  // console.log("----------------", post);
+
 
   return (
     <div className="comment-area" data-testid="comment-area">
       <div className="like-icon reactions">
-        <div className="likes-block" onClick={() => onReactionClick(choosedReaction)}>
+        <div className="likes-block" onClick={() => onReactionClick(choosedReaction.toLowerCase() != "default" ? choosedReaction.toLowerCase() : "like")}>
           <div
             className={`likes-block-icons reaction-icon ${choosedReaction.toLowerCase()}`}
           >
@@ -211,14 +208,10 @@ const ReactionAndCommentArea = ({ post }) => {
                   src={reactionsMap[choosedReaction != "Default" ? choosedReaction.toLowerCase() : "like"]}
                   alt=""
                 />
-                <span>{choosedReaction}</span>
+                <span>{choosedReaction != "Default" ? choosedReaction : "Like"}</span>
               </div>
             )}
-            {/* {!choosedReaction &&
-              <div className="reaction-display" data-testid="default-reaction">
-                <img className="reaction-img" src="" alt="" /> <span>Like</span>
-              </div>
-            } */}
+
           </div>
         </div>
         <div className="reactions-container app-reactions">
