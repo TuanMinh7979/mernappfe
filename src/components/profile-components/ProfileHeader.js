@@ -98,7 +98,7 @@ const ProfileHeader = ({
           {hasImage && (
             <div
               className="save-changes-container"
-           
+
             >
               <div className="save-changes-box">
                 <div className="spinner-container">
@@ -139,20 +139,22 @@ const ProfileHeader = ({
             {!selectedBackgroundUrl && !fromDbBackgroundUrl && (
               <h3>No background image</h3>
             )}
-            {selectedBackgroundUrl ? (
+            {selectedBackgroundUrl && (
               // show new choosed image
               <img src={selectedBackgroundUrl} alt="" />
-            ) : (
+            )}
+
+            {fromDbBackgroundUrl &&
               // show existing image
               <img src={fromDbBackgroundUrl} alt="" />
-            )}
+            }
           </div>
           <div className="profile-top-data" >
             <div
               className="profile-pic"
               style={{
                 width: `${user?.profilePicture ? "180px" : ""}`,
-              
+
               }}
             >
               <Avatar
