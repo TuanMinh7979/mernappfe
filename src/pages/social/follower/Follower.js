@@ -9,7 +9,7 @@ import Avatar from '@components/avatar/Avatar'
 import CardElementButtons from '@components/card-element/CardElementButton'
 import CardElementStats from '@components/card-element/CardElementStats'
 import { useCallback } from 'react'
-import Skeleton from 'react-loading-skeleton'
+
 import { ProfileUtils } from '@services/utils/profile-utils.service'
 import { FollowersUtils } from '@services/utils/followers-utils.service'
 import { socketService } from '@services/socket/socket.service'

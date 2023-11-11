@@ -37,7 +37,7 @@ const Streams = () => {
   const fetchPostData = async () => {
 
     let pageNum = currentPage
-    if (currentPage < Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
+    if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
       pageNum += 1
       try {
         setLoadingPost(true)

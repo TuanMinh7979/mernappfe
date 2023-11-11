@@ -28,7 +28,7 @@ const People = () => {
   const navigate = useNavigate();
   const { profile } = useSelector((state) => state.user);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [users, setUsers] = useState([]);
@@ -40,7 +40,7 @@ const People = () => {
   //useCallback bc use it in useEffect
   const getAllUsers = useCallback(async () => {
     try {
-
+      setLoading(true)
       const response = await userService.getAllUsers(currentPage);
 
       if (response.data.users.length > 0) {
@@ -67,7 +67,7 @@ const People = () => {
   function fetchData() {
 
     let pageNum = currentPage;
-    if (currentPage <= Math.ceil(totalUserCnt / Utils.POST_PAGE_SIZE)) {
+    if (currentPage <= Math.ceil(totalUserCnt / Utils.POST_PAGE_SIZE) && myIdols.length < totalUserCnt && !loading) {
       pageNum += 1;
       setCurrentPage(pageNum);
       getAllUsers();
