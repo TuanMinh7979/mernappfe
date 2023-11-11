@@ -8,6 +8,7 @@ import like from '../../assets/reactions/like.png';
 import love from '../../assets/reactions/love.png';
 import sad from '../../assets/reactions/sad.png';
 import wow from '../../assets/reactions/wow.png';
+import defaultIcon from '../../assets/reactions/default.png';
 
 
 import {
@@ -210,7 +211,8 @@ export const reactionsMap = {
   wow,
   sad,
   happy,
-  angry
+  angry,
+  default: defaultIcon
 };
 
 export const reactionsColor = {

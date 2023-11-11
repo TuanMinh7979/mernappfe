@@ -14,7 +14,7 @@ import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 
 import { emptyPost, updatePost } from "@redux/reducers/post/post.reducer";
-import { nextWednesday } from "date-fns";
+
 const ReactionAndCommentArea = ({ post }) => {
   const dispatch = useDispatch();
   // ? comment
@@ -35,7 +35,7 @@ const ReactionAndCommentArea = ({ post }) => {
     (state) => state.userPostReaction.reactions
   );
 
-  const [choosedReaction, setChoosedReaction] = useState("Default");
+  const [choosedReaction, setChoosedReaction] = useState("default");
   const initLoggedUserChoosedReaction = useCallback(
     (postReactions) => {
       const userReaction = postReactions?.filter(
@@ -43,8 +43,8 @@ const ReactionAndCommentArea = ({ post }) => {
       )[0];
 
       const result = userReaction
-        ? Utils.firstLetterUpperCase(userReaction.type)
-        : "Default";
+        ? userReaction.type
+        : "default";
 
       setChoosedReaction(result);
     },
@@ -54,19 +54,20 @@ const ReactionAndCommentArea = ({ post }) => {
 
   // ? onClick in reaction
   const onReactionClick = async (newReactionText) => {
-
+    let newReactionTextLower = newReactionText.toLowerCase()
+    let choosedReactionLower = choosedReaction.toLowerCase()
     try {
 
       updLoggedUserReactionsInRedux(
-        newReactionText,
-        choosedReaction,
+        newReactionTextLower,
+        choosedReactionLower,
 
         dispatch
       );
 
       let newPost = updateReactionsPropertyOfCurrentPost(
-        newReactionText.toLowerCase(),
-        choosedReaction.toLowerCase()
+        newReactionTextLower,
+        choosedReactionLower
       );
 
 
@@ -79,18 +80,18 @@ const ReactionAndCommentArea = ({ post }) => {
         type: newReactionText,
         postReactions: post.reactions,
         profilePicture: profile?.profilePicture,
-        previousReaction: newReactionText.toLowerCase() == choosedReaction.toLowerCase() || choosedReaction.toLowerCase() != "default"
-          ? choosedReaction.toLowerCase()
+        previousReaction: newReactionTextLower == choosedReactionLower || choosedReactionLower != "default"
+          ? newReactionTextLower
           : "",
       };
       //  call api update
 
-      if (newReactionText.toLowerCase() !== choosedReaction.toLowerCase()) {
+      if (newReactionTextLower !== choosedReactionLower) {
         // add if exist
         await postService.addReaction(reactionDataToServer);
       } else {
 
-        if (newReactionText.toLowerCase() === reactionDataToServer.previousReaction.toLowerCase()) {
+        if (newReactionTextLower === reactionDataToServer.previousReaction) {
           await postService.removeReaction(
             post?._id,
             reactionDataToServer.previousReaction,
@@ -114,7 +115,7 @@ const ReactionAndCommentArea = ({ post }) => {
 
     let newPost = { ...post };
 
-    if (newReactionText.toLowerCase() !== previousReactionText.toLowerCase()) {
+    if (newReactionText !== previousReactionText) {
       //   * if dont exist old reaction(in Reactions table )=> inc newReactText by 1
       const newReactions = { ...newPost.reactions };
       newReactions[newReactionText] += 1;
@@ -156,6 +157,8 @@ const ReactionAndCommentArea = ({ post }) => {
     let restLoggedUserReactions = loggedUserReactions.filter(
       (el) => el?.postId !== post?._id
     );
+
+    // remove old reaction
     const newReaction = {
       avatarColor: profile?.avatarColor,
       createdAt: `${new Date()}`,
@@ -166,10 +169,12 @@ const ReactionAndCommentArea = ({ post }) => {
     };
 
 
-    console.log(previousReactionText.toLowerCase(), "><><<><><<>", newReactionText.toLowerCase());
-    if (previousReactionText.toLowerCase() !== newReactionText.toLowerCase()) {
+
+    if (previousReactionText !== newReactionText) {
+      // if adding new reaction
       restLoggedUserReactions.push(newReaction);
     }
+
 
 
     dispatch(updateLoggedUserReactions(restLoggedUserReactions));
@@ -194,21 +199,21 @@ const ReactionAndCommentArea = ({ post }) => {
   return (
     <div className="comment-area" data-testid="comment-area">
       <div className="like-icon reactions">
-        <div className="likes-block" onClick={() => onReactionClick(choosedReaction.toLowerCase() != "default" ? choosedReaction.toLowerCase() : "like")}>
+        <div className="likes-block" onClick={() => onReactionClick(choosedReaction != "default" ? choosedReaction : "like")}>
           <div
-            className={`likes-block-icons reaction-icon ${choosedReaction.toLowerCase()}`}
+            className={`likes-block-icons reaction-icon ${choosedReaction}`}
           >
             {choosedReaction && (
               <div
-                className={`reaction-display ${choosedReaction.toLowerCase()} `}
+                className={`reaction-display ${choosedReaction} `}
                 data-testid="selected-reaction"
               >
                 <img
                   className="reaction-img"
-                  src={reactionsMap[choosedReaction != "Default" ? choosedReaction.toLowerCase() : "like"]}
+                  src={reactionsMap[choosedReaction]}
                   alt=""
                 />
-                <span>{choosedReaction != "Default" ? choosedReaction : "Like"}</span>
+                <span>{choosedReaction != "default" ? choosedReaction : "like"}</span>
               </div>
             )}
 
