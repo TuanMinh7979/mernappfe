@@ -41,8 +41,8 @@ const Streams = () => {
         const response = await postService.getAllPosts(pageNum);
         if (response.data.posts.length > 0) {
           let newAllPost = [...posts, ...response.data.posts];
-          let abc = uniqBy([...newAllPost], '_id');
-          setPosts([...abc]);
+          newAllPost = uniqBy([...newAllPost], '_id');
+          setPosts([...newAllPost]);
         }
         setLoadingPost(false);
         setCurrentPage(pageNum)

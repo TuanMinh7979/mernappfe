@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { FaRegCommentAlt } from "react-icons/fa";
 import "./ReactionAndCommentArea.scss";
 import PropTypes from "prop-types";
-import like from "@assets/reactions/like.png";
+
 import Reactions from "../reactions/Reactions";
 import { Utils } from "@services/utils/utils.service";
 import { useDispatch, useSelector } from "react-redux";
