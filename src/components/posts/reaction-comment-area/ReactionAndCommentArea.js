@@ -45,7 +45,6 @@ const ReactionAndCommentArea = ({ post }) => {
       const result = userReaction
         ? userReaction.type
         : "default";
-
       setChoosedReaction(result);
     },
     [post]
@@ -74,33 +73,29 @@ const ReactionAndCommentArea = ({ post }) => {
       emitReactionToServer(newPost);
 
       // Data send to server
+      // if !previousReaction -> add new else -> remove previous
       const reactionDataToServer = {
         userTo: post?.userId,
         postId: post?._id,
         type: newReactionText,
         postReactions: post.reactions,
         profilePicture: profile?.profilePicture,
-        previousReaction: newReactionTextLower == choosedReactionLower || choosedReactionLower != "default"
-          ? newReactionTextLower
-          : "",
+        previousReaction: newReactionTextLower == choosedReactionLower && choosedReactionLower != "default"
+          ? ""
+          : choosedReactionLower,
       };
       //  call api update
-
       if (newReactionTextLower !== choosedReactionLower) {
-        // add if exist
+        // if newReactTextLower !== choosedReactionLower -> if previousReaction-> server update +- else update +
         await postService.addReaction(reactionDataToServer);
       } else {
+        // if newReactTextLower !== choosedReactionLower ->  remove reaction and update post
+        await postService.removeReaction(
+          post?._id,
+          choosedReactionLower,
+          post.reactions
+        );
 
-        if (newReactionTextLower === reactionDataToServer.previousReaction) {
-          await postService.removeReaction(
-            post?._id,
-            reactionDataToServer.previousReaction,
-            post.reactions
-          );
-        } else {
-          //  create new
-          await postService.addReaction(reactionDataToServer);
-        }
       }
     } catch (error) {
 
@@ -115,36 +110,22 @@ const ReactionAndCommentArea = ({ post }) => {
 
     let newPost = { ...post };
 
+    let newReactions = { ...newPost.reactions };
+
+    if (previousReactionText != "default") {
+      newReactions[previousReactionText] -= 1;
+      if (newReactions[previousReactionText] < 0) {
+        newReactions[previousReactionText] = 0
+      }
+    }
+
     if (newReactionText !== previousReactionText) {
       //   * if dont exist old reaction(in Reactions table )=> inc newReactText by 1
-      const newReactions = { ...newPost.reactions };
+
       newReactions[newReactionText] += 1;
-      newPost.reactions = { ...newReactions };
-      if (previousReactionText !== "default" && newPost.reactions[previousReactionText] > 0) {
-        const newReactions = { ...newPost.reactions };
-
-        newReactions[previousReactionText] -= 1;
-        if (newReactions[previousReactionText] < 0) {
-          newReactions[previousReactionText] = 0
-        }
-        newPost.reactions = { ...newReactions };
-      }
-    } else {
-      //  * if exist old reaction (in Reactions table ) and:
-      //  * update current post.reations property:
-      // * if post.reactions.happy>1=> to 0 (always)
-      if (newPost.reactions[previousReactionText] > 0) {
-        const newReactions = { ...newPost.reactions };
-
-        newReactions[previousReactionText] -= 1;
-        if (newReactions[previousReactionText] < 0) {
-          newReactions[previousReactionText] = 0
-        }
-        newPost.reactions = { ...newReactions };
-      }
-      // * if new reaction 0=>1
-
     }
+    newPost.reactions = { ...newReactions };
+
     return newPost;
   };
 
