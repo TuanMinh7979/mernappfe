@@ -71,7 +71,7 @@ const Register = () => {
 
 
             <div class="split-screen">
-                <div class="left"  style={{ background: `url(${authBackgroundImage})` }}>
+                <div class="left" style={{ background: `url(${authBackgroundImage})` }}>
                     <section class="copy">
                         <h1>Connect together</h1>
                         <p>with Social App</p>
@@ -102,7 +102,7 @@ const Register = () => {
                                 labelText="Username"
                                 placeholder="Enter Username"
                                 handleChange={onInputChange}
-                                style={{ border: `${errorMessage ? '1px solid #fa9b8a' : ''}` }}
+
                             />
                             <Input
                                 value={formData.email}
