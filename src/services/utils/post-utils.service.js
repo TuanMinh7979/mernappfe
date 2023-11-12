@@ -3,7 +3,6 @@ import { Utils } from "./utils.service";
 import { socketService } from "@services/socket/socket.service";
 export class PostUtils {
   static checkPrivacy(post, profile, loggedUserIdols) {
-    console.log("?????????????", post._id, "++++++", loggedUserIdols.length);
     const isPrivate =
       post?.privacy === "Private" && post?.userId === profile?._id;
     const isPublic = post?.privacy === "Public";

@@ -5,7 +5,7 @@ import "@pages/social/streams/Streams.scss";
 import Posts from "@components/posts/Posts";
 import Suggestions from "@components/suggestions/Suggestions";
 import { useRef } from "react";
-import useEffectOnce from "@hooks/useEffectOnce";
+
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUpdSugUsers } from "@root/redux/api/suggestion";
 import { useEffect } from "react";
@@ -42,15 +42,15 @@ const Streams = () => {
 
 
 
-  const fetchPostData = async (showLoading = true) => {
+  const fetchPostData = async () => {
 
     let pageNum = currentPage
     if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
       pageNum += 1
       try {
-        if (showLoading) {
-          setLoadingPost(true)
-        }
+
+        setLoadingPost(true)
+
 
 
         const response = await postService.getAllPosts(pageNum);
@@ -59,14 +59,14 @@ const Streams = () => {
           newAllPost = uniqBy([...newAllPost], '_id');
           setPosts(validatePosts([...newAllPost], loggedUserIdols));
         }
-        if (showLoading) {
-          setLoadingPost(false);
-        }
+
+        setLoadingPost(false);
+
         setCurrentPage(pageNum)
       } catch (error) {
-        if (showLoading) {
-          setLoadingPost(false);
-        }
+
+        setLoadingPost(false);
+
         Utils.displayError(error, dispatch);
       }
     }
@@ -86,18 +86,25 @@ const Streams = () => {
 
         setLoading(true)
         dispatch(fetchUpdSugUsers());
-        const response = await followerService.getLoggedUserFollowee();
-        setLoggedUserIdols(response.data.following);
-        const rs = await postService.getReactionsByUsername(profile?.username)
-        dispatch(updateLoggedUserReactions(rs.data.reactions));
+        const res2 = await followerService.getLoggedUserFollowee();
+        setLoggedUserIdols(res2.data.following);
+        const res1 = await postService.getReactionsByUsername(profile?.username)
+        dispatch(updateLoggedUserReactions(res1.data.reactions));
         const fetchPostRes = await postService.getAllPosts(1);
         const { posts, totalPosts } = fetchPostRes.data
         setPostsCnt(totalPosts)
-        let validInitPostsFromServer = validatePosts([...posts], response.data.following)
-        if (validInitPostsFromServer.length >= Utils.POST_PAGE_SIZE) {
-          setPosts(validatePosts([...posts], response.data.following));
+        let validFirstPagePosts = validatePosts([...posts], res2.data.following)
+
+        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
+          let pageNum = currentPage + 1
+          const res3 = await postService.getAllPosts(pageNum);
+          if (res3.data.posts.length > 0) {
+            let newAllPost = [...validFirstPagePosts, ...res3.data.posts];
+            newAllPost = uniqBy([...newAllPost], '_id');
+            setPosts(validatePosts([...newAllPost], res2.data.following));
+          }
         } else {
-          fetchPostData(false)
+          setPosts(validFirstPagePosts);
         }
         setLoading(false)
       } catch (error) {

@@ -5,7 +5,7 @@ import { Utils } from '@services/utils/utils.service'
 import { PostUtils } from '@services/utils/post-utils.service'
 import { postService } from '@services/api/post/post.service'
 import { followerService } from '@services/api/follow/follow.service'
-import useEffectOnce from '@hooks/useEffectOnce'
+import { useEffect } from 'react'
 import GalleryImage from '@components/gallery-image/GalleryImage'
 import "./Photos.scss"
 import ImageModal from '@components/image-modal/ImageModal'
@@ -29,16 +29,26 @@ const Photos = () => {
     })
     return [...validPosts]
   }
-  useEffectOnce(() => {
+  useEffect(() => {
     async function initFetch() {
       try {
-        const res1 = await postService.getsWithImage(1)
 
+        const res1 = await postService.getsWithImage(1)
         const res2 = await followerService.getLoggedUserFollowee()
         setLoggedUserIdols(res2.data.following)
-        setPosts(validatePosts(res1.data.posts, res2.data.following))
         setPostCnt(res1.data.cnt)
+        let validFirstPagePosts = validatePosts([...res1.data.posts], res2.data.following)
 
+        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
+          let pageNum = currentPage + 1
+          const res3 = await postService.getsWithImage(pageNum)
+          let newPosts = [...validFirstPagePosts, ...res3.data.posts]
+          newPosts = uniqBy([...newPosts], '_id')
+          setPosts(validatePosts([...newPosts], res2.data.following));
+          setCurrentPage(pageNum)
+        } else {
+          setPosts(validFirstPagePosts);
+        }
 
         setLoading(false)
       } catch (error) {
@@ -47,7 +57,7 @@ const Photos = () => {
       }
     }
     initFetch()
-  }
+  }, []
 
   )
 
@@ -61,12 +71,12 @@ const Photos = () => {
   }
 
   const onClickRight = () => {
-    console.log("..........", posts.length);
+
     setCurrentShowImageIdx(prev => prev + 1)
     setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
-    console.log("..........", posts.length);
+
     setCurrentShowImageIdx(prev => prev - 1)
     setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
@@ -86,12 +96,10 @@ const Photos = () => {
       pageNum += 1
       try {
         const res1 = await postService.getsWithImage(pageNum)
-
-
-        let abc = uniqBy([...posts, ...res1.data.posts], '_id');
-
-
-        setPosts(validatePosts([...abc], loggedUserIdols));
+        console.log(posts, res1.data);
+        let newAllPost = [...posts, ...res1.data.posts]
+        newAllPost = uniqBy([...newAllPost], '_id')
+        setPosts(validatePosts([...newAllPost], loggedUserIdols));
         setCurrentPage(pageNum)
       } catch (error) {
 
@@ -102,7 +110,7 @@ const Photos = () => {
   useInfiniteScroll(bodyRef, bottomLineRef, fetchPhotos)
 
 
-  console.log([...posts].length);
+
   return (
     <>
       <div className="photos-container" ref={bodyRef}>

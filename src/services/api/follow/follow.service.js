@@ -1,4 +1,4 @@
-import axios from "@services/axios";
+
 import { getAPI, putAPI } from "@services/utils/fetchData";
 import { newestAccessToken } from "@services/utils/tokenUtils";
 export const followerService = {

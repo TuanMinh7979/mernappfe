@@ -1,10 +1,5 @@
 import { updateLoggedUserProfile } from '@redux/reducers/user/user.reducer';
-import { followerService } from '@services/api/follow/follow.service';
-
-import { Utils } from '@services/utils/utils.service';
 import { socketService } from '@services/socket/socket.service';
-
-
 export class FollowersUtils {
   //  use in People page
   static socketIOFollowAndUnfollowInPeoplePage(users, myIdols, setMyIdols, setUsers) {
