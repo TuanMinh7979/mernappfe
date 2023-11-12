@@ -7,7 +7,7 @@ import { socketService } from '@services/socket/socket.service';
 
 export class FollowersUtils {
   //  use in People page
-  static socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers) {
+  static socketIOFollowAndUnfollowInPeoplePage(users, myIdols, setMyIdols, setUsers) {
     // when follow some one and then will be received from server socket "added follow"
     socketService?.socket?.on('added follow', (newIdolData) => {
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
@@ -31,7 +31,7 @@ export class FollowersUtils {
 
       const idolIndex = users.findIndex((user) => user._id === newIdolData?._id);
       if (idolIndex != -1) {
-    
+
         // update idol state
         let newMyIdols = myIdols.filter((idol) => idol._id !== newIdolData?._id);
         setMyIdols([...newMyIdols])
@@ -45,6 +45,25 @@ export class FollowersUtils {
         setUsers([...newUsers])
 
       }
+    });
+  }
+  static socketIOFollowAndUnfollowInStreamsPage(loggedUserIdols, setLoggedUserIdols) {
+    // when follow some one and then will be received from server socket "added follow"
+    socketService?.socket?.on('added follow', (newIdolData) => {
+      const idolIndex = loggedUserIdols.findIndex((user) => user._id === newIdolData._id);
+      console.log("Idol idx", idolIndex);
+      if (idolIndex == -1) {
+        setLoggedUserIdols([...loggedUserIdols, newIdolData]);
+      }
+    });
+    // when remove follow some one and then will be received from server socket "added follow"
+    socketService?.socket?.on('removed follow', (newIdolData) => {
+
+
+      let newMyIdols = loggedUserIdols.filter((idol) => idol._id !== newIdolData._id);
+      setLoggedUserIdols([...newMyIdols])
+
+
     });
   }
 
@@ -61,7 +80,7 @@ export class FollowersUtils {
   // block and unblock
   // in socket/user.ts
   // update profile in redux
-  static socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch) {
+  static socketIOBlockAndUnblock(profile, dispatch) {
 
     // **   Chỉ khởi tạo socket block và real time được khi user đã vào trang /follower và chạy hàm này
     // **  nếu không sẽ không thể real time
@@ -69,11 +88,12 @@ export class FollowersUtils {
       // data:  blockedUser: toBlockUser._id, blockedBy: profile._id
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
+      console.log("---------new profile when blocked", newProfile);
       // update blockedUsers State in Follower Component
       // update blocked list in state
-      setMyBlockedUsers(newProfile?.blocked);
+      // setMyBlockedUsers(newProfile?.blocked);
       // update profile in redux
-      dispatch(updateLoggedUserProfile(newProfile ));
+      dispatch(updateLoggedUserProfile(newProfile));
     });
 
     socketService?.socket?.on('unblocked user id', (data) => {
@@ -81,8 +101,9 @@ export class FollowersUtils {
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
-      setMyBlockedUsers(newProfile?.blocked);
-      dispatch(updateLoggedUserProfile( newProfile ));
+      // setMyBlockedUsers(newProfile?.blocked);
+      console.log("---------new profile when UNblocked", newProfile);
+      dispatch(updateLoggedUserProfile(newProfile));
     });
   }
 
@@ -103,7 +124,7 @@ export class FollowersUtils {
 
     let newProfile = { ...profile };
 
-    if (newProfile?._id === data.blockedBy) {
+    if (newProfile._id === data.blockedBy) {
 
       // if i give a block
       let newBlockeds = [...newProfile.blocked]

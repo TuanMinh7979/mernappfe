@@ -248,7 +248,7 @@ const Profile = () => {
             {displayContent === "timeline" && (
               <TimeLine userProfileData={userProfileData} loading={loading} />
             )}
-            {displayContent === "followers" && <Follow useData={user} />}
+            {displayContent === "followers" && <Follow userData={user} />}
             {displayContent === "gallery" && (
               <>
                 {galleryImages.length > 0 && (

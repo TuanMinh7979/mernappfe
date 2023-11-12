@@ -50,9 +50,7 @@ const Follower = () => {
   useEffect(() => {
     setMyBlockedUsers(profile.blocked)
   }, [profile])
-  useEffect(() => {
-    FollowersUtils.socketIOBlockAndUnblock(profile, setMyBlockedUsers, dispatch)
-  }, [dispatch, profile]);
+
 
   //  block and unblock
   const blockUser = async (toBlockUser) => {

@@ -2,18 +2,19 @@ import PropTypes from "prop-types";
 
 import Post from "@components/posts/post/Post";
 import "./Post.scss";
-import { useState } from "react";
+
 import { useSelector } from "react-redux";
 import { Utils } from "@services/utils/utils.service";
 import { PostUtils } from "@services/utils/post-utils.service";
 
 const Posts = ({ allPosts, loggedUserIdolsProp, loadingPost }) => {
-  
+
   const { profile } = useSelector((state) => state.user);
 
-
+  console.log("---------------len", loggedUserIdolsProp.length);
   return (
-    <div className="posts-container" data-testid="posts">
+    <div className="posts-container" style={{ minHeight: "100vh" }} data-testid="posts">
+
 
       {
         allPosts.length > 0 &&

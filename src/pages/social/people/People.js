@@ -83,6 +83,7 @@ const People = () => {
   const followUser = async (user) => {
     try {
       await followerService.save(user?._id);
+
     } catch (error) {
       Utils.displayError(error, dispatch);
     }
@@ -99,7 +100,7 @@ const People = () => {
 
   useEffect(() => {
     // users is list use now, myidols is user is folled by logged user
-    FollowersUtils.socketIOFollowAndUnfollow(users, myIdols, setMyIdols, setUsers)
+    FollowersUtils.socketIOFollowAndUnfollowInPeoplePage(users, myIdols, setMyIdols, setUsers)
     return () => {
       socketService.socket.off("added follow");
       socketService.socket.off("removed follow");

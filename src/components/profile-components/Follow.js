@@ -49,10 +49,10 @@ const Follow = ({ userData }) => {
     try {
       socketService?.socket?.emit('block user', {
         blockedUser: userInfo._id,
-        blockedBy: user?._id
+        blockedBy: user._id
       });
 
-      await followerService.blockUser(userInfo?._id);
+      await followerService.blockUser(userInfo._id);
 
     } catch (error) {
 
@@ -62,7 +62,7 @@ const Follow = ({ userData }) => {
 
   const unblockUser = async (userInfo) => {
     try {
-      socketService?.socket?.emit('unblock user', { blockedUser: userInfo._id, blockedBy: user?._id });
+      socketService?.socket?.emit('unblock user', { blockedUser: userInfo._id, blockedBy: user._id });
 
       await followerService.unblockUser(userInfo?._id);
     } catch (error) {

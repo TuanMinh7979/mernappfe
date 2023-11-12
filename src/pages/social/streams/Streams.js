@@ -20,6 +20,7 @@ import { followerService } from "@services/api/follow/follow.service";
 import { socketService } from "@services/socket/socket.service";
 import { updateLoggedUserReactions } from "@redux/reducers/post/user-post-reaction";
 import PostSkeleton from "@components/posts/post/PostSkeleton";
+import { FollowersUtils } from "@services/utils/followers-utils.service";
 
 const Streams = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,11 +57,7 @@ const Streams = () => {
       }
     }
   }
-  const loadMore = () => {
-    setTimeout(() => {
-      fetchPostData();
-    }, 5000);
-  }
+
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
@@ -77,6 +74,7 @@ const Streams = () => {
         dispatch(fetchUpdSugUsers());
         const response = await followerService.getLoggedUserFollowee();
         setLoggedUserIdols(response.data.following);
+        console.log("--------------", response.data.following);
         const rs = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(rs.data.reactions));
 
@@ -109,6 +107,14 @@ const Streams = () => {
 
     };
   }, [posts]);
+  useEffect(() => {
+    FollowersUtils.socketIOFollowAndUnfollowInStreamsPage(loggedUserIdols, setLoggedUserIdols)
+    return () => {
+      socketService.socket.off("added follow");
+      socketService.socket.off("removed follow");
+    };
+  }, [loggedUserIdols])
+
 
   return (
     <div className="streams" data-testid="streams">

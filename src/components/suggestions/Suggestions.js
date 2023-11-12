@@ -9,6 +9,7 @@ import { followerService } from '@services/api/follow/follow.service';
 import { filter } from 'lodash';
 import { updateSugUsersNewEle } from '@redux/reducers/suggestions/suggestions.reducer';
 import { ProfileUtils } from '@services/utils/profile-utils.service';
+import { socketService } from '@services/socket/socket.service';
 
 const Suggestions = () => {
   const { suggestions } = useSelector((state) => state);
@@ -20,7 +21,8 @@ const Suggestions = () => {
   const followUser = async (user) => {
     try {
 
-      await followerService.save(user?._id);
+      await followerService.save(user._id);
+  
       const result = filter(users, (data) => data?._id !== user?._id);
       setUsers(result);
       dispatch(updateSugUsersNewEle({ users: result, isLoading: false }));

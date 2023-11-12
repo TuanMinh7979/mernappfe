@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaCaretDown, FaCaretUp, FaRegEnvelope , FaUserAlt} from "react-icons/fa";
+import { FaCaretDown, FaCaretUp, FaRegEnvelope, FaUserAlt } from "react-icons/fa";
 import { RiNotification2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import MessageSidebar from "@components/message-sidebar/MessageSidebar";
@@ -25,6 +25,7 @@ import { chatService } from "@services/api/chat/chat.service";
 import { updateConversationList } from "@redux/reducers/chat/chat.reducer";
 import { fetchConversationList } from "@redux/api/chat";
 import SettingDropdown from "@components/dropdown/SettingDropdown";
+import { FollowersUtils } from "@services/utils/followers-utils.service";
 const Header = () => {
   const { profile } = useSelector((state) => state.user);
   const messageRef = useRef(null);
@@ -68,7 +69,7 @@ const Header = () => {
       setNotifications(mapNotis);
     } catch (error) {
 
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
   const onMarkAsRead = async (notification) => {
@@ -80,7 +81,7 @@ const Header = () => {
       );
       await notificationService.updateIsRead(notification._id);
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -91,7 +92,7 @@ const Header = () => {
       );
       Utils.displaySuccess(response.data.message, dispatch)
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -131,6 +132,10 @@ const Header = () => {
   }, [notifications, profile]);
 
 
+  useEffect(() => {
+    FollowersUtils.socketIOBlockAndUnblock(profile, dispatch)
+  }, [dispatch, profile]);
+
 
 
   const openChatPage = async (notification) => {
@@ -155,7 +160,7 @@ const Header = () => {
         await chatService.markMessagesAsRead(profile?._id, receiverId);
       }
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -163,10 +168,10 @@ const Header = () => {
     try {
 
       await userService.logoutUser();
-      Utils.clearStore( dispatch );
+      Utils.clearStore(dispatch);
       // navigate("/");
     } catch (error) {
-     Utils.displayError(error ,dispatch);
+      Utils.displayError(error, dispatch);
     }
   };
 
@@ -348,13 +353,13 @@ const Header = () => {
                       <SettingDropdown
                         height={300}
                         style={{ right: "150px", top: "40px" }}
-                 
-            
+
+
                         title="Settings"
                         onLogout={onLogout}
-                        // onNavigate={() => {
-                        //   ProfileUtils.navigateToProfile(profile, navigate);
-                        // }}
+                      // onNavigate={() => {
+                      //   ProfileUtils.navigateToProfile(profile, navigate);
+                      // }}
                       ></SettingDropdown>
                     </li>
                   </ul>
