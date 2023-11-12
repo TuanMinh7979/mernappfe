@@ -42,13 +42,15 @@ const Photos = () => {
         let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
 
         // rare case
-        if (validFirstPagePosts.length == 0) {
-          if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE)) {
+        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
+
+          if (currentPage <= Math.ceil(res1.data.cnt / Utils.POST_PAGE_SIZE)) {
+
             let pageNum = currentPage + 1
             const res3 = await postService.getsWithImage(pageNum)
             let newAllPost = [...allPost, ...res3.data.posts]
             newAllPost = uniqBy([...newAllPost], '_id')
-            setPosts(allPost);
+            setPosts(newAllPost);
             setCurrentPage(pageNum)
           }
         } else {
@@ -141,22 +143,22 @@ const Photos = () => {
                   <>
                     {PostUtils.checkPrivacy(el, profile, loggedUserIdols) && (
                       <>
-                  
-                          <GalleryImage
 
-                            post={el}
-                            showCaption={true}
-                            showDelete={false}
-                            imgSrc={getShowingImageUrlFromPost(el)}
-                            onClick={() => {
-                              setCurrentShowImageIdx(idx)
-                              setShowImageModal(!showImageModal)
-                              setGalleryImageToShow(getShowingImageUrlFromPost(el))
-                            }}
+                        <GalleryImage
 
-                          />
+                          post={el}
+                          showCaption={true}
+                          showDelete={false}
+                          imgSrc={getShowingImageUrlFromPost(el)}
+                          onClick={() => {
+                            setCurrentShowImageIdx(idx)
+                            setShowImageModal(!showImageModal)
+                            setGalleryImageToShow(getShowingImageUrlFromPost(el))
+                          }}
 
-                       
+                        />
+
+
 
                       </>
                     )}

@@ -28,7 +28,7 @@ const Streams = () => {
   const [loadingPost, setLoadingPost] = useState(false)
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState([]);
-  const [postsCnt, setPostsCnt] = useState(1);
+  const [postsCnt, setPostsCnt] = useState(0);
   const [loggedUserIdols, setLoggedUserIdols] = useState([]);
   const validatePosts = (posts, loggedUserIdolsArr) => {
     let validPosts = posts.filter((el, idx) => {
@@ -95,8 +95,10 @@ const Streams = () => {
         let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
 
         // rare case
-        if (validFirstPagePosts.length == 0) {
-          if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
+        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
+          // Root problem is validFirstPagePosts==0 => no show any post
+          if (currentPage <= Math.ceil(fetchPostRes.data.totalPosts / Utils.POST_PAGE_SIZE) && allPost.length < fetchPostRes.data.totalPosts && !loadingPost) {
+
             let pageNum = currentPage + 1
             const res3 = await postService.getAllPosts(pageNum);
             let newAllPost = [...allPost, ...res3.data.posts];
