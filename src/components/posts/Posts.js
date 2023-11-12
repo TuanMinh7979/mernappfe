@@ -11,7 +11,7 @@ const Posts = ({ allPosts, loggedUserIdolsProp, loadingPost }) => {
 
   const { profile } = useSelector((state) => state.user);
 
-  console.log("---------------len", loggedUserIdolsProp.length);
+
   return (
     <div className="posts-container" style={{ minHeight: "100vh" }} data-testid="posts">
 

@@ -89,7 +89,7 @@ const Profile = () => {
 
         if (url == "/images/profile") {
           response = await imageService.save(url, result);
-          console.log(response);
+  
           dispatch(updateLoggedUserProfile({ ...profile, profilePicture: response.data.url }))
         } else {
 

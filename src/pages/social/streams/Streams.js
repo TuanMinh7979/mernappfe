@@ -74,7 +74,7 @@ const Streams = () => {
         dispatch(fetchUpdSugUsers());
         const response = await followerService.getLoggedUserFollowee();
         setLoggedUserIdols(response.data.following);
-        console.log("--------------", response.data.following);
+  
         const rs = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(rs.data.reactions));
 

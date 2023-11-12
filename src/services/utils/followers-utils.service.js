@@ -51,7 +51,7 @@ export class FollowersUtils {
     // when follow some one and then will be received from server socket "added follow"
     socketService?.socket?.on('added follow', (newIdolData) => {
       const idolIndex = loggedUserIdols.findIndex((user) => user._id === newIdolData._id);
-      console.log("Idol idx", idolIndex);
+
       if (idolIndex == -1) {
         setLoggedUserIdols([...loggedUserIdols, newIdolData]);
       }
@@ -88,7 +88,7 @@ export class FollowersUtils {
       // data:  blockedUser: toBlockUser._id, blockedBy: profile._id
       // updating reduxUser.profile
       const newProfile = FollowersUtils.updateProfileWhenBlock(profile, data);
-      console.log("---------new profile when blocked", newProfile);
+
       // update blockedUsers State in Follower Component
       // update blocked list in state
       // setMyBlockedUsers(newProfile?.blocked);
@@ -102,7 +102,7 @@ export class FollowersUtils {
       const newProfile = FollowersUtils.updateProfileWhenUnBlock(profile, data);
       // update blockedUsers State in Follower Component
       // setMyBlockedUsers(newProfile?.blocked);
-      console.log("---------new profile when UNblocked", newProfile);
+
       dispatch(updateLoggedUserProfile(newProfile));
     });
   }
