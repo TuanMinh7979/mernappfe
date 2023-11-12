@@ -37,17 +37,22 @@ const Photos = () => {
         const res2 = await followerService.getLoggedUserFollowee()
         setLoggedUserIdols(res2.data.following)
         setPostCnt(res1.data.cnt)
-        let validFirstPagePosts = validatePosts([...res1.data.posts], res2.data.following)
 
-        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
-          let pageNum = currentPage + 1
-          const res3 = await postService.getsWithImage(pageNum)
-          let newPosts = [...validFirstPagePosts, ...res3.data.posts]
-          newPosts = uniqBy([...newPosts], '_id')
-          setPosts(validatePosts([...newPosts], res2.data.following));
-          setCurrentPage(pageNum)
+        let allPost = res1.data.posts
+        let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
+
+        // rare case
+        if (validFirstPagePosts.length == 0) {
+          if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE)) {
+            let pageNum = currentPage + 1
+            const res3 = await postService.getsWithImage(pageNum)
+            let newAllPost = [...allPost, ...res3.data.posts]
+            newAllPost = uniqBy([...newAllPost], '_id')
+            setPosts(allPost);
+            setCurrentPage(pageNum)
+          }
         } else {
-          setPosts(validFirstPagePosts);
+          setPosts(allPost);
         }
 
         setLoading(false)
@@ -131,18 +136,34 @@ const Photos = () => {
         {posts.length > 0 &&
           <div className="gallery-images scroll-3" >
             {posts.map((el, idx) =>
-              <GalleryImage
-                post={el}
-                showCaption={true}
-                showDelete={false}
-                imgSrc={getShowingImageUrlFromPost(el)}
-                onClick={() => {
-                  setCurrentShowImageIdx(idx)
-                  setShowImageModal(!showImageModal)
-                  setGalleryImageToShow(getShowingImageUrlFromPost(el))
-                }}
+              <>  {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
+                el?.userId === profile?._id) && (
+                  <>
+                    {PostUtils.checkPrivacy(el, profile, loggedUserIdols) && (
+                      <>
+                  
+                          <GalleryImage
 
-              />
+                            post={el}
+                            showCaption={true}
+                            showDelete={false}
+                            imgSrc={getShowingImageUrlFromPost(el)}
+                            onClick={() => {
+                              setCurrentShowImageIdx(idx)
+                              setShowImageModal(!showImageModal)
+                              setGalleryImageToShow(getShowingImageUrlFromPost(el))
+                            }}
+
+                          />
+
+                       
+
+                      </>
+                    )}
+                  </>
+                )}</>
+
+
             )}
 
             <div

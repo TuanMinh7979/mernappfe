@@ -21,9 +21,20 @@ const Posts = ({ allPosts, loggedUserIdolsProp, loadingPost }) => {
         allPosts.map((post) => (
           <div key={post?._id} data-testid="posts-item">
 
-            <Post post={post} showIcons={post.userId == profile._id} />
+            {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, post?.userId) ||
+              post?.userId === profile?._id) && (
+                <>
+                  {PostUtils.checkPrivacy(post, profile, loggedUserIdolsProp) && (
+                    <>
+                      <Post post={post} showIcons={post.userId == profile._id} />
+                    </>
+                  )}
+                </>
+              )}
 
           </div>
+
+
         ))
 
       }

@@ -48,11 +48,7 @@ const Streams = () => {
     if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
       pageNum += 1
       try {
-
         setLoadingPost(true)
-
-
-
         const response = await postService.getAllPosts(pageNum);
         if (response.data.posts.length > 0) {
           let newAllPost = [...posts, ...response.data.posts];
@@ -91,20 +87,26 @@ const Streams = () => {
         const res1 = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(res1.data.reactions));
         const fetchPostRes = await postService.getAllPosts(1);
-        const { posts, totalPosts } = fetchPostRes.data
-        setPostsCnt(totalPosts)
-        let validFirstPagePosts = validatePosts([...posts], res2.data.following)
 
-        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
-          let pageNum = currentPage + 1
-          const res3 = await postService.getAllPosts(pageNum);
-          if (res3.data.posts.length > 0) {
-            let newAllPost = [...validFirstPagePosts, ...res3.data.posts];
+        let allPost = fetchPostRes.data.posts
+        setPostsCnt(fetchPostRes.data.totalPosts)
+
+
+        let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
+
+        // rare case
+        if (validFirstPagePosts.length == 0) {
+          if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
+            let pageNum = currentPage + 1
+            const res3 = await postService.getAllPosts(pageNum);
+            let newAllPost = [...allPost, ...res3.data.posts];
             newAllPost = uniqBy([...newAllPost], '_id');
-            setPosts(validatePosts([...newAllPost], res2.data.following));
+            setPosts(newAllPost)
+            setCurrentPage(pageNum)
+
           }
         } else {
-          setPosts(validFirstPagePosts);
+          setPosts(allPost);
         }
         setLoading(false)
       } catch (error) {
