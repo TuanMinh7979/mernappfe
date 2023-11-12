@@ -6,7 +6,7 @@ import { updateToastsNewEle } from "@redux/reducers/notifications/toasts.reducer
 import millify from "millify";
 export class Utils {
 
-  static  POST_PAGE_SIZE= 8
+  static  POST_PAGE_SIZE= 9
 
   static avatarColor() {
     return avatarColors[floor(random(0.9) * avatarColors.length)];
