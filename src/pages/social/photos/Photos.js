@@ -106,7 +106,7 @@ const Photos = () => {
         console.log(posts, res1.data);
         let newAllPost = [...posts, ...res1.data.posts]
         newAllPost = uniqBy([...newAllPost], '_id')
-        setPosts(validatePosts([...newAllPost], loggedUserIdols));
+        setPosts(newAllPost);
         setCurrentPage(pageNum)
       } catch (error) {
 
@@ -138,32 +138,33 @@ const Photos = () => {
         {posts.length > 0 &&
           <div className="gallery-images scroll-3" >
             {posts.map((el, idx) =>
-              <>  {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
-                el?.userId === profile?._id) && (
-                  <>
-                    {PostUtils.checkPrivacy(el, profile, loggedUserIdols) && (
-                      <>
+              <>
+                {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
+                  el?.userId === profile?._id) && (
+                    <>
+                      {PostUtils.checkPrivacy(el, profile, loggedUserIdols) && (
+                        <>
 
-                        <GalleryImage
+                          <GalleryImage
 
-                          post={el}
-                          showCaption={true}
-                          showDelete={false}
-                          imgSrc={getShowingImageUrlFromPost(el)}
-                          onClick={() => {
-                            setCurrentShowImageIdx(idx)
-                            setShowImageModal(!showImageModal)
-                            setGalleryImageToShow(getShowingImageUrlFromPost(el))
-                          }}
+                            post={el}
+                            showCaption={true}
+                            showDelete={false}
+                            imgSrc={getShowingImageUrlFromPost(el)}
+                            onClick={() => {
+                              setCurrentShowImageIdx(idx)
+                              setShowImageModal(!showImageModal)
+                              setGalleryImageToShow(getShowingImageUrlFromPost(el))
+                            }}
 
-                        />
+                          />
 
 
 
-                      </>
-                    )}
-                  </>
-                )}</>
+                        </>
+                      )}
+                    </>
+                  )}</>
 
 
             )}

@@ -53,11 +53,10 @@ const Streams = () => {
         if (response.data.posts.length > 0) {
           let newAllPost = [...posts, ...response.data.posts];
           newAllPost = uniqBy([...newAllPost], '_id');
-          setPosts(validatePosts([...newAllPost], loggedUserIdols));
+          setPosts(newAllPost);
         }
 
         setLoadingPost(false);
-
         setCurrentPage(pageNum)
       } catch (error) {
 
