@@ -29,36 +29,50 @@ const Streams = () => {
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState([]);
   const [postsCnt, setPostsCnt] = useState(1);
-
+  const [loggedUserIdols, setLoggedUserIdols] = useState([]);
+  const validatePosts = (posts, loggedUserIdolsArr) => {
+    let validPosts = posts.filter((el, idx) => {
+      return (!Utils.checkIfUserIsBlocked(profile.blockedBy, el.userId) ||
+        el?.userId === profile._id) && PostUtils.checkPrivacy(el, profile, loggedUserIdolsArr)
+    })
+    return [...validPosts]
+  }
 
   // ? app post
 
 
 
-  const fetchPostData = async () => {
+  const fetchPostData = async (showLoading = true) => {
 
     let pageNum = currentPage
     if (currentPage <= Math.ceil(postsCnt / Utils.POST_PAGE_SIZE) && posts.length < postsCnt && !loadingPost) {
       pageNum += 1
       try {
-        setLoadingPost(true)
+        if (showLoading) {
+          setLoadingPost(true)
+        }
+
 
         const response = await postService.getAllPosts(pageNum);
         if (response.data.posts.length > 0) {
           let newAllPost = [...posts, ...response.data.posts];
           newAllPost = uniqBy([...newAllPost], '_id');
-          setPosts([...newAllPost]);
+          setPosts(validatePosts([...newAllPost], loggedUserIdols));
         }
-        setLoadingPost(false);
+        if (showLoading) {
+          setLoadingPost(false);
+        }
         setCurrentPage(pageNum)
       } catch (error) {
-        setLoadingPost(false);
+        if (showLoading) {
+          setLoadingPost(false);
+        }
         Utils.displayError(error, dispatch);
       }
     }
   }
 
-  const [loggedUserIdols, setLoggedUserIdols] = useState([]);
+
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
   const dispatch = useDispatch();
@@ -74,16 +88,18 @@ const Streams = () => {
         dispatch(fetchUpdSugUsers());
         const response = await followerService.getLoggedUserFollowee();
         setLoggedUserIdols(response.data.following);
-  
         const rs = await postService.getReactionsByUsername(profile?.username)
         dispatch(updateLoggedUserReactions(rs.data.reactions));
-
         const fetchPostRes = await postService.getAllPosts(1);
         const { posts, totalPosts } = fetchPostRes.data
-        setPosts([...posts])
         setPostsCnt(totalPosts)
+        let validInitPostsFromServer = validatePosts([...posts], response.data.following)
+        if (validInitPostsFromServer.length >= Utils.POST_PAGE_SIZE) {
+          setPosts(validatePosts([...posts], response.data.following));
+        } else {
+          fetchPostData(false)
+        }
         setLoading(false)
-
       } catch (error) {
         setLoading(false)
         Utils.displayError(error, dispatch);

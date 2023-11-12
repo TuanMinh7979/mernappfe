@@ -19,14 +19,27 @@ const Photos = () => {
   const [loggedUserIdols, setLoggedUserIdols] = useState([])
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
+
+  const validatePosts = (posts, loggedUserIdolsArr) => {
+
+    let validPosts = posts.filter((el, idx) => {
+
+      return (!Utils.checkIfUserIsBlocked(profile.blockedBy, el.userId) ||
+        el?.userId === profile._id) && PostUtils.checkPrivacy(el, profile, loggedUserIdolsArr)
+    })
+    return [...validPosts]
+  }
   useEffectOnce(() => {
     async function initFetch() {
       try {
         const res1 = await postService.getsWithImage(1)
-        setPosts(res1.data.posts)
-        setPostCnt(res1.data.cnt)
+
         const res2 = await followerService.getLoggedUserFollowee()
         setLoggedUserIdols(res2.data.following)
+        setPosts(validatePosts(res1.data.posts, res2.data.following))
+        setPostCnt(res1.data.cnt)
+
+
         setLoading(false)
       } catch (error) {
         setLoading(false)
@@ -38,11 +51,7 @@ const Photos = () => {
 
   )
 
-  const isEmptyPost = (post) => {
-    return (
-      Utils.checkIfUserIsBlocked(profile?.blockedBy, post?.userId) || PostUtils.checkPrivacy(post, profile, loggedUserIdols)
-    );
-  };
+
 
   const [galleryImageToShow, setGalleryImageToShow] = useState('')
   const [showImageModal, setShowImageModal] = useState(false)
@@ -52,10 +61,12 @@ const Photos = () => {
   }
 
   const onClickRight = () => {
+    console.log("..........", posts.length);
     setCurrentShowImageIdx(prev => prev + 1)
     setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
   }
   const onClickLeft = () => {
+    console.log("..........", posts.length);
     setCurrentShowImageIdx(prev => prev - 1)
     setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
   }
@@ -80,7 +91,7 @@ const Photos = () => {
         let abc = uniqBy([...posts, ...res1.data.posts], '_id');
 
 
-        setPosts([...abc]);
+        setPosts(validatePosts([...abc], loggedUserIdols));
         setCurrentPage(pageNum)
       } catch (error) {
 
@@ -91,7 +102,7 @@ const Photos = () => {
   useInfiniteScroll(bodyRef, bottomLineRef, fetchPhotos)
 
 
-
+  console.log([...posts].length);
   return (
     <>
       <div className="photos-container" ref={bodyRef}>
@@ -109,39 +120,21 @@ const Photos = () => {
 
         />}
         <div className="photos">  Photos   </div>
-        {posts.length > 0 && (
+        {posts.length > 0 &&
           <div className="gallery-images scroll-3" >
             {posts.map((el, idx) =>
-              <div className={`${!isEmptyPost(el) ? 'empty-post-div' : ''}`} key={idx}>
-                {(!Utils.checkIfUserIsBlocked(profile?.blockedBy, el?.userId) ||
-                  el?.userId === profile?._id) && (
-                    <>
-                      {PostUtils.checkPrivacy(el, profile, loggedUserIdols) && (
-                        <>
-                          <div className="">
+              <GalleryImage
+                post={el}
+                showCaption={true}
+                showDelete={false}
+                imgSrc={getShowingImageUrlFromPost(el)}
+                onClick={() => {
+                  setCurrentShowImageIdx(idx)
+                  setShowImageModal(!showImageModal)
+                  setGalleryImageToShow(getShowingImageUrlFromPost(el))
+                }}
 
-                            <GalleryImage
-
-                              post={el}
-                              showCaption={true}
-                              showDelete={false}
-                              imgSrc={getShowingImageUrlFromPost(el)}
-                              onClick={() => {
-                                setCurrentShowImageIdx(idx)
-                                setShowImageModal(!showImageModal)
-                                setGalleryImageToShow(getShowingImageUrlFromPost(el))
-                              }}
-
-                            />
-
-                          </div>
-
-                        </>
-                      )}
-                    </>
-                  )}
-              </div>
-
+              />
             )}
 
             <div
@@ -149,7 +142,7 @@ const Photos = () => {
               style={{ marginBottom: "150px", height: "150px" }}
             ></div>
           </div>
-        )}
+        }
 
 
         {loading && !posts.length && <div className="card-element" style={{ height: '350px' }}></div>}
