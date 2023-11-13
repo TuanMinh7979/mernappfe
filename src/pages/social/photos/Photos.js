@@ -42,7 +42,7 @@ const Photos = () => {
         let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
 
         // rare case
-        if (validFirstPagePosts.length < Utils.POST_PAGE_SIZE) {
+        if (validFirstPagePosts.length < 1) {
 
           if (currentPage <= Math.ceil(res1.data.cnt / Utils.POST_PAGE_SIZE)) {
 
@@ -77,18 +77,36 @@ const Photos = () => {
 
   }
 
+
+
+
+
+  const [validPostsToShow, setValidPostsToShow] = useState([])
+  useEffect(() => {
+    if (posts.length) {
+      setValidPostsToShow(validatePosts(posts, loggedUserIdols))
+    }
+
+  }, [posts])
+
+
+
   const onClickRight = () => {
 
-    setCurrentShowImageIdx(prev => prev + 1)
-    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx + 1]))
+    let newIdx = validPostsToShow.findIndex(el => el._id === currentImageId) + 1
+    setGalleryImageToShow(getShowingImageUrlFromPost(validPostsToShow[newIdx]))
+    setCurrentShowImageId(validPostsToShow[newIdx]._id)
+
   }
   const onClickLeft = () => {
 
-    setCurrentShowImageIdx(prev => prev - 1)
-    setGalleryImageToShow(getShowingImageUrlFromPost(posts[currentImageIdx - 1]))
+    let newIdx = validPostsToShow.findIndex(el => el._id === currentImageId) - 1
+    setGalleryImageToShow(getShowingImageUrlFromPost(validPostsToShow[newIdx]))
+    setCurrentShowImageId(validPostsToShow[newIdx]._id)
+
   }
 
-  const [currentImageIdx, setCurrentShowImageIdx] = useState(0)
+  const [currentImageId, setCurrentShowImageId] = useState(0)
   const bodyRef = useRef(null);
   const bottomLineRef = useRef(null);
 
@@ -118,6 +136,9 @@ const Photos = () => {
 
 
 
+
+
+
   return (
     <>
       <div className="photos-container" ref={bodyRef}>
@@ -127,8 +148,8 @@ const Photos = () => {
           showArrow={true}
           onClickRight={onClickRight}
           onClickLeft={onClickLeft}
-          isLastItemRight={currentImageIdx == posts.length - 1}
-          isLastItemLeft={currentImageIdx == 0}
+          isLastItemRight={currentImageId == validPostsToShow[validPostsToShow.length - 1]._id}
+          isLastItemLeft={currentImageId == validPostsToShow[0]._id}
           onCancel={() => {
             setShowImageModal(false)
           }}
@@ -152,7 +173,7 @@ const Photos = () => {
                             showDelete={false}
                             imgSrc={getShowingImageUrlFromPost(el)}
                             onClick={() => {
-                              setCurrentShowImageIdx(idx)
+                              setCurrentShowImageId(el._id)
                               setShowImageModal(!showImageModal)
                               setGalleryImageToShow(getShowingImageUrlFromPost(el))
                             }}
