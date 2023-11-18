@@ -42,7 +42,7 @@ const Photos = () => {
         let validFirstPagePosts = validatePosts([...allPost], res2.data.following)
 
         // rare case
-        if (validFirstPagePosts.length < 1) {
+        if (validFirstPagePosts.length <= 4) {
 
           if (currentPage <= Math.ceil(res1.data.cnt / Utils.POST_PAGE_SIZE)) {
 
